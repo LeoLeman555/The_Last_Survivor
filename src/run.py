@@ -16,6 +16,9 @@ class Run:
     self.energie = 78985
     self.metal = 86884
     self.munition = 49870
+    self.donnees = 69876
+    self.xxp = 4500
+    self.yxp = 4500
     self.is_playing = False # jeu commence ou pas
 
     self.player = Player()  # mettre sur tiled un objet start
@@ -30,27 +33,40 @@ class Run:
     if press[pygame.K_UP] and press[pygame.K_LEFT]: # pour se déplacer en diagonale
       self.player.haut(1.5)
       self.player.gauche(1.5)
+      self.dep_addition(4, 4)
     elif press[pygame.K_UP] and press[pygame.K_RIGHT]:
       self.player.haut(1.5)
       self.player.droite(1.5)
+      self.dep_addition(-4, 4)
     elif press[pygame.K_DOWN] and press[pygame.K_RIGHT]:
       self.player.bas(1.5)
       self.player.droite(1.5)
+      self.dep_addition(-4, -4)
     elif press[pygame.K_DOWN] and press[pygame.K_LEFT]:
       self.player.bas(1.5)
       self.player.gauche(1.5)
-    elif press[pygame.K_UP]:        # pour se déplacer
-      self.player.haut(1)
-    elif press[pygame.K_DOWN]:
-      self.player.bas(1)
-    elif press[pygame.K_LEFT]:
-      self.player.gauche(1)
-    elif press[pygame.K_RIGHT]:
-      self.player.droite(1)
+      self.dep_addition(4, -4)
+    else:
+      if press[pygame.K_UP]:        # pour se déplacer
+        self.player.haut(1)
+        self.dep_addition(0, 6)
+      elif press[pygame.K_DOWN]:
+        self.player.bas(1)
+        self.dep_addition(0, -6)
+      elif press[pygame.K_LEFT]:
+        self.player.gauche(1)
+        self.dep_addition(6, 0)
+      elif press[pygame.K_RIGHT]:
+        self.player.droite(1)
+        self.dep_addition(-6, 0)
 
   def update(self):
     """Rafraîchit la classe MapManager.update"""
     self.map_manager.update()
+
+  def dep_addition(self, valeur_x, valeur_y):
+    self.xxp += valeur_x
+    self.yxp += valeur_y
 
   def run(self):
     """Boucle principale, appelle les fonctions :
@@ -67,13 +83,16 @@ class Run:
       self.update()
       self.map_manager.draw()
 
+      jeton = pygame.image.load(f"res/sprite/xp.png")
+      self.screen.blit(jeton, (self.xxp - 4000, self.yxp - 4000))
+
       get_bar(self.screen, "xp_bar", 4, 7, 20, 20)
       get_bar(self.screen, "hp_bar", 7, 9, 20, 45)
       get_bar(self.screen, "faim_bar", 1, 5, 20, 70)
       get_icon(self.screen, "en_icon", 130, 100, 25, -3, 22, 20, self.energie)
       get_icon(self.screen, "me_icon", 20, 100, 25, -3, 22, 20, self.metal)
       get_icon(self.screen, "mu_icon", 134, 125, 21, 1, 15, 29, self.munition)
-      get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.munition)
+      get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.donnees)
 
       pygame.display.flip()       # actualisation
 

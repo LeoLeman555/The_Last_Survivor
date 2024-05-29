@@ -96,6 +96,6 @@ def Menu_principal():
   elif direction == "options":
     pass
 
-Menu_principal()
-# start = Run()
-# start.run()
+# Menu_principal()
+start = Run()
+start.run()
