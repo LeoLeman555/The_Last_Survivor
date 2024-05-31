@@ -86,7 +86,6 @@ def Menu_principal():
     start = Run() # appel classe Run
     start.run()
     Menu_principal()
-    print("------------------------- FIN -------------------------")
   elif direction == "intro":
     pass
   elif direction == "boutique":
@@ -99,3 +98,5 @@ def Menu_principal():
 # Menu_principal()
 start = Run()
 start.run()
+
+print("------------------------- FIN -------------------------")

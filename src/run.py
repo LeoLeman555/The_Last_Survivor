@@ -1,7 +1,7 @@
 import pygame
 from map import MapManager
 from player import Player
-from items import *
+from items import Jetons, Icon
 
 class Run:
   def __init__(self):
@@ -13,16 +13,16 @@ class Run:
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Jeu")
     pygame.font.init()
-    self.energie = 78985
+    self.énergie = 78985
     self.metal = 86884
     self.munition = 49870
     self.donnees = 69876
-    self.xxp = 4500
-    self.yxp = 4500
-    self.is_playing = False # jeu commence ou pas
+    # self.dict_jeton = JetonManager()
+    self.dict_jeton = {"0":("xp", 4500, 4500)}
 
     self.player = Player()  # mettre sur tiled un objet start
-
+    self.icon = Icon()
+    self.jeton = Jetons(self.dict_jeton, self.screen)
     self.map_manager = MapManager(self.screen, self.player) # appel de la classe mapManager
 
   def keyboard_input(self):
@@ -33,40 +33,36 @@ class Run:
     if press[pygame.K_UP] and press[pygame.K_LEFT]: # pour se déplacer en diagonale
       self.player.haut(1.5)
       self.player.gauche(1.5)
-      self.dep_addition(4, 4)
+      self.jeton.dep_addition(4, 4)
     elif press[pygame.K_UP] and press[pygame.K_RIGHT]:
       self.player.haut(1.5)
       self.player.droite(1.5)
-      self.dep_addition(-4, 4)
+      self.jeton.dep_addition(-4, 4)
     elif press[pygame.K_DOWN] and press[pygame.K_RIGHT]:
       self.player.bas(1.5)
       self.player.droite(1.5)
-      self.dep_addition(-4, -4)
+      self.jeton.dep_addition(-4, -4)
     elif press[pygame.K_DOWN] and press[pygame.K_LEFT]:
       self.player.bas(1.5)
       self.player.gauche(1.5)
-      self.dep_addition(4, -4)
+      self.jeton.dep_addition(4, -4)
     else:
       if press[pygame.K_UP]:        # pour se déplacer
         self.player.haut(1)
-        self.dep_addition(0, 6)
+        self.jeton.dep_addition(0, 6)
       elif press[pygame.K_DOWN]:
         self.player.bas(1)
-        self.dep_addition(0, -6)
+        self.jeton.dep_addition(0, -6)
       elif press[pygame.K_LEFT]:
         self.player.gauche(1)
-        self.dep_addition(6, 0)
+        self.jeton.dep_addition(6, 0)
       elif press[pygame.K_RIGHT]:
         self.player.droite(1)
-        self.dep_addition(-6, 0)
+        self.jeton.dep_addition(-6, 0)
 
   def update(self):
     """Rafraîchit la classe MapManager.update"""
     self.map_manager.update()
-
-  def dep_addition(self, valeur_x, valeur_y):
-    self.xxp += valeur_x
-    self.yxp += valeur_y
 
   def run(self):
     """Boucle principale, appelle les fonctions :
@@ -77,22 +73,22 @@ class Run:
     """
     clock = pygame.time.Clock()
     run = True
+    self.jeton.ajout_jeton("hp", 4300, 4300)
+    self.jeton.supprime_jeton("0")
     while run:
       self.player.save_location()
       self.keyboard_input()
       self.update()
       self.map_manager.draw()
+      self.jeton.update_jeton()
 
-      jeton = pygame.image.load(f"res/sprite/xp.png")
-      self.screen.blit(jeton, (self.xxp - 4000, self.yxp - 4000))
-
-      get_bar(self.screen, "xp_bar", 4, 7, 20, 20)
-      get_bar(self.screen, "hp_bar", 7, 9, 20, 45)
-      get_bar(self.screen, "faim_bar", 1, 5, 20, 70)
-      get_icon(self.screen, "en_icon", 130, 100, 25, -3, 22, 20, self.energie)
-      get_icon(self.screen, "me_icon", 20, 100, 25, -3, 22, 20, self.metal)
-      get_icon(self.screen, "mu_icon", 134, 125, 21, 1, 15, 29, self.munition)
-      get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.donnees)
+      self.icon.get_bar(self.screen, "xp_bar", 4, 7, 20, 20)
+      self.icon.get_bar(self.screen, "hp_bar", 7, 9, 20, 45)
+      self.icon.get_bar(self.screen, "faim_bar", 1, 5, 20, 70)
+      self.icon.get_icon(self.screen, "en_icon", 130, 100, 25, -3, 22, 20, self.énergie)
+      self.icon.get_icon(self.screen, "me_icon", 20, 100, 25, -3, 22, 20, self.metal)
+      self.icon.get_icon(self.screen, "mu_icon", 134, 125, 21, 1, 15, 29, self.munition)
+      self.icon.get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.donnees)
 
       pygame.display.flip()       # actualisation
 
@@ -102,4 +98,4 @@ class Run:
 
       clock.tick(60) # FPS
 
-    pygame.quit() # fin du jeu
+    pygame.quit()
