@@ -1,7 +1,7 @@
 import pygame
 from map import MapManager
 from player import Player
-from items import *
+from items import Icon
 
 class Run:
   def __init__(self):
@@ -13,11 +13,9 @@ class Run:
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Jeu")
     pygame.font.init()
-    self.energie = 78985
-    self.metal = 86884
-    self.munition = 49870
-    self.is_playing = False # jeu commence ou pas
+    self.ressources = {"xp":67, "hp":79, "faim":28, "en":34, "me":506, "mu":2, "do":597}
 
+    self.icon = Icon(self.ressources)
     self.player = Player()  # mettre sur tiled un objet start
 
     self.map_manager = MapManager(self.screen, self.player) # appel de la classe mapManager
@@ -67,13 +65,19 @@ class Run:
       self.update()
       self.map_manager.draw()
 
-      get_bar(self.screen, "xp_bar", 4, 7, 20, 20)
-      get_bar(self.screen, "hp_bar", 7, 9, 20, 45)
-      get_bar(self.screen, "faim_bar", 1, 5, 20, 70)
-      get_icon(self.screen, "en_icon", 130, 100, 25, -3, 22, 20, self.energie)
-      get_icon(self.screen, "me_icon", 20, 100, 25, -3, 22, 20, self.metal)
-      get_icon(self.screen, "mu_icon", 134, 125, 21, 1, 15, 29, self.munition)
-      get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.munition)
+      self.icon.get_bar(self.screen, "xp_bar", 20, 20, self.ressources["xp"])
+      self.icon.get_bar(self.screen, "hp_bar", 20, 45, self.ressources["hp"])
+      self.icon.get_bar(self.screen, "faim_bar", 20, 70, self.ressources["faim"])
+      self.icon.get_icon(self.screen, "en_icon", 130, 100, 25, -3, 22, 20, self.ressources["en"])
+      self.icon.get_icon(self.screen, "me_icon", 20, 100, 25, -3, 22, 20, self.ressources["me"])
+      self.icon.get_icon(self.screen, "mu_icon", 134, 125, 21, 1, 15, 29, self.ressources["mu"])
+      self.icon.get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.ressources["do"])
+
+      self.icon.ajout_ressource("en", 1)
+      self.icon.ajout_ressource("me", 1)
+      self.icon.ajout_ressource("mu", 1)
+      self.icon.ajout_ressource("do", 1)
+
 
       pygame.display.flip()       # actualisation
 
