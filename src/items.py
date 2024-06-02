@@ -1,11 +1,18 @@
 import pygame
 
 class Icon:
-  def __init__(self, ressource):
+  def __init__(self, ressource,  barres):
     self.ressource = ressource
+    self.barres = barres
 
   def ajout_ressource(self, name, valeur):
     self.ressource[f"{name}"] += valeur
+
+  def change_palier(self, name, valeur):
+    self.barres[f"{name}_max"] = valeur
+
+  def ajout_barres(self, name, valeur):
+    self.barres[f"{name}"] += valeur
 
   def get_icon(self, screen, name, x_pos, y_pos, x_text, y_text, width, height, valeur=0):
     """Affiche un icon
