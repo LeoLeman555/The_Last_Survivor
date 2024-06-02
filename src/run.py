@@ -106,6 +106,6 @@ class Run:
         if event.type == pygame.QUIT:
           run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-          self.player.launch_bullet()
+          self.player.launch_bullet(event.pos)
 
       clock.tick(60) # FPS

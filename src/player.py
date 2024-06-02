@@ -69,5 +69,5 @@ class Player(Sprites):
     self.attack = 10
     self.bullets = pygame.sprite.Group()
 
-  def launch_bullet(self):
-    self.bullets.add(Bullet(self))
+  def launch_bullet(self, goal):
+    self.bullets.add(Bullet(self, goal))
