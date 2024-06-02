@@ -1,5 +1,6 @@
 import pygame
 from animation import AnimateSprite
+from bullet import Bullet
 
 class Sprites(AnimateSprite):     # classe du joueur
   """Classe des sprites
@@ -65,3 +66,8 @@ class Player(Sprites):
   """
   def __init__(self):
     super().__init__("jim", 0, 0)
+    self.attack = 10
+    self.bullets = pygame.sprite.Group()
+
+  def launch_bullet(self):
+    self.bullets.add(Bullet(self))

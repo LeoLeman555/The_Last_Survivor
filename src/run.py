@@ -2,6 +2,7 @@ import pygame
 from map import MapManager
 from player import Player
 from items import Icon
+from bullet import Bullet
 
 class Run:
   def __init__(self):
@@ -86,6 +87,11 @@ class Run:
       self.update()
       self.map_manager.draw()
 
+      self.player.bullets.draw(self.screen)
+
+      for bullet in self.player.bullets:
+        bullet.move()
+
       self.update_icon()
 
       self.icon.ajout_barres("xp", 1)
@@ -99,7 +105,7 @@ class Run:
       for event in pygame.event.get():  # détecte quand on quitte
         if event.type == pygame.QUIT:
           run = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+          self.player.launch_bullet()
 
       clock.tick(60) # FPS
-
-    pygame.quit() # fin du jeu
