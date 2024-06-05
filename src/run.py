@@ -2,7 +2,7 @@ import pygame
 from map import MapManager
 from player import Player
 from items import Icon
-from bullet import Bullet
+from weapon import Weapon
 
 class Run:
   def __init__(self):
@@ -23,6 +23,8 @@ class Run:
     self.player = Player()  # mettre sur tiled un objet start
 
     self.map_manager = MapManager(self.screen, self.player) # appel de la classe mapManager
+
+    self.weapon = Weapon(self.player)
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -87,7 +89,15 @@ class Run:
       self.update()
       self.map_manager.draw()
 
+      # Rotation de l'arme vers le curseur
+      cursor_pos = pygame.mouse.get_pos()
+      self.weapon.rotate_to_cursor(cursor_pos)
+
       self.player.bullets.draw(self.screen)
+
+      self.weapon.display(self.screen)  # Affiche l'arme
+
+      self.player.affiche_weapon()
 
       for bullet in self.player.bullets:
         bullet.move()
