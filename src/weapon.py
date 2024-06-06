@@ -1,15 +1,16 @@
 import pygame
 import math
 
-
 class Weapon(pygame.sprite.Sprite):
-  def __init__(self, player):
+  def __init__(self, player, name, taille, position):
     super().__init__()
     self.player = player
-    self.image = pygame.image.load("res/weapon/mitraillette.png")
-    self.image = pygame.transform.scale(self.image, (48, 18))
+    self.name = name
+    self.taille = taille
+    self.image = pygame.image.load(f"res/weapon/{self.name}.png")
+    self.image = pygame.transform.scale(self.image, self.taille)
     self.rect = self.image.get_rect()
-    self.rect.center = (520, 310)  # Center of the screen
+    self.rect.center = position  # Center of the screen
     self.original_image = self.image  # Stockage de l'image originale pour la rotation
     self.angle = 0
 

@@ -73,5 +73,5 @@ class Player(Sprites):
   def launch_bullet(self, goal):
     self.bullets.add(Bullet(self, goal))
 
-  def affiche_weapon(self):
-    self.weapons.add(Weapon(self))
+  def affiche_weapon(self, name, taille, position):
+    self.weapons.add(Weapon(self, name, taille, position))

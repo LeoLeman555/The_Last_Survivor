@@ -3,6 +3,7 @@ from map import MapManager
 from player import Player
 from items import Icon
 from weapon import Weapon
+import random
 
 class Run:
   def __init__(self):
@@ -14,17 +15,33 @@ class Run:
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Jeu")
     pygame.font.init()
+
     self.index_palier_xp = 45
     self.palier_xp = (100, 250, 500, 800, 1200, 1700, 2300, 3000, 3800, 4700, 5700, 6800, 8000, 9300, 10700, 12200, 13800, 15500, 17300, 19200, 21200, 23300, 25500, 27800, 30200, 32700, 35300, 38000, 40800, 43700, 46700, 49800, 53000, 56300, 59700, 63200, 66800, 70500, 74300, 78200, 82200, 86300, 90500, 94800, 99200, 103700, 108300, 113000, 117800, 122700, 127700, 132800, 138000, 143300, 148700, 154200, 159800, 165500, 171300, 180000)
     self.ressources = {"xp_bar":0, "hp_bar":0, "faim_bar":0, "en":34, "me":506, "mu":2, "do":597}
     self.barres = {"xp":0, "hp":100, "faim":100, "xp_max":100, "hp_max":100, "faim_max":100}
 
+    self.data_weapon = {
+      1:("knife", (46, 12), (520, 310)), 
+      2:("pistol", (22, 17), (520, 310)), 
+      3:("magnum", (36, 14), (520, 313)), 
+      4:("shotgun", (42, 14), (520, 310)), 
+      5:("sniper", (72, 21), (520, 310)), 
+      6:("ak", (45, 15), (520, 310)), 
+      7:("rpg", (74, 20), (520, 310)), 
+      8:("lance_flammes", (45, 18), (520, 310)), 
+      9:("minigun", (48, 18), (520, 310)), 
+      10:("lance_grenades", (48, 18), (520, 310)), 
+      11:("laser", (40, 20), (520, 310)), 
+      12:("plasma", (43, 20), (520, 310))
+      }
+    self.weapon_key = random.choice(list(self.data_weapon.keys()))
+    self.weapon_name, self.weapon_taille, self.weapon_position = self.data_weapon[self.weapon_key]
+
     self.icon = Icon(self.ressources, self.barres)
     self.player = Player()  # mettre sur tiled un objet start
-
     self.map_manager = MapManager(self.screen, self.player) # appel de la classe mapManager
-
-    self.weapon = Weapon(self.player)
+    self.weapon = Weapon(self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -51,6 +68,10 @@ class Run:
       self.player.gauche(1)
     elif press[pygame.K_RIGHT]:
       self.player.droite(1)
+
+    if press[pygame.K_SPACE]:
+      self.player.launch_bullet(pygame.mouse.get_pos())
+      self.icon.ajout_ressource("mu", -2)
 
   def update(self):
     """Rafraîchit la classe MapManager.update"""
@@ -97,7 +118,7 @@ class Run:
 
       self.weapon.display(self.screen)  # Affiche l'arme
 
-      self.player.affiche_weapon()
+      self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
       for bullet in self.player.bullets:
         bullet.move()
@@ -116,6 +137,7 @@ class Run:
         if event.type == pygame.QUIT:
           run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-          self.player.launch_bullet(event.pos)
+          self.player.launch_bullet(cursor_pos)
+          self.icon.ajout_ressource("mu", -5)
 
       clock.tick(60) # FPS
