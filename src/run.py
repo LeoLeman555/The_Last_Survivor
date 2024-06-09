@@ -1,9 +1,9 @@
 import pygame
-from map import MapManager
-from player import Player
-from items import Icon
-from weapon import Weapon
 import random
+from items import Icon
+from player import Player
+from weapon import *
+from map import MapManager
 
 class Run:
   def __init__(self):
@@ -21,22 +21,23 @@ class Run:
     self.ressources = {"xp_bar":0, "hp_bar":0, "faim_bar":0, "en":34, "me":506, "mu":2, "do":597}
     self.barres = {"xp":0, "hp":100, "faim":100, "xp_max":100, "hp_max":100, "faim_max":100}
 
+    #?  numéro de l'arme:("nom de l'arme", (taille de l'arme), (position), (type de mu, coût de mu, chargeur), (DPS, portée), (ME, EN, DF nécessaires))
     self.data_weapon = {
-      1:("knife", (46, 12), (520, 310)), 
-      2:("pistol", (22, 17), (520, 310)), 
-      3:("magnum", (36, 14), (520, 313)), 
-      4:("shotgun", (42, 14), (520, 310)), 
-      5:("sniper", (72, 21), (520, 310)), 
-      6:("ak", (45, 15), (520, 310)), 
-      7:("rpg", (74, 20), (520, 310)), 
-      8:("lance_flammes", (45, 18), (520, 310)), 
-      9:("minigun", (48, 18), (520, 310)), 
-      10:("lance_grenades", (48, 18), (520, 310)), 
-      11:("laser", (40, 20), (520, 310)), 
-      12:("plasma", (43, 20), (520, 310))
+      1:("pistol", (22, 17), (520, 310), (1)), 
+      2:("magnum", (36, 14), (520, 313), (1)), 
+      3:("shotgun", (42, 14), (520, 310), (1)), 
+      4:("sniper", (72, 21), (520, 310), (2)), 
+      5:("ak", (45, 15), (520, 310), (1)), 
+      6:("rpg", (74, 20), (520, 310), (3)), 
+      7:("lance_flammes", (45, 18), (520, 310), (4)), 
+      8:("minigun", (48, 18), (520, 310), (1)), 
+      9:("lance_grenades", (48, 18), (520, 310), (5)),
+      10:("laser", (40, 20), (520, 310), (6)), 
+      11:("plasma", (43, 20), (520, 310), (6)),
+      12:("knife", (46, 12), (520, 310), (0))
       }
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_name, self.weapon_taille, self.weapon_position = self.data_weapon[self.weapon_key]
+    self.weapon_name, self.weapon_taille, self.weapon_position, self.id_munition = self.data_weapon[10]#self.weapon_key]
 
     self.icon = Icon(self.ressources, self.barres)
     self.player = Player()  # mettre sur tiled un objet start

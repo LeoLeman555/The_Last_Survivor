@@ -64,6 +64,9 @@ class Sprites(AnimateSprite):     # classe du joueur
 class Player(Sprites):
   """Sous classe de Sprite qui s'occupe du joueur
   """
+class Player(Sprites):
+  """Sous classe de Sprite qui s'occupe du joueur
+  """
   def __init__(self):
     super().__init__("jim", 0, 0)
     self.attack = 10

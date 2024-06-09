@@ -39,8 +39,8 @@ class Bullet(pygame.sprite.Sprite):
     super().__init__()
     self.speed = speed  # Vitesse de la balle
     self.player = player
-    self.image = pygame.image.load("res/weapon/munition.png")
-    self.image = pygame.transform.scale(self.image, (14, 5))
+    self.image = pygame.image.load("res/weapon/ammo6.png")
+    # self.image = pygame.transform.scale(self.image, (6, 3))
     self.rect = self.image.get_rect()
     self.goal = goal
     self.rect.x = 520
