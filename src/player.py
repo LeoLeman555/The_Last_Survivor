@@ -87,9 +87,10 @@ class Player(Sprites):
       # Ajouter les autres types de munitions ici
     }
 
-  def launch_bullet(self, goal, weapon_id):
+  def launch_bullet(self, goal, weapon_id, data_weapon):
     ammo_image = self.ammo_images.get(weapon_id)
-    self.bullets.add(Bullet(self, goal, ammo_image))
+    weapon_range = data_weapon[weapon_id][3]
+    self.bullets.add(Bullet(self, goal, ammo_image, weapon_range))
 
   def affiche_weapon(self, name, taille, position):
     self.weapons.add(Weapon(self, name, taille, position))

@@ -36,10 +36,12 @@ class Weapon(pygame.sprite.Sprite):
     
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, player, goal, image_path="res/weapon/ammo1.png", speed=30):
+  def __init__(self, player, goal, image_path, range=500, speed=30,):
     super().__init__()
     self.speed = speed  # Vitesse de la balle
     self.player = player
+    self.range = range / 2
+    self.distance_traveled = 0
     self.image = pygame.image.load(image_path)
     self.rect = self.image.get_rect()
     self.goal = goal
@@ -68,6 +70,7 @@ class Bullet(pygame.sprite.Sprite):
     self.rotate()
     self.rect.x += self.vecteur[0]
     self.rect.y += self.vecteur[1]
+    self.distance_traveled += self.speed
 
-    if self.rect.x > 1000 or self.rect.x < 0 or self.rect.y > 600 or self.rect.y < 0:
+    if self.rect.x > 1000 or self.rect.x < 0 or self.rect.y > 600 or self.rect.y < 0 or self.distance_traveled > self.range:
       self.delete()
