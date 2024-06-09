@@ -23,24 +23,24 @@ class Weapon(pygame.sprite.Sprite):
     # Calcul de l'angle entre l'arme et le curseur
     dx, dy = cursor_pos[0] - self.rect.centerx, cursor_pos[1] - self.rect.centery
     self.angle = math.degrees(math.atan2(dy, dx))
-    
+
     # Vérification de l'orientation pour éviter l'inversion
     if 90 < self.angle < 270 or -270 < self.angle < -90:
       self.image = pygame.transform.flip(self.original_image, False, True)
     else:
       self.image = self.original_image
-    
+
     # Rotation de l'image
     self.image = pygame.transform.rotozoom(self.image, -self.angle, 1)
     self.rect = self.image.get_rect(center=self.rect.center)
     
+
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, player, goal, speed=30):  # Vitesse par défaut de la balle
+  def __init__(self, player, goal, image_path="res/weapon/ammo1.png", speed=30):
     super().__init__()
     self.speed = speed  # Vitesse de la balle
     self.player = player
-    self.image = pygame.image.load("res/weapon/ammo6.png")
-    # self.image = pygame.transform.scale(self.image, (6, 3))
+    self.image = pygame.image.load(image_path)
     self.rect = self.image.get_rect()
     self.goal = goal
     self.rect.x = 520
@@ -59,7 +59,7 @@ class Bullet(pygame.sprite.Sprite):
     self.angle = math.atan2(-self.vecteur[1], self.vecteur[0]) * 180 / math.pi
     # Rotation de l'image
     self.image = pygame.transform.rotozoom(self.origin_image, self.angle, 1)
-    self.rect = self.image.get_rect(center = self.rect.center)
+    self.rect = self.image.get_rect(center=self.rect.center)
 
   def delete(self):
     self.player.bullets.remove(self)
@@ -68,7 +68,6 @@ class Bullet(pygame.sprite.Sprite):
     self.rotate()
     self.rect.x += self.vecteur[0]
     self.rect.y += self.vecteur[1]
-    self.rotate()
 
     if self.rect.x > 1000 or self.rect.x < 0 or self.rect.y > 600 or self.rect.y < 0:
       self.delete()

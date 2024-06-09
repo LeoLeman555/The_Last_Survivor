@@ -25,19 +25,19 @@ class Run:
     self.data_weapon = {
       1:("pistol", (22, 17), (520, 310), (1)), 
       2:("magnum", (36, 14), (520, 313), (1)), 
-      3:("shotgun", (42, 14), (520, 310), (1)), 
-      4:("sniper", (72, 21), (520, 310), (2)), 
+      3:("shotgun", (42, 14), (520, 310), (2)), 
+      4:("sniper", (72, 21), (520, 310), (3)), 
       5:("ak", (45, 15), (520, 310), (1)), 
-      6:("rpg", (74, 20), (520, 310), (3)), 
-      7:("lance_flammes", (45, 18), (520, 310), (4)), 
+      6:("rpg", (74, 20), (520, 310), (4)), 
+      7:("lance_flammes", (45, 18), (520, 310), (1)), 
       8:("minigun", (48, 18), (520, 310), (1)), 
       9:("lance_grenades", (48, 18), (520, 310), (5)),
-      10:("laser", (40, 20), (520, 310), (6)), 
+      10:("laser", (40, 20), (520, 310), (4)), 
       11:("plasma", (43, 20), (520, 310), (6)),
-      12:("knife", (46, 12), (520, 310), (0))
+      12:("knife", (46, 12), (520, 310), (1))
       }
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_name, self.weapon_taille, self.weapon_position, self.id_munition = self.data_weapon[10]#self.weapon_key]
+    self.weapon_name, self.weapon_taille, self.weapon_position, self.id_munition = self.data_weapon[self.weapon_key]
 
     self.icon = Icon(self.ressources, self.barres)
     self.player = Player()  # mettre sur tiled un objet start
@@ -71,7 +71,7 @@ class Run:
       self.player.droite(1)
 
     if press[pygame.K_SPACE]:
-      self.player.launch_bullet(pygame.mouse.get_pos())
+      self.player.launch_bullet(pygame.mouse.get_pos(), self.weapon_key)
       self.icon.ajout_ressource("mu", -2)
 
   def update(self):
@@ -138,7 +138,7 @@ class Run:
         if event.type == pygame.QUIT:
           run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-          self.player.launch_bullet(cursor_pos)
+          self.player.launch_bullet(cursor_pos, self.weapon_key)
           self.icon.ajout_ressource("mu", -5)
 
-      clock.tick(60) # FPS
+      clock.tick(60)  # FPS
