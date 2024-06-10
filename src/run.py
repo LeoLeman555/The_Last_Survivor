@@ -21,7 +21,8 @@ class Run:
     self.ressources = {"xp_bar":0, "hp_bar":0, "faim_bar":0, "en":34, "me":506, "mu":2, "do":597}
     self.barres = {"xp":0, "hp":100, "faim":100, "xp_max":100, "hp_max":100, "faim_max":100}
 
-    #?  numéro de l'arme:("nom de l'arme", (taille de l'arme), (position), (type de mu, coût de mu, chargeur), (DPS, portée), (ME, EN, DF nécessaires))
+    #?  numéro de l'arme:("nom de l'arme", (taille de l'arme), (position), portée 
+    # TODO (type de mu, coût de mu, chargeur), (DPS, portée), (ME, EN, DF nécessaires))
     self.data_weapon = {
       1: ("pistol", (22, 17), (520, 310), 500), 
       2: ("magnum", (36, 14), (520, 313), 700), 
@@ -43,6 +44,10 @@ class Run:
     self.player = Player()  # mettre sur tiled un objet start
     self.map_manager = MapManager(self.screen, self.player) # appel de la classe mapManager
     self.weapon = Weapon(self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
+
+    self.mouse_pressed = False
+    self.shoot_delay = 100  # Délai entre les tirs en millisecondes
+    self.last_shot_time = 0  # Temps du dernier tir
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -70,10 +75,6 @@ class Run:
     elif press[pygame.K_RIGHT]:
       self.player.droite(1)
 
-    if press[pygame.K_SPACE]:
-      self.player.launch_bullet(pygame.mouse.get_pos(), self.weapon_key, self.data_weapon)
-      self.icon.ajout_ressource("mu", -2)
-
   def update(self):
     """Rafraîchit la classe MapManager.update"""
     self.map_manager.update()
@@ -95,13 +96,6 @@ class Run:
     self.icon.change_palier("xp", self.palier_xp[self.index_palier_xp])
 
   def run(self):
-    """Boucle principale, appelle les fonctions :
-    - sauvegarde la position du joueur
-    - détection des touches pressées
-    - mise à jour
-    - map_manager.draw
-    - gestion des icons
-    """
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
@@ -132,13 +126,20 @@ class Run:
       self.icon.ajout_ressource("mu", 1)
       self.icon.ajout_ressource("do", 1)
 
-      pygame.display.flip()       # actualisation
+      # Tir continu si le bouton de la souris est maintenu enfoncé
+      current_time = pygame.time.get_ticks()
+      if self.mouse_pressed and current_time - self.last_shot_time > self.shoot_delay:
+        self.player.launch_bullet(cursor_pos, self.weapon_key, self.data_weapon)
+        self.last_shot_time = current_time
+
+      pygame.display.flip()  # actualisation
 
       for event in pygame.event.get():  # détecte quand on quitte
         if event.type == pygame.QUIT:
           run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-          self.player.launch_bullet(cursor_pos, self.weapon_key, self.data_weapon)
-          self.icon.ajout_ressource("mu", -5)
+          self.mouse_pressed = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+          self.mouse_pressed = False
 
       clock.tick(60)  # FPS

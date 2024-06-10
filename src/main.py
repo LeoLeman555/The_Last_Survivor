@@ -1,10 +1,8 @@
 print("------------------------- GO -------------------------")
 
 import pygame
-import math
 from run import Run
 
-# menu principal
 pygame.init()
 
 def Menu_principal():
@@ -12,91 +10,55 @@ def Menu_principal():
   screen = pygame.display.set_mode((1000, 600))
   pygame.display.set_caption("The Last Survivor - Menu principal")
 
-  # importe les images
-  background = pygame.image.load("res/menu/background.jpg")
-  b_jeu = pygame.image.load("res/menu/jeu.png")
-  b_intro = pygame.image.load("res/menu/intro.png")
-  b_boutique = pygame.image.load("res/menu/boutique.png")
-  b_elements = pygame.image.load("res/menu/elements.png")
-  b_options = pygame.image.load("res/menu/options.png")
+  # Noms des boutons à afficher
+  buttons = ["jeu", "intro", "boutique", "elements", "options"]
 
-  b_width = b_jeu.get_width()
-  b_height = b_jeu.get_height()
+  # Charger et redimensionner les images des boutons
+  images = {
+    name: pygame.transform.scale(
+      pygame.image.load(f"res/menu/{name}.png"), 
+      (pygame.image.load(f"res/menu/{name}.png").get_width() + 20, pygame.image.load(f"res/menu/{name}.png").get_height())
+    ) for name in buttons
+  }
 
-  # transforme et affiche les images
-  b_jeu = pygame.transform.scale(b_jeu, (b_width + 20, b_height))
-  b_jeu_rect = b_jeu.get_rect()
-  b_intro = pygame.transform.scale(b_intro, (b_width + 20, b_height))
-  b_intro_rect = b_intro.get_rect()
-  b_boutique = pygame.transform.scale(b_boutique, (b_width + 20, b_height))
-  b_boutique_rect = b_boutique.get_rect()
-  b_elements = pygame.transform.scale(b_elements, (b_width + 20, b_height))
-  b_elements_rect = b_elements.get_rect()
-  b_options = pygame.transform.scale(b_options, (b_width + 20, b_height))
-  b_options_rect = b_options.get_rect()
+  # Obtenir les rectangles des images pour les positionner
+  rects = {name: images[name].get_rect() for name in buttons}
 
-  # placement correct
-  b_jeu_rect.x = math.ceil((screen.get_width() / 2) - b_width / 2 - 5)
-  b_jeu_rect.y = math.ceil((screen.get_height() / 2) - b_height / 2 - b_height - 20)
-  b_intro_rect.x = math.ceil((screen.get_width() / 2) - b_width / 2 - 5)
-  b_intro_rect.y = math.ceil((screen.get_height() / 2) - b_height / 2 - 10)
-  b_boutique_rect.x = math.ceil((screen.get_width() / 2) - b_width / 2 - 5)
-  b_boutique_rect.y = math.ceil((screen.get_height()/ 2) - b_height / 2 + b_height)
-  b_elements_rect.x = math.ceil((screen.get_width() / 2) - b_width / 2 - 5)
-  b_elements_rect.y = math.ceil((screen.get_height() / 2) - b_height / 2 + b_height * 2 + 10)
-  b_options_rect.x = math.ceil((screen.get_width() / 2) - b_width / 2 - 5)
-  b_options_rect.y = math.ceil((screen.get_height() / 2) - b_height / 2 + b_height * 3 + 20)
+  # Positionner les images des boutons au centre de l'écran avec des espacements
+  for i, name in enumerate(buttons):
+    rects[name].x = (screen.get_width() - rects[name].width) // 2
+    rects[name].y = (screen.get_height() // 2) - rects[name].height // 2 + i * (rects[name].height + 20) - 2 * rects[name].height
 
-  # affichage a l’écran
-  screen.blit(background, (0, 0))
-  screen.blit(b_jeu, b_jeu_rect)
-  screen.blit(b_intro, b_intro_rect)
-  screen.blit(b_boutique, b_boutique_rect)
-  screen.blit(b_elements, b_elements_rect)
-  screen.blit(b_options, b_options_rect)
+  # Afficher l'arrière-plan et les boutons à l'écran
+  screen.blit(pygame.image.load("res/menu/background.jpg"), (0, 0))
+  for name in buttons:
+    screen.blit(images[name], rects[name])
 
   running = True
 
+  # Boucle principale du menu
   while running:
-    pygame.display.flip()
+    pygame.display.flip()  # Mettre à jour l'affichage
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         running = False
       elif event.type == pygame.MOUSEBUTTONDOWN:
-        if b_jeu_rect.collidepoint(event.pos):  # verification si la souris est en collision avec bouton
-          direction = "jeu" # lance le jeu
-          running = False
-        elif b_intro_rect.collidepoint(event.pos): 
-          direction = "intro"
-          running = False
-        elif b_boutique_rect.collidepoint(event.pos): 
-          direction = "boutique"
-          running = False
-        elif b_elements_rect.collidepoint(event.pos): 
-          direction = "elements"
-          running = False
-        elif b_options_rect.collidepoint(event.pos): 
-          direction = "options"
-          running = False
+        # Vérifier si un bouton a été cliqué
+        for name in buttons:
+          if rects[name].collidepoint(event.pos):
+            direction = name
+            running = False
+            break
 
   pygame.quit()
 
-  # decide quel direction prendre
+  # Exécuter l'action en fonction du bouton cliqué
   if direction == "jeu":
-    start = Run() # appel classe Run
-    start.run()
-    Menu_principal()
-  elif direction == "intro":
-    pass
-  elif direction == "boutique":
-    pass
-  elif direction == "elements":
-    pass
-  elif direction == "options":
-    pass
+    Run().run()  # Démarrer le jeu
+    Menu_principal()  # Retourner au menu principal après la fin du jeu
 
-# Menu_principal()
-start = Run()
-start.run()
+# Lancer le jeu directement
+# Menu_principal
+Run().run()
 
 print("------------------------- FIN -------------------------")
