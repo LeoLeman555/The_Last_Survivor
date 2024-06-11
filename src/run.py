@@ -41,7 +41,7 @@ class Run:
     self.weapon_name, self.weapon_taille, self.weapon_position, self.id_munition = self.data_weapon[self.weapon_key]
 
     self.icon = Icon(self.ressources, self.barres)
-    self.player = Player()  # mettre sur tiled un objet start
+    self.player = Player(self.screen)  # mettre sur tiled un objet start
     self.map_manager = MapManager(self.screen, self.player) # appel de la classe mapManager
     self.weapon = Weapon(self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
 
@@ -107,14 +107,12 @@ class Run:
 
       # Rotation de l'arme vers le curseur
       cursor_pos = pygame.mouse.get_pos()
+      
       self.weapon.rotate_to_cursor(cursor_pos)
-
-      self.player.bullets.draw(self.screen)
-
       self.weapon.display(self.screen)  # Affiche l'arme
-
       self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
+      self.player.bullets.draw(self.screen)
       for bullet in self.player.bullets:
         bullet.move()
 
@@ -142,4 +140,4 @@ class Run:
         elif event.type == pygame.MOUSEBUTTONUP:
           self.mouse_pressed = False
 
-      clock.tick(60)  # FPS
+      clock.tick(60)  # FPSimport pygame

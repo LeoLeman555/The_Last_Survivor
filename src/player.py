@@ -62,15 +62,13 @@ class Sprites(AnimateSprite):     # classe du joueur
     self.feet.midbottom = self.rect.midbottom
 
 class Player(Sprites):
-  """Sous classe de Sprite qui s'occupe du joueur
-  """
-  def __init__(self):
+  def __init__(self, screen):
     super().__init__("jim", 0, 0)
     self.attack = 10
     self.bullets = pygame.sprite.Group()
     self.weapons = pygame.sprite.Group()
+    self.screen = screen  # Ajout de cet attribut
 
-    # Définir les images de munitions pour chaque type d'arme
     self.ammo_images = {
       1: "res/weapon/ammo1.png",
       2: "res/weapon/ammo1.png",
@@ -84,13 +82,13 @@ class Player(Sprites):
       10: "res/weapon/ammo6.png",
       11: "res/weapon/ammo6.png",
       12: "res/weapon/ammo1.png",
-      # Ajouter les autres types de munitions ici
     }
 
   def launch_bullet(self, goal, weapon_id, data_weapon):
     ammo_image = self.ammo_images.get(weapon_id)
     weapon_range = data_weapon[weapon_id][3]
-    self.bullets.add(Bullet(self, goal, ammo_image, weapon_range))
+    self.bullets.add(Bullet(self.screen, self, goal, ammo_image, weapon_range))
 
   def affiche_weapon(self, name, taille, position):
+    self.weapons.add(Weapon(self, name, taille, position))
     self.weapons.add(Weapon(self, name, taille, position))

@@ -17,11 +17,6 @@ class AnimateSprite(pygame.sprite.Sprite):
     self.speed = 0    #int(input("Vitesse"))  #? valeur ronde sinon joueur flou
     
   def change_animation(self, name):
-    """Permet d'afficher les différentes animations du personnage
-
-    Args:
-        name (str): nom de l'image a animer
-    """
     self.image = self.images[name][self.animation_index]      # change de costume
     self.image.set_colorkey([0, 0 , 0])     # gère la transparence
     self.clock += self.speed * 10
@@ -35,14 +30,6 @@ class AnimateSprite(pygame.sprite.Sprite):
       self.clock = 0
     
   def get_images(self, y):
-    """Cherche les différentes images du sprite sheet
-
-    Args:
-        y (int): axe y du sprite sheet
-
-    Returns:
-        liste images: contient toutes images du sprite sheet
-    """
     images = []
     for i in range(0, 8):
       x = i*17
@@ -52,15 +39,6 @@ class AnimateSprite(pygame.sprite.Sprite):
     return images
   
   def get_image(self, x, y):
-    """_summary_
-
-    Args:
-        x (int): axe x
-        y (int): axe y
-
-    Returns:
-        variable image: image a afficher
-    """
     image = pygame.Surface([17, 38])
     image.blit(self.sprite_sheet, (0, 0), (x, y, 17, 38))
     return image
