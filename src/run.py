@@ -49,6 +49,8 @@ class Run:
     self.shoot_delay = 100  # Délai entre les tirs en millisecondes
     self.last_shot_time = 0  # Temps du dernier tir
 
+    self.explosions = pygame.sprite.Group()  # Groupe pour les explosions
+
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
     press = pygame.key.get_pressed()
@@ -107,14 +109,20 @@ class Run:
 
       # Rotation de l'arme vers le curseur
       cursor_pos = pygame.mouse.get_pos()
-      
       self.weapon.rotate_to_cursor(cursor_pos)
-      self.weapon.display(self.screen)  # Affiche l'arme
+      self.weapon.display(self.screen)
       self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
       self.player.bullets.draw(self.screen)
       for bullet in self.player.bullets:
         bullet.move()
+        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
+          explosion = Explosion(bullet.rect.center, bullet.images_explosion)
+          self.explosions.add(explosion)
+          bullet.delete()
+
+      self.explosions.update()  # Mettre à jour les explosions
+      self.explosions.draw(self.screen)  # Dessiner les explosions
 
       self.update_icon()
 
@@ -124,15 +132,14 @@ class Run:
       self.icon.ajout_ressource("mu", 1)
       self.icon.ajout_ressource("do", 1)
 
-      # Tir continu si le bouton de la souris est maintenu enfoncé
       current_time = pygame.time.get_ticks()
       if self.mouse_pressed and current_time - self.last_shot_time > self.shoot_delay:
         self.player.launch_bullet(cursor_pos, self.weapon_key, self.data_weapon)
         self.last_shot_time = current_time
 
-      pygame.display.flip()  # actualisation
+      pygame.display.flip()
 
-      for event in pygame.event.get():  # détecte quand on quitte
+      for event in pygame.event.get():
         if event.type == pygame.QUIT:
           run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -140,4 +147,4 @@ class Run:
         elif event.type == pygame.MOUSEBUTTONUP:
           self.mouse_pressed = False
 
-      clock.tick(60)  # FPSimport pygame
+      clock.tick(60)

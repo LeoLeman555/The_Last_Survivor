@@ -36,9 +36,9 @@ class Weapon(pygame.sprite.Sprite):
     
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, screen, player, goal, image_path, range=500, speed=30,):
+  def __init__(self, screen, player, goal, image_path, range=500, speed=30):
     super().__init__()
-    self.speed = speed  # Vitesse de la balle
+    self.speed = speed
     self.player = player
     self.range = range / 2
     self.distance_traveled = 0
@@ -49,7 +49,6 @@ class Bullet(pygame.sprite.Sprite):
     self.rect.y = 310
     self.screen = screen
 
-    # Calcul du vecteur directionnel
     dx, dy = self.goal[0] - self.rect.x, self.goal[1] - self.rect.y
     distance = math.sqrt(dx ** 2 + dy ** 2)
     self.vecteur = (self.speed * dx / distance, self.speed * dy / distance)
@@ -58,29 +57,26 @@ class Bullet(pygame.sprite.Sprite):
     self.angle = 0
 
     self.sprite_sheet_explosion = pygame.image.load("res/weapon/explosion.png")
-    self.animation_index = 0
-    self.clock = 0
     self.images_explosion = self.get_images()
 
   def get_images(self):
     images_explosion = []
-    for u in range(0, 5):
-      y = u * 69
-      for i in range(0, 6):
-        x = i*69
-        img = self.get_image(x, y, 69, 69)
+    sprite_width = 69
+    sprite_height = int(69.4)
+    print(self.sprite_sheet_explosion.get_width(), self.sprite_sheet_explosion.get_height(),sprite_width, sprite_height)
+    for y in range(0, self.sprite_sheet_explosion.get_height(), sprite_height):
+      for x in range(0, self.sprite_sheet_explosion.get_width(), sprite_width):
+        img = self.get_image(x, y, sprite_width, sprite_height)
         images_explosion.append(img)
     return images_explosion
   
   def get_image(self, x, y, width, height):
-    image = pygame.Surface([width, height])
+    image = pygame.Surface([width, height], pygame.SRCALPHA)
     image.blit(self.sprite_sheet_explosion, (0, 0), (x, y, width, height))
     return image
 
   def rotate(self):
-    # Calcul de l'angle en degrés
     self.angle = math.atan2(-self.vecteur[1], self.vecteur[0]) * 180 / math.pi
-    # Rotation de l'image
     self.image = pygame.transform.rotozoom(self.origin_image, self.angle, 1)
     self.rect = self.image.get_rect(center=self.rect.center)
 
@@ -95,13 +91,25 @@ class Bullet(pygame.sprite.Sprite):
 
     if self.rect.x > 1000 or self.rect.x < 0 or self.rect.y > 600 or self.rect.y < 0 or self.distance_traveled > self.range:
       self.delete()
-      self.explode()
+      explosion = Explosion(self.rect.center, self.images_explosion)
+      self.player.screen.blit(explosion.image, explosion.rect)
+      
+class Explosion(pygame.sprite.Sprite):
+  def __init__(self, center, images):
+    super().__init__()
+    self.images = images
+    self.image = self.images[0]
+    self.rect = self.image.get_rect(center=center)
+    self.index = 0
+    self.clock = pygame.time.get_ticks()
 
-  def explode(self):
-    # Charger et afficher l'animation d'explosion à l'emplacement de la balle
-    self.explosion_animation = self.images_explosion[1]      # change de costume
-    self.explosion_animation.set_colorkey([0, 0 , 0])
-    self.explosion_animation_rect = self.explosion_animation.get_rect(center=self.rect.center)
-    self.player.screen.blit(self.explosion_animation, self.explosion_animation_rect)
-    pygame.display.update()  # Actualiser l'écran pour afficher l'explosion
-    self.delete()
+  def update(self):
+    now = pygame.time.get_ticks()
+    if now - self.clock > 1:  # changer de frame toutes les 50ms
+      self.index += 4
+      if self.index < 18:
+        self.image = self.images[self.index]
+        self.rect = self.image.get_rect(center=self.rect.center)
+        self.clock = now
+      else:
+        self.kill()  # supprimer l'explosion après la dernière frame
