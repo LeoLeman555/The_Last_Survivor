@@ -21,24 +21,26 @@ class Run:
     self.ressources = {"xp_bar":0, "hp_bar":0, "faim_bar":0, "en":34, "me":506, "mu":2, "do":597}
     self.barres = {"xp":0, "hp":100, "faim":100, "xp_max":100, "hp_max":100, "faim_max":100}
 
-    #?  numéro de l'arme:("nom de l'arme", (taille de l'arme), (position), portée 
+    #?  numéro de l'arme:("nom de l'arme", (taille de l'arme), (position), portée, explosion?
     # TODO (type de mu, coût de mu, chargeur), (DPS, portée), (ME, EN, DF nécessaires))
     self.data_weapon = {
-      1: ("pistol", (22, 17), (520, 310), 500), 
-      2: ("magnum", (36, 14), (520, 313), 700), 
-      3: ("shotgun", (42, 14), (520, 310), 300), 
-      4: ("sniper", (72, 21), (520, 310), 1000), 
-      5: ("ak", (45, 15), (520, 310), 600), 
-      6: ("rpg", (74, 20), (520, 310), 800), 
-      7: ("lance_flammes", (45, 18), (520, 310), 200), 
-      8: ("minigun", (48, 18), (520, 310), 500), 
-      9: ("lance_grenades", (48, 18), (520, 310), 600),
-      10: ("laser", (40, 20), (520, 310), 900), 
-      11: ("plasma", (43, 20), (520, 310), 800),
-      12: ("knife", (46, 12), (520, 310), 50)
+      1: ("pistol", (22, 17), (520, 310), 500, 0), 
+      2: ("magnum", (36, 14), (520, 313), 700, 0), 
+      3: ("shotgun", (42, 14), (520, 310), 300, 0), 
+      4: ("sniper", (72, 21), (520, 310), 1000, 0), 
+      5: ("ak", (45, 15), (520, 310), 600, 0), 
+      6: ("rpg", (74, 20), (520, 310), 800, 1), 
+      7: ("lance_flammes", (45, 18), (520, 310), 200, 0), 
+      8: ("minigun", (48, 18), (520, 310), 500, 0), 
+      9: ("lance_grenades", (48, 18), (520, 310), 600, 1),
+      10: ("laser", (40, 20), (520, 310), 900, 1), 
+      11: ("plasma", (43, 20), (520, 310), 800, 1),
+      12: ("knife", (46, 12), (520, 310), 50, 0)
     }
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_name, self.weapon_taille, self.weapon_position, self.id_munition = self.data_weapon[self.weapon_key]
+    self.weapon_name = self.data_weapon[self.weapon_key][0]
+    self.weapon_taille = self.data_weapon[self.weapon_key][1]
+    self.weapon_position = self.data_weapon[self.weapon_key][2]
 
     self.icon = Icon(self.ressources, self.barres)
     self.player = Player(self.screen)  # mettre sur tiled un objet start
@@ -49,7 +51,8 @@ class Run:
     self.shoot_delay = 100  # Délai entre les tirs en millisecondes
     self.last_shot_time = 0  # Temps du dernier tir
 
-    self.explosions = pygame.sprite.Group()  # Groupe pour les explosions
+    self.explosions = pygame.sprite.Group()
+    self.grenades = pygame.sprite.Group()
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -76,6 +79,10 @@ class Run:
       self.player.gauche(1)
     elif press[pygame.K_RIGHT]:
       self.player.droite(1)
+
+    if press[pygame.K_SPACE]:
+      print("espace")
+      self.player.launch_grenade()
 
   def update(self):
     """Rafraîchit la classe MapManager.update"""
@@ -109,21 +116,24 @@ class Run:
 
       # Rotation de l'arme vers le curseur
       cursor_pos = pygame.mouse.get_pos()
-      self.weapon.rotate_to_cursor(cursor_pos)
-      self.weapon.display(self.screen)
-      self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
       self.player.bullets.draw(self.screen)
       for bullet in self.player.bullets:
         bullet.move()
         if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
-          explosion = Explosion(bullet.rect.center, bullet.images_explosion)
-          self.explosions.add(explosion)
+          if bullet.explosive:  # Vérifiez si la balle est explosive
+            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
+            self.explosions.add(explosion)
           bullet.delete()
 
-      self.explosions.update()  # Mettre à jour les explosions
-      self.explosions.draw(self.screen)  # Dessiner les explosions
+      self.weapon.rotate_to_cursor(cursor_pos)
+      self.weapon.display(self.screen)
+      self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
+      self.explosions.update()
+      self.explosions.draw(self.screen)
+
+      
       self.update_icon()
 
       self.icon.ajout_barres("xp", 1)
@@ -136,6 +146,10 @@ class Run:
       if self.mouse_pressed and current_time - self.last_shot_time > self.shoot_delay:
         self.player.launch_bullet(cursor_pos, self.weapon_key, self.data_weapon)
         self.last_shot_time = current_time
+
+        
+      self.player.grenades.update()
+      self.player.grenades.draw(self.screen)
 
       pygame.display.flip()
 

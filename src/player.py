@@ -1,6 +1,7 @@
 import pygame
 from animation import AnimateSprite
 from weapon import Bullet, Weapon
+from extras import Grenade
 
 class Sprites(AnimateSprite):     # classe du joueur
   """Classe des sprites
@@ -67,6 +68,7 @@ class Player(Sprites):
     self.attack = 10
     self.bullets = pygame.sprite.Group()
     self.weapons = pygame.sprite.Group()
+    self.grenades = pygame.sprite.Group()
     self.screen = screen  # Ajout de cet attribut
 
     self.ammo_images = {
@@ -83,12 +85,17 @@ class Player(Sprites):
       11: "res/weapon/ammo6.png",
       12: "res/weapon/ammo1.png",
     }
+    self.grenade_image = "res/weapon/ammo5.png"
 
   def launch_bullet(self, goal, weapon_id, data_weapon):
     ammo_image = self.ammo_images.get(weapon_id)
     weapon_range = data_weapon[weapon_id][3]
-    self.bullets.add(Bullet(self.screen, self, goal, ammo_image, weapon_range))
+    explosive = data_weapon[weapon_id][4] == 1  # Vérifie si l'arme est explosive
+    self.bullets.add(Bullet(self.screen, self, goal, ammo_image, weapon_range, explosive=explosive))
 
   def affiche_weapon(self, name, taille, position):
     self.weapons.add(Weapon(self, name, taille, position))
     self.weapons.add(Weapon(self, name, taille, position))
+
+  def launch_grenade(self):
+    self.grenades.add(Grenade(self.screen, self, self.grenade_image))

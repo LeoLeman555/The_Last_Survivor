@@ -36,7 +36,7 @@ class Weapon(pygame.sprite.Sprite):
     
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, screen, player, goal, image_path, range=500, speed=30):
+  def __init__(self, screen, player, goal, image_path, range=500, speed=30, explosive=False):
     super().__init__()
     self.speed = speed
     self.player = player
@@ -48,6 +48,7 @@ class Bullet(pygame.sprite.Sprite):
     self.rect.x = 520
     self.rect.y = 310
     self.screen = screen
+    self.explosive = explosive
 
     dx, dy = self.goal[0] - self.rect.x, self.goal[1] - self.rect.y
     distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -63,7 +64,6 @@ class Bullet(pygame.sprite.Sprite):
     images_explosion = []
     sprite_width = 69
     sprite_height = int(69.4)
-    print(self.sprite_sheet_explosion.get_width(), self.sprite_sheet_explosion.get_height(),sprite_width, sprite_height)
     for y in range(0, self.sprite_sheet_explosion.get_height(), sprite_height):
       for x in range(0, self.sprite_sheet_explosion.get_width(), sprite_width):
         img = self.get_image(x, y, sprite_width, sprite_height)
@@ -91,8 +91,9 @@ class Bullet(pygame.sprite.Sprite):
 
     if self.rect.x > 1000 or self.rect.x < 0 or self.rect.y > 600 or self.rect.y < 0 or self.distance_traveled > self.range:
       self.delete()
-      explosion = Explosion(self.rect.center, self.images_explosion)
-      self.player.screen.blit(explosion.image, explosion.rect)
+      if self.explosive:  # Déclenche l'explosion uniquement si la balle est explosive
+        explosion = Explosion(self.rect.center, self.images_explosion)
+        self.player.screen.blit(explosion.image, explosion.rect)
       
 class Explosion(pygame.sprite.Sprite):
   def __init__(self, center, images):
@@ -106,7 +107,7 @@ class Explosion(pygame.sprite.Sprite):
   def update(self):
     now = pygame.time.get_ticks()
     if now - self.clock > 1:  # changer de frame toutes les 50ms
-      self.index += 4
+      self.index += 6
       if self.index < 18:
         self.image = self.images[self.index]
         self.rect = self.image.get_rect(center=self.rect.center)
