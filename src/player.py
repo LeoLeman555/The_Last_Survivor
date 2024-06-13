@@ -69,6 +69,7 @@ class Player(Sprites):
     self.bullets = pygame.sprite.Group()
     self.weapons = pygame.sprite.Group()
     self.grenades = pygame.sprite.Group()
+    self.explosions = pygame.sprite.Group()
     self.screen = screen  # Ajout de cet attribut
 
     self.ammo_images = {
@@ -97,5 +98,5 @@ class Player(Sprites):
     self.weapons.add(Weapon(self, name, taille, position))
     self.weapons.add(Weapon(self, name, taille, position))
 
-  def launch_grenade(self):
-    self.grenades.add(Grenade(self.screen, self, self.grenade_image))
+  def launch_grenade(self, speed):
+    self.grenades.add(Grenade(self.screen, self, self.grenade_image, speed))

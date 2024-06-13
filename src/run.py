@@ -54,6 +54,7 @@ class Run:
     self.explosions = pygame.sprite.Group()
     self.grenades = pygame.sprite.Group()
 
+
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
     press = pygame.key.get_pressed()
@@ -80,9 +81,10 @@ class Run:
     elif press[pygame.K_RIGHT]:
       self.player.droite(1)
 
-    if press[pygame.K_SPACE]:
-      print("espace")
-      self.player.launch_grenade()
+    if press[pygame.K_r]:
+      self.player.launch_grenade(-5)
+    elif press[pygame.K_t]:
+      self.player.launch_grenade(5)
 
   def update(self):
     """Rafraîchit la classe MapManager.update"""
@@ -150,6 +152,9 @@ class Run:
         
       self.player.grenades.update()
       self.player.grenades.draw(self.screen)
+
+      self.player.explosions.update()
+      self.player.explosions.draw(self.screen)
 
       pygame.display.flip()
 

@@ -1,5 +1,6 @@
 import pygame
 import math
+from extras import Explosion
 
 class Weapon(pygame.sprite.Sprite):
   def __init__(self, player, name, taille, position):
@@ -95,22 +96,3 @@ class Bullet(pygame.sprite.Sprite):
         explosion = Explosion(self.rect.center, self.images_explosion)
         self.player.screen.blit(explosion.image, explosion.rect)
       
-class Explosion(pygame.sprite.Sprite):
-  def __init__(self, center, images):
-    super().__init__()
-    self.images = images
-    self.image = self.images[0]
-    self.rect = self.image.get_rect(center=center)
-    self.index = 0
-    self.clock = pygame.time.get_ticks()
-
-  def update(self):
-    now = pygame.time.get_ticks()
-    if now - self.clock > 1:  # changer de frame toutes les 50ms
-      self.index += 6
-      if self.index < 18:
-        self.image = self.images[self.index]
-        self.rect = self.image.get_rect(center=self.rect.center)
-        self.clock = now
-      else:
-        self.kill()  # supprimer l'explosion après la dernière frame
