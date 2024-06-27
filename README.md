@@ -3,6 +3,14 @@
 ## Aperçu
 "The Last Survivor" est un jeu de survie où les joueurs naviguent à travers divers défis pour rester en vie. Ce jeu est écrit en Python et vise à offrir une expérience immersive avec des mécaniques de jeu engageantes et une histoire captivante.
 
+## Table des matières
+- [Installation](#installation)
+- [Utilisation](#utilisation)
+- [Fonctionnalités](#fonctionnalités)
+- [Contribuer](#contribuer)
+- [Licence](#licence)
+- [Contact](#contact)
+
 ## Installation
 Pour exécuter le jeu localement, suivez ces étapes :
 
@@ -50,6 +58,9 @@ Nous accueillons les contributions de la communauté. Pour contribuer :
     git push origin feature/VotreFonctionnalité
     ```
 5. Ouvrez une pull request.
+
+## Licence
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
 ## Contact
 Pour toutes questions ou retours, n'hésitez pas à contacter le mainteneur du projet :
