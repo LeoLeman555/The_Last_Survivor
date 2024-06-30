@@ -79,7 +79,7 @@ class Player(Sprites):
       4: "res/weapon/ammo3.png",  
       5: "res/weapon/ammo1.png",  
       6: "res/weapon/ammo4.png",
-      7: "res/weapon/ammo1.png",
+      7: "lance_flammes",
       8: "res/weapon/ammo1.png",
       9: "res/weapon/ammo5.png",
       10: "res/weapon/ammo6.png",

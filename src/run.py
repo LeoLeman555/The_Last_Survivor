@@ -4,6 +4,7 @@ from items import Icon
 from player import Player
 from weapon import *
 from map import MapManager
+from lance_flamme import *
 
 class Run:
   def __init__(self):
@@ -38,6 +39,7 @@ class Run:
       12: ("knife", (46, 12), (520, 310), 50, 0)
     }
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
+    self.weapon_key = 7
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -54,6 +56,7 @@ class Run:
     self.explosions = pygame.sprite.Group()
     self.grenades = pygame.sprite.Group()
 
+    self.particles = []
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -106,6 +109,15 @@ class Run:
     self.index_palier_xp = palier
     self.icon.change_palier("xp", self.palier_xp[self.index_palier_xp])
 
+  def ajout_particule(self):
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    dx = mouse_x - 500
+    dy = mouse_y - 300
+    distance = math.hypot(dx, dy)
+    direction = (dx / distance, dy / distance)  # Normaliser le vecteur
+    for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
+      self.particles.append(FireParticle(520, 310, direction))
+
   def run(self):
     clock = pygame.time.Clock()
     run = True
@@ -119,37 +131,41 @@ class Run:
       # Rotation de l'arme vers le curseur
       cursor_pos = pygame.mouse.get_pos()
 
-      self.player.bullets.draw(self.screen)
-      for bullet in self.player.bullets:
-        bullet.move()
-        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
-          if bullet.explosive:  # Vérifiez si la balle est explosive
-            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
-            self.explosions.add(explosion)
-          bullet.delete()
+      if not self.weapon_key == 7:
+        self.player.bullets.draw(self.screen)
+        for bullet in self.player.bullets:
+          bullet.move()
+          if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
+            if bullet.explosive:  # Vérifiez si la balle est explosive
+              explosion = Explosion(bullet.rect.center, bullet.images_explosion)
+              self.explosions.add(explosion)
+            bullet.delete()
 
       self.weapon.rotate_to_cursor(cursor_pos)
       self.weapon.display(self.screen)
       self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
-      self.explosions.update()
-      self.explosions.draw(self.screen)
-
-      
       self.update_icon()
 
       self.icon.ajout_barres("xp", 1)
       self.icon.ajout_ressource("en", 1)
-      self.icon.ajout_ressource("me", 1)
-      self.icon.ajout_ressource("mu", 1)
-      self.icon.ajout_ressource("do", 1)
 
       current_time = pygame.time.get_ticks()
-      if self.mouse_pressed and current_time - self.last_shot_time > self.shoot_delay:
-        self.player.launch_bullet(cursor_pos, self.weapon_key, self.data_weapon)
-        self.last_shot_time = current_time
 
+      if not self.weapon_key == 7:
+        if self.mouse_pressed and current_time - self.last_shot_time > self.shoot_delay:
+          self.player.launch_bullet(cursor_pos, self.weapon_key, self.data_weapon)
+          self.last_shot_time = current_time
+      elif self.mouse_pressed:
+        self.ajout_particule()
         
+      if self.weapon_key==7:
+        for particle in self.particles:
+          particle.update()
+        self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
+        for particle in self.particles:
+          particle.draw(self.screen)
+
       self.player.grenades.update()
       self.player.grenades.draw(self.screen)
 
