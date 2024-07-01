@@ -5,6 +5,7 @@ from player import Player
 from weapon import *
 from map import MapManager
 from lance_flamme import *
+from drone import *
 
 class Run:
   def __init__(self):
@@ -39,7 +40,7 @@ class Run:
       12: ("knife", (46, 12), (520, 310), 50, 0)
     }
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 7
+    self.weapon_key = 11
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -57,6 +58,13 @@ class Run:
     self.grenades = pygame.sprite.Group()
 
     self.particles = []
+
+    self.image_drone = pygame.image.load("res/weapon/drone.png")
+    self.image_drone = pygame.transform.scale(self.image_drone, (81, 20))
+
+    self.cible_drone = pygame.image.load("res/weapon/cible_drone.png")
+
+    self.drone = Drone(self.screen)
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -89,8 +97,7 @@ class Run:
     elif press[pygame.K_t]:
       self.player.launch_grenade(5)
 
-  def update(self):
-    """Rafraîchit la classe MapManager.update"""
+  def update_map(self):
     self.map_manager.update()
 
   def update_icon(self):
@@ -118,6 +125,40 @@ class Run:
     for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
       self.particles.append(FireParticle(520, 310, direction))
 
+  def update_weapon(self):
+
+    if self.mouse_pressed:
+      if self.weapon_key == 7: 
+        self.ajout_particule()
+      elif self.current_time - self.last_shot_time > self.shoot_delay:
+          self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
+          self.last_shot_time = self.current_time
+      
+    if self.weapon_key==7:
+      for particle in self.particles:
+        particle.update()
+        particle.draw(self.screen)
+      self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
+    else:
+      self.player.bullets.draw(self.screen)
+      for bullet in self.player.bullets:
+        bullet.move()
+        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
+          if bullet.explosive:  # Vérifiez si la balle est explosive
+            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
+            self.explosions.add(explosion)
+          bullet.delete()
+
+    self.weapon.rotate_to_cursor(self.cursor_pos)
+    self.weapon.display(self.screen)
+    self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+
+    self.player.grenades.update()
+    self.player.grenades.draw(self.screen)
+
+    self.player.explosions.update()
+    self.player.explosions.draw(self.screen)
+
   def run(self):
     clock = pygame.time.Clock()
     run = True
@@ -125,49 +166,20 @@ class Run:
     while run:
       self.player.save_location()
       self.keyboard_input()
-      self.update()
+      self.update_map()
       self.map_manager.draw()
 
-      # Rotation de l'arme vers le curseur
-      cursor_pos = pygame.mouse.get_pos()
-
-      if not self.weapon_key == 7:
-        self.player.bullets.draw(self.screen)
-        for bullet in self.player.bullets:
-          bullet.move()
-          if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
-            if bullet.explosive:  # Vérifiez si la balle est explosive
-              explosion = Explosion(bullet.rect.center, bullet.images_explosion)
-              self.explosions.add(explosion)
-            bullet.delete()
-
-      self.weapon.rotate_to_cursor(cursor_pos)
-      self.weapon.display(self.screen)
-      self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+      self.cursor_pos = pygame.mouse.get_pos()
+      self.current_time = pygame.time.get_ticks()
 
       self.update_icon()
 
       self.icon.ajout_barres("xp", 1)
       self.icon.ajout_ressource("en", 1)
 
-      current_time = pygame.time.get_ticks()
+      self.update_weapon()
 
-      if not self.weapon_key == 7:
-        if self.mouse_pressed and current_time - self.last_shot_time > self.shoot_delay:
-          self.player.launch_bullet(cursor_pos, self.weapon_key, self.data_weapon)
-          self.last_shot_time = current_time
-      elif self.mouse_pressed:
-        self.ajout_particule()
-        
-      if self.weapon_key==7:
-        for particle in self.particles:
-          particle.update()
-        self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
-        for particle in self.particles:
-          particle.draw(self.screen)
-
-      self.player.grenades.update()
-      self.player.grenades.draw(self.screen)
+      self.drone.update_drone()
 
       self.player.explosions.update()
       self.player.explosions.draw(self.screen)
