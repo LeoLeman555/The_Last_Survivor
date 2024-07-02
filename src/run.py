@@ -1,9 +1,8 @@
-import pygame
-import random
+import pygame, random
 from items import Icon
 from player import Player
-from weapon import *
 from map import MapManager
+from weapon import *
 from lance_flamme import *
 from drone import *
 
@@ -19,7 +18,7 @@ class Run:
     pygame.font.init()
 
     self.index_palier_xp = 45
-    self.palier_xp = (100, 250, 500, 800, 1200, 1700, 2300, 3000, 3800, 4700, 5700, 6800, 8000, 9300, 10700, 12200, 13800, 15500, 17300, 19200, 21200, 23300, 25500, 27800, 30200, 32700, 35300, 38000, 40800, 43700, 46700, 49800, 53000, 56300, 59700, 63200, 66800, 70500, 74300, 78200, 82200, 86300, 90500, 94800, 99200, 103700, 108300, 113000, 117800, 122700, 127700, 132800, 138000, 143300, 148700, 154200, 159800, 165500, 171300, 180000)
+    self.palier_xp = self.get_paliers("paliers")
     self.ressources = {"xp_bar":0, "hp_bar":0, "faim_bar":0, "en":34, "me":506, "mu":2, "do":597}
     self.barres = {"xp":0, "hp":100, "faim":100, "xp_max":100, "hp_max":100, "faim_max":100}
 
@@ -40,7 +39,7 @@ class Run:
       12: ("knife", (46, 12), (520, 310), 50, 0)
     }
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 11
+    self.weapon_key = 7
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -60,6 +59,12 @@ class Run:
     self.particles = []
 
     self.drone = Drone(self.screen)
+
+  def get_paliers(self, path):
+    with open(f"data/{path}.txt", "r") as fichier:
+        palier = tuple(int(num) for line in fichier for num in line.split(','))
+    print(palier)
+    return palier
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
