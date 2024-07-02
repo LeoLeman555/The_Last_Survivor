@@ -23,6 +23,7 @@ class Drone:
   def __init__(self, screen):
     self.screen = screen
     self.image_drone = pygame.image.load("res/weapon/drone.png")
+    self.image_drone = pygame.transform.scale(self.image_drone, (81, 20))
     self.x_cible = 0
     self.cible = Cible(200, 315)
     

@@ -59,11 +59,6 @@ class Run:
 
     self.particles = []
 
-    self.image_drone = pygame.image.load("res/weapon/drone.png")
-    self.image_drone = pygame.transform.scale(self.image_drone, (81, 20))
-
-    self.cible_drone = pygame.image.load("res/weapon/cible_drone.png")
-
     self.drone = Drone(self.screen)
 
   def keyboard_input(self):
