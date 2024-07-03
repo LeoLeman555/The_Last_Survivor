@@ -60,10 +60,11 @@ class Run:
 
     self.drone = Drone(self.screen)
 
+    self.lasers = []
+
   def get_paliers(self, path):
     with open(f"data/{path}.txt", "r") as fichier:
         palier = tuple(int(num) for line in fichier for num in line.split(','))
-    print(palier)
     return palier
 
   def keyboard_input(self):
@@ -159,6 +160,16 @@ class Run:
     self.player.explosions.update()
     self.player.explosions.draw(self.screen)
 
+  def update_laser(self):
+    if random.random() < 0.05:
+      self.lasers.append(Laser())
+
+    for laser in self.lasers:
+      laser.draw(self.screen)
+      laser.update()
+
+    self.lasers = [laser for laser in self.lasers if laser.lifetime > 0]
+
   def run(self):
     clock = pygame.time.Clock()
     run = True
@@ -172,14 +183,15 @@ class Run:
       self.cursor_pos = pygame.mouse.get_pos()
       self.current_time = pygame.time.get_ticks()
 
+      self.update_laser()
       self.update_icon()
 
       self.icon.ajout_barres("xp", 1)
       self.icon.ajout_ressource("en", 1)
 
-      self.update_weapon()
-
       self.drone.update_drone()
+
+      self.update_weapon()
 
       self.player.explosions.update()
       self.player.explosions.draw(self.screen)

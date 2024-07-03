@@ -1,4 +1,5 @@
 import pygame
+import random
 
 class Cible:
   def __init__(self, x, y):
@@ -31,3 +32,23 @@ class Drone:
     self.screen.blit(self.image_drone, (460, 230))
     self.cible.update()
     self.cible.draw(self.screen)
+
+class Laser():
+  def __init__(self):
+    if random.randint(1, 2) == 1:
+      self.x = random.randint(100, 400)
+    else:
+      self.x = random.randint(600, 900)
+
+    self.start_y = 0
+    self.end_y = random.randint(200, 550)
+    self.lifetime = 50
+
+  def draw(self, screen):
+    pygame.draw.line(screen, (255, 100, 100), (self.x, self.start_y), (self.x, self.end_y), 10)
+    pygame.draw.line(screen, (255, 0, 0), (self.x, self.start_y), (self.x, self.end_y), 5)
+    pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), 10)
+    pygame.draw.circle(screen, (255, 100, 100), (self.x, self.end_y), 5)
+
+  def update(self):
+    self.lifetime -= 1
