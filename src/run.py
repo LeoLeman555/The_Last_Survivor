@@ -1,18 +1,14 @@
 import pygame, random
+from update import Update
 from items import Icon
 from player import Player
 from map import MapManager
 from weapon import *
 from lance_flamme import *
-from drone import *
+from extras import *
 
 class Run:
   def __init__(self):
-    """ Moteur du jeu:
-    - création de la fenêtre, du joueur, et de la carte
-    - boucle principale
-    """
-    # creation de la fenêtre de jeu + titre de la fenêtre
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Jeu")
     pygame.font.init()
@@ -59,8 +55,9 @@ class Run:
     self.particles = []
 
     self.drone = Drone(self.screen)
-
     self.lasers = []
+
+    self.update = Update(self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers)
 
   def get_paliers(self, path):
     with open(f"data/{path}.txt", "r") as fichier:
@@ -97,21 +94,6 @@ class Run:
       self.player.launch_grenade(-5)
     elif press[pygame.K_t]:
       self.player.launch_grenade(5)
-
-  def update_map(self):
-    self.map_manager.update()
-
-  def update_icon(self):
-    self.ressources["xp_bar"] =  round(self.barres["xp"] * 79 / self.barres["xp_max"])
-    self.ressources["hp_bar"] =  round(self.barres["hp"] * 79 / self.barres["hp_max"])
-    self.ressources["faim_bar"] =  round(self.barres["faim"] * 79 / self.barres["faim_max"])
-    self.icon.get_bar(self.screen, "xp_bar", 20, 20, self.ressources["xp_bar"])
-    self.icon.get_bar(self.screen, "hp_bar", 20, 45, self.ressources["hp_bar"])
-    self.icon.get_bar(self.screen, "faim_bar", 20, 70, self.ressources["faim_bar"])
-    self.icon.get_icon(self.screen, "en_icon", 130, 100, 25, -3, 22, 20, self.ressources["en"])
-    self.icon.get_icon(self.screen, "me_icon", 20, 100, 25, -3, 22, 20, self.ressources["me"])
-    self.icon.get_icon(self.screen, "mu_icon", 134, 125, 21, 1, 15, 29, self.ressources["mu"])
-    self.icon.get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.ressources["do"])
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
@@ -127,7 +109,6 @@ class Run:
       self.particles.append(FireParticle(520, 310, direction))
 
   def update_weapon(self):
-
     if self.mouse_pressed:
       if self.weapon_key == 7: 
         self.ajout_particule()
@@ -160,43 +141,19 @@ class Run:
     self.player.explosions.update()
     self.player.explosions.draw(self.screen)
 
-  def update_laser(self):
-    if random.random() < 0.05:
-      self.lasers.append(Laser())
-
-    for laser in self.lasers:
-      laser.draw(self.screen)
-      laser.update()
-
-    self.lasers = [laser for laser in self.lasers if laser.lifetime > 0]
-
   def run(self):
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
     while run:
-      self.player.save_location()
-      self.keyboard_input()
-      self.update_map()
-      self.map_manager.draw()
-
       self.cursor_pos = pygame.mouse.get_pos()
       self.current_time = pygame.time.get_ticks()
-
-      self.update_laser()
-      self.update_icon()
+      self.player.save_location()
+      self.keyboard_input()
+      self.map_manager.draw()
 
       self.icon.ajout_barres("xp", 1)
       self.icon.ajout_ressource("en", 1)
-
-      self.drone.update_drone()
-
-      self.update_weapon()
-
-      self.player.explosions.update()
-      self.player.explosions.draw(self.screen)
-
-      pygame.display.flip()
 
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -206,4 +163,17 @@ class Run:
         elif event.type == pygame.MOUSEBUTTONUP:
           self.mouse_pressed = False
 
+      self.update_class()
+
       clock.tick(60)
+
+  def update_class(self):
+    self.update.update_all()
+    self.drone.update_drone()
+
+    self.update_weapon()
+
+    self.player.explosions.update()
+    self.player.explosions.draw(self.screen)
+
+    pygame.display.flip()
