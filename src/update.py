@@ -1,18 +1,20 @@
 import random
-from extras import Laser
+from extras import *
 
 class Update():
-  def __init__(self, screen, map_manager, ressources, barres, icon, lasers):
+  def __init__(self, screen, map_manager, ressources, barres, icon, lasers, missile):
     self.screen = screen
     self.map_manager = map_manager
     self.ressources = ressources
     self.barres = barres
     self.icon = icon
     self.lasers = lasers
+    self.missile = missile
 
-  def update_all(self):
+  def update_all(self, x=0, y=0):
     self.update_map()
     self.update_laser()
+    self.update_missile(x, y)
     self.update_icon()
 
   def update_map(self):
@@ -31,9 +33,19 @@ class Update():
     self.icon.get_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.ressources["do"])
 
   def update_laser(self):
-    if random.random() < 0.05:
+    if random.random() < 0.01:
       self.lasers.append(Laser())
     for laser in self.lasers:
       laser.draw(self.screen)
       laser.update()
     self.lasers = [laser for laser in self.lasers if laser.lifetime > 0]
+
+  def update_missile(self, x, y):
+    if random.random() < 0.005:
+      self.missile.append(Missile())
+      self.missile.append(Missile())
+      self.missile.append(Missile())
+    for mis in self.missile:
+      mis.draw(self.screen)
+      mis.update(x, y)
+    self.missile = [mis for mis in self.missile if mis.lifetime > 0]

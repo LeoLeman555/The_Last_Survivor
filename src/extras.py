@@ -130,3 +130,19 @@ class Laser():
 
   def update(self):
     self.lifetime -= 1
+
+class Missile():
+  def __init__(self):
+    self.cible_missile = pygame.image.load("res/weapon/cible_missile.png")
+    self.x = random.randint(200, 800)
+    self.y = random.randint(100, 500)
+    self.lifetime = 50
+  
+  def draw(self, screen):
+    if self.lifetime % 2 == 0 or self.lifetime >= 40:
+      screen.blit(self.cible_missile, (self.x, self.y))
+
+  def update(self, x, y):
+    self.lifetime -= 1
+    self.x += x
+    self.y += y

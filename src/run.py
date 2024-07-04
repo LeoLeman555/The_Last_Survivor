@@ -56,8 +56,10 @@ class Run:
 
     self.drone = Drone(self.screen)
     self.lasers = []
+    self.missile = []
+    self.mouvement = [0, 0]
 
-    self.update = Update(self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers)
+    self.update = Update(self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers, self.missile)
 
   def get_paliers(self, path):
     with open(f"data/{path}.txt", "r") as fichier:
@@ -72,23 +74,33 @@ class Run:
     if press[pygame.K_UP] and press[pygame.K_LEFT]: # pour se déplacer en diagonale
       self.player.haut(1.5)
       self.player.gauche(1.5)
+      self.mouvement = [4, 4]
     elif press[pygame.K_UP] and press[pygame.K_RIGHT]:
       self.player.haut(1.5)
       self.player.droite(1.5)
+      self.mouvement = [-4, 4]
     elif press[pygame.K_DOWN] and press[pygame.K_RIGHT]:
       self.player.bas(1.5)
       self.player.droite(1.5)
+      self.mouvement = [-4, -4]
     elif press[pygame.K_DOWN] and press[pygame.K_LEFT]:
       self.player.bas(1.5)
       self.player.gauche(1.5)
+      self.mouvement = [4, -4]
     elif press[pygame.K_UP]:        # pour se déplacer
       self.player.haut(1)
+      self.mouvement = [0, 6]
     elif press[pygame.K_DOWN]:
       self.player.bas(1)
+      self.mouvement = [0, -6]
     elif press[pygame.K_LEFT]:
       self.player.gauche(1)
+      self.mouvement = [6, 0]
     elif press[pygame.K_RIGHT]:
       self.player.droite(1)
+      self.mouvement = [-6, 0]
+    else:
+      self.mouvement = [0, 0]
 
     if press[pygame.K_r]:
       self.player.launch_grenade(-5)
@@ -155,6 +167,8 @@ class Run:
       self.icon.ajout_barres("xp", 1)
       self.icon.ajout_ressource("en", 1)
 
+      self.update_class()
+
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           run = False
@@ -163,12 +177,10 @@ class Run:
         elif event.type == pygame.MOUSEBUTTONUP:
           self.mouse_pressed = False
 
-      self.update_class()
-
       clock.tick(60)
 
   def update_class(self):
-    self.update.update_all()
+    self.update.update_all(self.mouvement[0], self.mouvement[1])
     self.drone.update_drone()
 
     self.update_weapon()
