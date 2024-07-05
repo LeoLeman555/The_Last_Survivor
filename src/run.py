@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, math
 from update import Update
 from items import Icon
 from player import Player
@@ -30,8 +30,12 @@ class Run:
     self.weapon_position = self.data_weapon[self.weapon_key][2]
 
     self.icon = Icon(self.ressources, self.barres)
+    
+    self.speed_init = 3
+    self.speed = self.speed_init
+
     self.player = Player(self.screen)  # mettre sur tiled un objet start
-    self.map_manager = MapManager(self.screen, self.player) # appel de la classe mapManager
+    self.map_manager = MapManager(self.screen, self.player, self) # appel de la classe mapManager
     self.weapon = Weapon(self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
 
     self.mouse_pressed = False
@@ -50,46 +54,51 @@ class Run:
 
     self.update = Update(self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers, self.missile)
 
+    self.collision_caillou = False
+
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
     press = pygame.key.get_pressed()
 
     # condition de déplacement
     if press[pygame.K_UP] and press[pygame.K_LEFT]: # pour se déplacer en diagonale
-      self.player.haut(1.5)
-      self.player.gauche(1.5)
-      self.mouvement = [4, 4]
+      self.player.haut(1.5, self.speed)
+      self.player.gauche(1.5, self.speed)
+      self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)]
     elif press[pygame.K_UP] and press[pygame.K_RIGHT]:
-      self.player.haut(1.5)
-      self.player.droite(1.5)
-      self.mouvement = [-4, 4]
+      self.player.haut(1.5, self.speed)
+      self.player.droite(1.5, self.speed)
+      self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)]
     elif press[pygame.K_DOWN] and press[pygame.K_RIGHT]:
-      self.player.bas(1.5)
-      self.player.droite(1.5)
-      self.mouvement = [-4, -4]
+      self.player.bas(1.5, self.speed)
+      self.player.droite(1.5, self.speed)
+      self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)*-1]
     elif press[pygame.K_DOWN] and press[pygame.K_LEFT]:
-      self.player.bas(1.5)
-      self.player.gauche(1.5)
-      self.mouvement = [4, -4]
+      self.player.bas(1.5, self.speed)
+      self.player.gauche(1.5, self.speed)
+      self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)*-1]
     elif press[pygame.K_UP]:        # pour se déplacer
-      self.player.haut(1)
-      self.mouvement = [0, 6]
+      self.player.haut(1, self.speed)
+      self.mouvement = [0, self.speed*2]
     elif press[pygame.K_DOWN]:
-      self.player.bas(1)
-      self.mouvement = [0, -6]
+      self.player.bas(1, self.speed)
+      self.mouvement = [0, self.speed*-2]
     elif press[pygame.K_LEFT]:
-      self.player.gauche(1)
-      self.mouvement = [6, 0]
+      self.player.gauche(1, self.speed)
+      self.mouvement = [self.speed*2, 0]
     elif press[pygame.K_RIGHT]:
-      self.player.droite(1)
-      self.mouvement = [-6, 0]
+      self.player.droite(1, self.speed)
+      self.mouvement = [self.speed*-2, 0]
     else:
+      self.mouvement = [0, 0]
+    
+    if self.collision_caillou:
       self.mouvement = [0, 0]
 
     if press[pygame.K_r]:
-      self.player.launch_grenade(-5)
+      self.player.launch_grenade(-3)
     elif press[pygame.K_t]:
-      self.player.launch_grenade(5)
+      self.player.launch_grenade(3)
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
@@ -104,6 +113,38 @@ class Run:
     for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
       self.particles.append(FireParticle(520, 310, direction))
 
+  def update_weapon(self):
+    if self.mouse_pressed:
+      if self.weapon_key == 7: 
+        self.ajout_particule()
+      elif self.current_time - self.last_shot_time > self.shoot_delay:
+          self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
+          self.last_shot_time = self.current_time
+      
+    if self.weapon_key==7:
+      for particle in self.particles:
+        particle.update()
+        particle.draw(self.screen)
+      self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
+    else:
+      self.player.bullets.draw(self.screen)
+      for bullet in self.player.bullets:
+        bullet.move()
+        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
+          if bullet.explosive:  # Vérifiez si la balle est explosive
+            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
+            self.explosions.add(explosion)
+          bullet.delete()
+
+    self.weapon.rotate_to_cursor(self.cursor_pos)
+    self.weapon.display(self.screen)
+    self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+
+    self.player.grenades.update(self.mouvement[0], self.mouvement[1])
+    self.player.grenades.draw(self.screen)
+
+    self.player.explosions.update()
+    self.player.explosions.draw(self.screen)
 
   def run(self):
     clock = pygame.time.Clock()
@@ -141,36 +182,12 @@ class Run:
     self.player.explosions.draw(self.screen)
 
     pygame.display.flip()
-    
-  def update_weapon(self):
-    if self.mouse_pressed:
-      if self.weapon_key == 7: 
-        self.ajout_particule()
-      elif self.current_time - self.last_shot_time > self.shoot_delay:
-          self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
-          self.last_shot_time = self.current_time
-      
-    if self.weapon_key==7:
-      for particle in self.particles:
-        particle.update()
-        particle.draw(self.screen)
-      self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
+
+  def collision_sables(self, bool):
+    if bool:
+      self.speed = self.speed_init/2
     else:
-      self.player.bullets.draw(self.screen)
-      for bullet in self.player.bullets:
-        bullet.move()
-        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
-          if bullet.explosive:  # Vérifiez si la balle est explosive
-            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
-            self.explosions.add(explosion)
-          bullet.delete()
+      self.speed = self.speed_init
 
-    self.weapon.rotate_to_cursor(self.cursor_pos)
-    self.weapon.display(self.screen)
-    self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
-
-    self.player.grenades.update()
-    self.player.grenades.draw(self.screen)
-
-    self.player.explosions.update()
-    self.player.explosions.draw(self.screen)
+  def collision(self, bool):
+    self.collision_caillou = bool

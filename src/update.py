@@ -41,10 +41,10 @@ class Update():
     self.lasers = [laser for laser in self.lasers if laser.lifetime > 0]
 
   def update_missile(self, x, y):
-    if random.random() < 0.005:
+    if random.random() < 0.05:
       self.missile.append(Missile())
-      self.missile.append(Missile())
-      self.missile.append(Missile())
+      # self.missile.append(Missile())
+      # self.missile.append(Missile())
     for mis in self.missile:
       mis.draw(self.screen)
       mis.update(x, y)

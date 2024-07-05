@@ -23,30 +23,30 @@ class Sprites(AnimateSprite):     # classe du joueur
     """
     self.old_position = self.position.copy()
 
-  def droite(self, diagonale):
+  def droite(self, diagonale, speed):
     """Déplacement du personnage à droite avec animation
     """
-    self.change_animation('right')
+    self.change_animation('right', speed)
     self.position[0] += self.speed / diagonale
 
-  def gauche(self, diagonale):
+  def gauche(self, diagonale, speed):
     """Déplacement du personnage à gauche avec animation
     """
-    self.change_animation('left')
+    self.change_animation('left', speed)
     self.position[0] -= self.speed/ diagonale
 
-  def haut(self, diagonale):
+  def haut(self, diagonale, speed):
     """Déplacement du personnage en haut avec animation
     """
     if diagonale == 1:
-      self.change_animation('right')
+      self.change_animation('right', speed)
     self.position[1] -= self.speed / diagonale
 
-  def bas(self, diagonale):
+  def bas(self, diagonale, speed):
     """Déplacement du personnage en bas avec animation
     """
     if diagonale == 1:
-      self.change_animation('left')
+      self.change_animation('left', speed)
     self.position[1] += self.speed / diagonale
 
   def update(self):
