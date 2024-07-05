@@ -1,0 +1,6 @@
+xp,0
+hp,100
+faim,100
+xp_max,100
+hp_max,100
+faim_max,100

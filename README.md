@@ -1,81 +1,81 @@
 # The Last Survivor
 
-## Aperçu
+## Overview
 
-"The Last Survivor" est un jeu de survie où les joueurs naviguent à travers divers défis pour rester en vie. Ce jeu est écrit en Python et vise à offrir une expérience immersive avec des mécaniques de jeu engageantes et une histoire captivante.
+"The Last Survivor" is a survival game where players navigate various challenges to stay alive. This game is written in Python and aims to provide an immersive experience with engaging gameplay mechanics and a captivating story.
 
-## Table des matières
+## Table of Contents
 
-- [Prérequis](#prérequis)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Utilisation](#utilisation)
-- [Fonctionnalités](#fonctionnalités)
-- [Contribuer](#contribuer)
-- [Licence](#licence)
+- [Usage](#usage)
+- [Features](#features)
+- [Contributing](#contributing)
+- [License](#license)
 - [Contact](#contact)
 
-## Prérequis
+## Prerequisites
 
-Ce projet ne nécessite que Python 3.6+.
+This project requires Python 3.6+ and Git installed on your machine.
 
 ## Installation
 
-Pour exécuter le jeu localement, suivez ces étapes (si vous installer ce jeu, pouvez vous mettre un vue et pourquoi pas une etoile):
+To run the game locally, follow these steps (if you install this game, please give it a view and maybe a star):
 
-1. Clonez le dépôt :
+1. Clone the repository:
    ```bash
    git clone https://github.com/LeoLeman555/The_Last_Survivor.git
    ```
-2. Accédez au répertoire du projet :
+2. Navigate to the project directory:
    ```bash
    cd The_Last_Survivor
    ```
-3. Installez les dépendances requises :
+3. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-4. Lancez le jeu :
+4. Start the game:
    ```bash
    python src/main.py
    ```
 
-## Utilisation
+## Usage
 
-- Lancez le jeu en utilisant la commande ci-dessus.
-- Utilisez les flèches directionnelles pour déplacer votre personnage.
-- Collectez des ressources, évitez les dangers et essayez de survivre le plus longtemps possible.
+- Start the game using the command above.
+- Use the arrow keys to move your character.
+- Collect resources, avoid dangers, and try to survive as long as possible.
 
-## Fonctionnalités
+## Features
 
-- **Gameplay Immersif :** Environnements détaillés et scénarios stimulants.
-- **Gestion des Ressources :** Collectez et gérez les ressources pour rester en vie.
-- **Défis Dynamiques :** Rencontrez divers dangers qui testent vos compétences de survie.
+- **Immersive Gameplay** => Detailed environments and challenging scenarios.
+- **Resource Management** => Collect and manage resources to stay alive.
+- **Dynamic Challenges** => Encounter various dangers that test your survival skills.
 
-## Contribuer
+## Contributing
 
-Nous accueillons les contributions de la communauté. Pour contribuer :
+We welcome contributions from the community. To contribute:
 
-1. Forkez le dépôt.
-2. Créez une nouvelle branche :
+1. Fork the repository.
+2. Create a new branch:
    ```bash
-   git checkout -b feature/VotreFonctionnalité
+   git checkout -b feature/YourFeature
    ```
-3. Apportez vos modifications et validez-les :
+3. Make your changes and commit them:
    ```bash
-   git commit -m "Ajoutez votre message ici"
+   git commit -m "Add your message here"
    ```
-4. Poussez vers la branche :
+4. Push to the branch:
    ```bash
-   git push origin feature/VotreFonctionnalité
+   git push origin feature/YourFeature
    ```
-5. Ouvrez une pull request.
+5. Open a pull request.
 
 ## Licence
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ## Contact
 
-Pour toutes questions ou retours, n'hésitez pas me contacter :
+For any questions or feedback, feel free to contact me:
 
-- **Léo** : [Profil GitHub](https://github.com/LeoLeman555)
+- **Léo Leman** : [My GitHub Profile](https://github.com/LeoLeman555)

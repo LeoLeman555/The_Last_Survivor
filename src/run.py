@@ -6,6 +6,7 @@ from map import MapManager
 from weapon import *
 from lance_flamme import *
 from extras import *
+from read_data import ReadData
 
 class Run:
   def __init__(self):
@@ -13,27 +14,15 @@ class Run:
     pygame.display.set_caption("The Last Survivor - Jeu")
     pygame.font.init()
 
-    self.index_palier_xp = 45
-    self.palier_xp = self.get_paliers("paliers")
-    self.ressources = {"xp_bar":0, "hp_bar":0, "faim_bar":0, "en":34, "me":506, "mu":2, "do":597}
-    self.barres = {"xp":0, "hp":100, "faim":100, "xp_max":100, "hp_max":100, "faim_max":100}
+    self.read_data = ReadData()
 
-    #?  numéro de l'arme:("nom de l'arme", (taille de l'arme), (position), portée, explosion?
-    # TODO (type de mu, coût de mu, chargeur), (DPS, portée), (ME, EN, DF nécessaires))
-    self.data_weapon = {
-      1: ("pistol", (22, 17), (520, 310), 500, 0), 
-      2: ("magnum", (36, 14), (520, 313), 700, 0), 
-      3: ("shotgun", (42, 14), (520, 310), 300, 0), 
-      4: ("sniper", (72, 21), (520, 310), 1000, 0), 
-      5: ("ak", (45, 15), (520, 310), 600, 0), 
-      6: ("rpg", (74, 20), (520, 310), 800, 1), 
-      7: ("lance_flammes", (45, 18), (520, 310), 200, 0), 
-      8: ("minigun", (48, 18), (520, 310), 500, 0), 
-      9: ("lance_grenades", (48, 18), (520, 310), 600, 1),
-      10: ("laser", (40, 20), (520, 310), 900, 1), 
-      11: ("plasma", (43, 20), (520, 310), 800, 1),
-      12: ("knife", (46, 12), (520, 310), 50, 0)
-    }
+    self.index_palier_xp = 45
+    self.palier_xp = self.read_data.get_paliers("data/paliers.txt")
+    self.ressources = self.read_data.read_ressources_data("data/ressources.txt")
+    self.barres = self.read_data.read_barres_data("data/barres.txt")
+
+    self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
+
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
     self.weapon_key = 7
     self.weapon_name = self.data_weapon[self.weapon_key][0]
@@ -60,11 +49,6 @@ class Run:
     self.mouvement = [0, 0]
 
     self.update = Update(self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers, self.missile)
-
-  def get_paliers(self, path):
-    with open(f"data/{path}.txt", "r") as fichier:
-        palier = tuple(int(num) for line in fichier for num in line.split(','))
-    return palier
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -120,38 +104,6 @@ class Run:
     for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
       self.particles.append(FireParticle(520, 310, direction))
 
-  def update_weapon(self):
-    if self.mouse_pressed:
-      if self.weapon_key == 7: 
-        self.ajout_particule()
-      elif self.current_time - self.last_shot_time > self.shoot_delay:
-          self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
-          self.last_shot_time = self.current_time
-      
-    if self.weapon_key==7:
-      for particle in self.particles:
-        particle.update()
-        particle.draw(self.screen)
-      self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
-    else:
-      self.player.bullets.draw(self.screen)
-      for bullet in self.player.bullets:
-        bullet.move()
-        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
-          if bullet.explosive:  # Vérifiez si la balle est explosive
-            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
-            self.explosions.add(explosion)
-          bullet.delete()
-
-    self.weapon.rotate_to_cursor(self.cursor_pos)
-    self.weapon.display(self.screen)
-    self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
-
-    self.player.grenades.update()
-    self.player.grenades.draw(self.screen)
-
-    self.player.explosions.update()
-    self.player.explosions.draw(self.screen)
 
   def run(self):
     clock = pygame.time.Clock()
@@ -189,3 +141,36 @@ class Run:
     self.player.explosions.draw(self.screen)
 
     pygame.display.flip()
+    
+  def update_weapon(self):
+    if self.mouse_pressed:
+      if self.weapon_key == 7: 
+        self.ajout_particule()
+      elif self.current_time - self.last_shot_time > self.shoot_delay:
+          self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
+          self.last_shot_time = self.current_time
+      
+    if self.weapon_key==7:
+      for particle in self.particles:
+        particle.update()
+        particle.draw(self.screen)
+      self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
+    else:
+      self.player.bullets.draw(self.screen)
+      for bullet in self.player.bullets:
+        bullet.move()
+        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
+          if bullet.explosive:  # Vérifiez si la balle est explosive
+            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
+            self.explosions.add(explosion)
+          bullet.delete()
+
+    self.weapon.rotate_to_cursor(self.cursor_pos)
+    self.weapon.display(self.screen)
+    self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+
+    self.player.grenades.update()
+    self.player.grenades.draw(self.screen)
+
+    self.player.explosions.update()
+    self.player.explosions.draw(self.screen)
