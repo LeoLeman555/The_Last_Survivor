@@ -12,15 +12,8 @@ class Map:
   tmx_data: pytmx.TiledMap
 
 class MapManager:
-  """S'occupe de gérer les différentes maps
-  """
-  def __init__(self, screen, player):
-    """initialise MapManager
-
-    Args:
-        screen (_type_): _description_
-        player (_type_): _description_
-    """
+  def __init__(self, screen, player, run):
+    self.run = run
     self.maps = dict()    #'house' -> map("house", walls, group)
     self.screen = screen
     self.player = player
@@ -37,6 +30,9 @@ class MapManager:
     for sprite in self.get_group().sprites():
       if sprite.feet.collidelist(self.get_walls()) > -1:
         sprite.move_back()
+        self.run.collision(True)
+      else:
+        self.run.collision(False)
 
     # sables mouvants
   def check_sables(self):
@@ -44,9 +40,9 @@ class MapManager:
     """
     for sprite in self.get_group().sprites():
       if sprite.feet.collidelist(self.get_sables()) > -1:
-        sprite.vitesse(speed=1)
+        self.run.collision_sables(True)
       else:
-        sprite.vitesse(speed=3)
+        self.run.collision_sables(False)
 
   def teleport(self, name):
     """Téléporte le personage aux coordonnées indiqués sur Tiled
@@ -89,8 +85,8 @@ class MapManager:
     # Affiche dans la console la liste maps
     # print(f"- Rectangles de collisions : {walls}")
     # print(f"- Sables mouvant : {sables}")
-    print(f"- Calques : {group}")
-    print(f"- Carte : {name} / - Chemin d’accès : {tmx_data}")
+    # print(f"- Calques : {group}")
+    # print(f"- Carte : {name} / - Chemin d’accès : {tmx_data}")
 
   # retourne les information de la carte
   def get_map(self):

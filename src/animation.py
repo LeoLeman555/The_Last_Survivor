@@ -2,11 +2,6 @@ import pygame
 from chargement import Chargement
 class AnimateSprite(pygame.sprite.Sprite):
   def __init__(self, name):
-    """Charge les différents personages
-
-    Args:
-        name (str): nom du perso a charger
-    """
     super().__init__()
     self.sprite_sheet = Chargement.charge_image(self, chemin="sprite", name=name, extension="png")
     self.animation_index = 0
@@ -16,7 +11,8 @@ class AnimateSprite(pygame.sprite.Sprite):
       'left': self.get_images(38),}
     self.speed = 0    #int(input("Vitesse"))  #? valeur ronde sinon joueur flou
     
-  def change_animation(self, name):
+  def change_animation(self, name, speed):
+    self.speed = speed
     self.image = self.images[name][self.animation_index]      # change de costume
     self.image.set_colorkey([0, 0 , 0])     # gère la transparence
     self.clock += self.speed * 10
@@ -42,6 +38,3 @@ class AnimateSprite(pygame.sprite.Sprite):
     image = pygame.Surface([17, 38])
     image.blit(self.sprite_sheet, (0, 0), (x, y, 17, 38))
     return image
-  
-  def vitesse(self, speed):
-    self.speed = speed

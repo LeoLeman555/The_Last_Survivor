@@ -134,8 +134,8 @@ class Laser():
 class Missile():
   def __init__(self):
     self.cible_missile = pygame.image.load("res/weapon/cible_missile.png")
-    self.x = random.randint(200, 800)
-    self.y = random.randint(100, 500)
+    self.x = random.randint(300, 700)
+    self.y = random.randint(200, 400)
     self.lifetime = 50
   
   def draw(self, screen):
