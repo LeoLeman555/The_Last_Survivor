@@ -141,7 +141,6 @@ class Run:
     self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
     self.player.grenades.update(self.mouvement[0], self.mouvement[1])
-    
 
     self.player.grenades.draw(self.screen)
 
