@@ -96,9 +96,9 @@ class Run:
       self.mouvement = [0, 0]
 
     if press[pygame.K_r]:
-      self.player.launch_grenade(-5)
+      self.player.launch_grenade(-3)
     elif press[pygame.K_t]:
-      self.player.launch_grenade(5)
+      self.player.launch_grenade(3)
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
@@ -140,7 +140,8 @@ class Run:
     self.weapon.display(self.screen)
     self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
-    self.player.grenades.update()
+    self.player.grenades.update(self.mouvement[0], self.mouvement[1])
+
     self.player.grenades.draw(self.screen)
 
     self.player.explosions.update()
