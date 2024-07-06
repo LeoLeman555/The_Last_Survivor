@@ -2526,7 +2526,7 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="10" name="Collision" locked="1">
+ <objectgroup id="10" name="Collision">
   <object id="95" type="collision" x="3757.89" y="4638.84" width="20.1556" height="13.3778"/>
   <object id="96" type="collision" x="3325.67" y="4798.81" width="20.1556" height="13.3778"/>
   <object id="97" type="collision" x="3406.17" y="4255.06" width="20.1556" height="13.3778"/>
@@ -3116,11 +3116,11 @@
   <object id="683" type="collision" x="1794.12" y="7858.66" width="11.087" height="11.3478"/>
   <object id="684" type="collision" x="1681.82" y="7971.87" width="11.087" height="11.3478"/>
   <object id="685" type="collision" x="2129.96" y="7938.83" width="11.087" height="11.3478"/>
-  <object id="686" name="mur haut" type="collision" x="0" y="0" width="8000" height="32"/>
-  <object id="687" name="mur droite" type="collision" x="7984" y="32" width="16" height="7968"/>
+  <object id="686" name="mur haut" type="collision" x="0" y="0" width="8000" height="176"/>
+  <object id="687" name="mur droite" type="collision" x="7744" y="0" width="256" height="8000"/>
   <object id="688" x="7855" y="8016.5" width="0.25" height="0.25"/>
-  <object id="689" name="mur gauche" type="collision" x="0" y="32" width="16" height="7968"/>
-  <object id="691" name="mur bas" type="collision" x="16" y="7984" width="7968" height="16"/>
+  <object id="689" name="mur gauche" type="collision" x="0" y="0" width="256" height="8000"/>
+  <object id="691" name="mur bas" type="collision" x="0" y="7824" width="8000" height="176"/>
   <object id="745" type="collision" x="3122.46" y="6179.66" width="11.087" height="11.3478"/>
   <object id="746" type="collision" x="2993.21" y="6354.83" width="11.087" height="11.3478"/>
   <object id="747" type="collision" x="3329.79" y="7810.33" width="11.087" height="11.3478"/>

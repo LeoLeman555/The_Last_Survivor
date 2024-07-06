@@ -31,7 +31,7 @@ class Run:
 
     self.icon = Icon(self.ressources, self.barres)
     
-    self.speed_init = 3
+    self.speed_init = 12
     self.speed = self.speed_init
 
     self.player = Player(self.screen)  # mettre sur tiled un objet start

@@ -58,7 +58,7 @@ def Menu_principal():
     Menu_principal()  # Retourner au menu principal après la fin du jeu
 
 # Lancer le jeu directement
-# Menu_principal
-Run().run()
+Menu_principal()
+# Run().run()
 
 print("------------------------- FIN -------------------------")
