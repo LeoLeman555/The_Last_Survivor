@@ -1,102 +1,110 @@
 import pygame
-from animation import AnimateSprite
 from weapon import Bullet, Weapon
 from extras import Grenade
+from chargement import Chargement
 
-class Sprites(AnimateSprite):     # classe du joueur
-  """Classe des sprites
+class Player(pygame.sprite.Sprite):
+    def __init__(self, screen, name="jim", x=0, y=0):
+        super().__init__()
+        self.screen = screen
+        self.sprite_sheet = Chargement.charge_image(self, chemin="sprite", name=name, extension="png")
+        self.animation_index = 0
+        self.clock = 0
+        self.images = {
+            'right': self.get_images(0),
+            'left': self.get_images(38)
+        }
+        self.speed = 0
+        self.image = self.get_image(0, 0)
+        self.image.set_colorkey((0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.position = [x, y]
+        self.feet = pygame.Rect(0, 0, self.rect.width * 0.4, 10)
+        self.old_position = self.position.copy()
+        self.attack = 10
+        self.bullets = pygame.sprite.Group()
+        self.weapons = pygame.sprite.Group()
+        self.grenades = pygame.sprite.Group()
+        self.explosions = pygame.sprite.Group()
 
-  Args:
-      AnimateSprite (classe mère): héritage
-  """
-  def __init__(self, name, x, y):
-    super().__init__(name)
-    self.image = self.get_image(0, 0)
-    self.image.set_colorkey([0, 0 , 0])     # gère la transparence
-    self.rect = self.image.get_rect()
-    self.position = [x, y]  # position du joueur
-    self.feet = pygame.Rect(0, 0, self.rect.width * 0.4, 10)  # taille des pieds du joueur
-    self.old_position = self.position.copy()
+        self.ammo_images = {
+            1: "res/weapon/ammo1.png",
+            2: "res/weapon/ammo1.png",
+            3: "res/weapon/ammo2.png",
+            4: "res/weapon/ammo3.png",
+            5: "res/weapon/ammo1.png",
+            6: "res/weapon/ammo4.png",
+            7: "lance_flammes",
+            8: "res/weapon/ammo1.png",
+            9: "res/weapon/ammo5.png",
+            10: "res/weapon/ammo6.png",
+            11: "res/weapon/ammo6.png",
+            12: "res/weapon/ammo1.png",
+        }
+        self.grenade_image = "res/weapon/ammo5.png"
 
-  def save_location(self) :
-    """Sauvegarde la position du joueur dans une variable old_position
-    """
-    self.old_position = self.position.copy()
+    def change_animation(self, name, speed):
+        self.speed = speed
+        self.image = self.images[name][self.animation_index]
+        self.image.set_colorkey((0, 0, 0))
+        self.clock += self.speed * 10
 
-  def droite(self, diagonale, speed):
-    """Déplacement du personnage à droite avec animation
-    """
-    self.change_animation('right', speed)
-    self.position[0] += self.speed / diagonale
+        if self.clock >= 100:
+            self.animation_index = (self.animation_index + 1) % len(self.images[name])
+            self.clock = 0
 
-  def gauche(self, diagonale, speed):
-    """Déplacement du personnage à gauche avec animation
-    """
-    self.change_animation('left', speed)
-    self.position[0] -= self.speed/ diagonale
+    def get_images(self, y):
+        images = []
+        for i in range(8):
+            x = i * 17
+            image = self.get_image(x, y)
+            images.append(image)
+        return images
 
-  def haut(self, diagonale, speed):
-    """Déplacement du personnage en haut avec animation
-    """
-    if diagonale == 1:
-      self.change_animation('right', speed)
-    self.position[1] -= self.speed / diagonale
+    def get_image(self, x, y):
+        image = pygame.Surface([17, 38], pygame.SRCALPHA)
+        image.blit(self.sprite_sheet, (0, 0), (x, y, 17, 38))
+        return image
 
-  def bas(self, diagonale, speed):
-    """Déplacement du personnage en bas avec animation
-    """
-    if diagonale == 1:
-      self.change_animation('left', speed)
-    self.position[1] += self.speed / diagonale
+    def save_location(self):
+        self.old_position = self.position.copy()
 
-  def update(self):
-    """Actualise le rectangle du joueur
-    """
-    self.rect.topleft = self.position
-    self.feet.midbottom = self.rect.midbottom
+    def move_right(self, diagonale, speed):
+        self.change_animation('right', speed)
+        self.position[0] += self.speed / diagonale
 
-  def move_back(self):
-    """Permet de revenir en arrière si collision
-    """
-    self.position = self.old_position
-    self.rect.topleft = self.position
-    self.feet.midbottom = self.rect.midbottom
+    def move_left(self, diagonale, speed):
+        self.change_animation('left', speed)
+        self.position[0] -= self.speed / diagonale
 
-class Player(Sprites):
-  def __init__(self, screen):
-    super().__init__("jim", 0, 0)
-    self.attack = 10
-    self.bullets = pygame.sprite.Group()
-    self.weapons = pygame.sprite.Group()
-    self.grenades = pygame.sprite.Group()
-    self.explosions = pygame.sprite.Group()
-    self.screen = screen  # Ajout de cet attribut
+    def move_up(self, diagonale, speed):
+        if diagonale == 1:
+            self.change_animation('right', speed)
+        self.position[1] -= self.speed / diagonale
 
-    self.ammo_images = {
-      1: "res/weapon/ammo1.png",
-      2: "res/weapon/ammo1.png",
-      3: "res/weapon/ammo2.png",  
-      4: "res/weapon/ammo3.png",  
-      5: "res/weapon/ammo1.png",  
-      6: "res/weapon/ammo4.png",
-      7: "lance_flammes",
-      8: "res/weapon/ammo1.png",
-      9: "res/weapon/ammo5.png",
-      10: "res/weapon/ammo6.png",
-      11: "res/weapon/ammo6.png",
-      12: "res/weapon/ammo1.png",
-    }
-    self.grenade_image = "res/weapon/ammo5.png"
+    def move_down(self, diagonale, speed):
+        if diagonale == 1:
+            self.change_animation('left', speed)
+        self.position[1] += self.speed / diagonale
 
-  def launch_bullet(self, goal, weapon_id, data_weapon):
-    ammo_image = self.ammo_images.get(weapon_id)
-    weapon_range = data_weapon[weapon_id][3]
-    explosive = data_weapon[weapon_id][4] == 1  # Vérifie si l'arme est explosive
-    self.bullets.add(Bullet(self.screen, self, goal, ammo_image, weapon_range, explosive=explosive))
+    def update(self):
+        self.rect.topleft = self.position
+        self.feet.midbottom = self.rect.midbottom
 
-  def affiche_weapon(self, name, taille, position):
-    self.weapons.add(Weapon(self, name, taille, position))
-    self.weapons.add(Weapon(self, name, taille, position))
+    def move_back(self):
+        self.position = self.old_position
+        self.rect.topleft = self.position
+        self.feet.midbottom = self.rect.midbottom
 
-  def launch_grenade(self, speed):
-    self.grenades.add(Grenade(self.screen, self, self.grenade_image, speed))
+    def launch_bullet(self, goal, weapon_id, data_weapon):
+        ammo_image = self.ammo_images.get(weapon_id)
+        weapon_range = data_weapon[weapon_id][3]
+        explosive = data_weapon[weapon_id][4] == 1
+        self.bullets.add(Bullet(self.screen, self, goal, ammo_image, weapon_range, explosive=explosive))
+
+    def display_weapon(self, name, size, position):
+        weapon = Weapon(self, name, size, position)
+        self.weapons.add(weapon)
+
+    def launch_grenade(self, speed):
+        self.grenades.add(Grenade(self.screen, self, self.grenade_image, speed))

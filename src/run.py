@@ -34,7 +34,7 @@ class Run:
     self.speed_init = 12
     self.speed = self.speed_init
 
-    self.player = Player(self.screen)  # mettre sur tiled un objet start
+    self.player = Player(self.screen, "jim")  # mettre sur tiled un objet start
     self.map_manager = MapManager(self.screen, self.player, self) # appel de la classe mapManager
     self.weapon = Weapon(self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
 
@@ -62,32 +62,32 @@ class Run:
 
     # condition de déplacement
     if press[pygame.K_UP] and press[pygame.K_LEFT]: # pour se déplacer en diagonale
-      self.player.haut(1.5, self.speed)
-      self.player.gauche(1.5, self.speed)
+      self.player.move_up(1.5, self.speed)
+      self.player.move_left(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)]
     elif press[pygame.K_UP] and press[pygame.K_RIGHT]:
-      self.player.haut(1.5, self.speed)
-      self.player.droite(1.5, self.speed)
+      self.player.move_up(1.5, self.speed)
+      self.player.move_right(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)]
     elif press[pygame.K_DOWN] and press[pygame.K_RIGHT]:
-      self.player.bas(1.5, self.speed)
-      self.player.droite(1.5, self.speed)
+      self.player.move_down(1.5, self.speed)
+      self.player.move_right(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)*-1]
     elif press[pygame.K_DOWN] and press[pygame.K_LEFT]:
-      self.player.bas(1.5, self.speed)
-      self.player.gauche(1.5, self.speed)
+      self.player.move_down(1.5, self.speed)
+      self.player.move_left(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)*-1]
     elif press[pygame.K_UP]:        # pour se déplacer
-      self.player.haut(1, self.speed)
+      self.player.move_up(1, self.speed)
       self.mouvement = [0, self.speed*2]
     elif press[pygame.K_DOWN]:
-      self.player.bas(1, self.speed)
+      self.player.move_down(1, self.speed)
       self.mouvement = [0, self.speed*-2]
     elif press[pygame.K_LEFT]:
-      self.player.gauche(1, self.speed)
+      self.player.move_left(1, self.speed)
       self.mouvement = [self.speed*2, 0]
     elif press[pygame.K_RIGHT]:
-      self.player.droite(1, self.speed)
+      self.player.move_right(1, self.speed)
       self.mouvement = [self.speed*-2, 0]
     else:
       self.mouvement = [0, 0]
@@ -138,7 +138,7 @@ class Run:
 
     self.weapon.rotate_to_cursor(self.cursor_pos)
     self.weapon.display(self.screen)
-    self.player.affiche_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
     self.player.grenades.update(self.mouvement[0], self.mouvement[1])
 
