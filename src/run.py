@@ -7,6 +7,7 @@ from weapon import *
 from lance_flamme import *
 from extras import *
 from read_data import ReadData
+from enemy import Enemy
 
 class Run:
   def __init__(self):
@@ -31,7 +32,7 @@ class Run:
 
     self.icon = Icon(self.ressources, self.barres)
     
-    self.speed_init = 12
+    self.speed_init = 6
     self.speed = self.speed_init
 
     self.player = Player(self.screen, "jim")  # mettre sur tiled un objet start
@@ -56,37 +57,39 @@ class Run:
 
     self.collision_caillou = False
 
+    self.enemy = pygame.sprite.Group()
+
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
     press = pygame.key.get_pressed()
 
     # condition de déplacement
-    if press[pygame.K_UP] and press[pygame.K_LEFT]: # pour se déplacer en diagonale
+    if press[pygame.K_w] and press[pygame.K_a]: # pour se déplacer en diagonale
       self.player.move_up(1.5, self.speed)
       self.player.move_left(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)]
-    elif press[pygame.K_UP] and press[pygame.K_RIGHT]:
+    elif press[pygame.K_w] and press[pygame.K_d]:
       self.player.move_up(1.5, self.speed)
       self.player.move_right(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)]
-    elif press[pygame.K_DOWN] and press[pygame.K_RIGHT]:
+    elif press[pygame.K_s] and press[pygame.K_d]:
       self.player.move_down(1.5, self.speed)
       self.player.move_right(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)*-1]
-    elif press[pygame.K_DOWN] and press[pygame.K_LEFT]:
+    elif press[pygame.K_s] and press[pygame.K_a]:
       self.player.move_down(1.5, self.speed)
       self.player.move_left(1.5, self.speed)
       self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)*-1]
-    elif press[pygame.K_UP]:        # pour se déplacer
+    elif press[pygame.K_w]:        # pour se déplacer
       self.player.move_up(1, self.speed)
       self.mouvement = [0, self.speed*2]
-    elif press[pygame.K_DOWN]:
+    elif press[pygame.K_s]:
       self.player.move_down(1, self.speed)
       self.mouvement = [0, self.speed*-2]
-    elif press[pygame.K_LEFT]:
+    elif press[pygame.K_a]:
       self.player.move_left(1, self.speed)
       self.mouvement = [self.speed*2, 0]
-    elif press[pygame.K_RIGHT]:
+    elif press[pygame.K_d]:
       self.player.move_right(1, self.speed)
       self.mouvement = [self.speed*-2, 0]
     else:
@@ -147,10 +150,20 @@ class Run:
     self.player.explosions.update()
     self.player.explosions.draw(self.screen)
 
+  def update_enemy(self):
+    for enemy in self.enemy:
+      enemy.follow(475, 281)
+      enemy.update(0.017, self.mouvement[0], self.mouvement[1])
+      enemy.draw(self.screen)
+
   def run(self):
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
+    self.enemy.add(Enemy(self.screen, 200, 100))
+    self.enemy.add(Enemy(self.screen, 900, 900))
+    self.enemy.add(Enemy(self.screen, 500, 200))
+
     while run:
       self.cursor_pos = pygame.mouse.get_pos()
       self.current_time = pygame.time.get_ticks()
@@ -174,10 +187,12 @@ class Run:
       clock.tick(60)
 
   def update_class(self):
+    self.update_enemy()
     self.update.update_all(self.mouvement[0], self.mouvement[1])
     self.drone.update_drone()
 
     self.update_weapon()
+
 
     self.player.explosions.update()
     self.player.explosions.draw(self.screen)
