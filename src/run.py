@@ -7,7 +7,7 @@ from weapon import *
 from lance_flamme import *
 from extras import *
 from read_data import ReadData
-from enemy import Enemy
+from enemy import *
 
 class Run:
   def __init__(self):
@@ -152,17 +152,17 @@ class Run:
 
   def update_enemy(self):
     for enemy in self.enemy:
-      enemy.follow(475, 281)
-      enemy.update(0.017, self.mouvement[0], self.mouvement[1])
+      # enemy.follow(475, 281)
+      # enemy.attack()
+      # enemy.die()
+      enemy.update(0.05, self.mouvement[0], self.mouvement[1])
       enemy.draw(self.screen)
 
   def run(self):
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
-    self.enemy.add(Enemy(self.screen, 200, 100))
-    self.enemy.add(Enemy(self.screen, 900, 900))
-    self.enemy.add(Enemy(self.screen, 500, 200))
+    self.enemy.add(Shardsoul(self.screen, 0, 0))
 
     while run:
       self.cursor_pos = pygame.mouse.get_pos()
