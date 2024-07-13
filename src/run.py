@@ -32,7 +32,7 @@ class Run:
 
     self.icon = Icon(self.ressources, self.barres)
     
-    self.speed_init = 6
+    self.speed_init = 3
     self.speed = self.speed_init
 
     self.player = Player(self.screen, "jim")  # mettre sur tiled un objet start
@@ -152,10 +152,10 @@ class Run:
 
   def update_enemy(self):
     for enemy in self.enemy:
-      # enemy.follow(475, 281)
+      enemy.follow(475, 281)
       # enemy.attack()
       # enemy.die()
-      enemy.update(0.05, self.mouvement[0], self.mouvement[1])
+      enemy.update(0.02, self.mouvement[0], self.mouvement[1])
       enemy.draw(self.screen)
 
   def run(self):
@@ -163,6 +163,8 @@ class Run:
     run = True
     self.change_max_xp(5)
     self.enemy.add(Shardsoul(self.screen, 0, 0))
+    self.enemy.add(Sprout(self.screen, 100, 0))
+    self.enemy.add(Worm(self.screen, 100, 100))
 
     while run:
       self.cursor_pos = pygame.mouse.get_pos()
