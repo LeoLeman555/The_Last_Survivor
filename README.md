@@ -1,6 +1,6 @@
 # The Last Survivor
 
-![Poster of the game](res\menu\logo.jpg "The Last Survivor").
+![Poster of the game](res/menu/logo.jpg "The Last Survivor").
 
 ## Overview
 

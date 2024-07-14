@@ -1,4 +1,5 @@
 import pygame, random, math
+from read_data import ReadData
 
 class Enemy(pygame.sprite.Sprite):
   def __init__(self, screen, name, animations, size, x, y, speed):
@@ -90,61 +91,30 @@ class Enemy(pygame.sprite.Sprite):
 
 class Shardsoul(Enemy):
   def __init__(self, screen, x, y, speed=3):
-    animation_specs = {
-      "idle": (0, 8, 64, 64),
-      "move": (1, 4, 64, 64),
-      "attack": (2, 5, 64, 64),
-      "angry": (3, 4, 64, 64),
-      "die": (4, 6, 64, 64)
-    }
+    animation_specs = ReadData.read_animation_specs("data/shardsoul_animations.txt")
     animations = self.load_animations("res/enemy/shardsoul.png", animation_specs)
     super().__init__(screen, "shardsoul", animations, 2, x, y, speed)
 
 class Sprout(Enemy):
   def __init__(self, screen, x, y, speed=5):
-    animation_specs = {
-      "idle": (0, 2, 45, 45),
-      "move": (1, 6, 45, 45),
-      "attack": (3, 12, 45, 45),
-      "angry": (2, 6, 45, 45),
-      "die": (4, 9, 45, 45)
-    }
+    animation_specs = ReadData.read_animation_specs("data/sprout_animations.txt")
     animations = self.load_animations("res/enemy/sprout.png", animation_specs)
     super().__init__(screen, "sprout", animations, 2, x, y, speed)
 
 class Worm(Enemy):
   def __init__(self, screen, x, y, speed=5):
-    animation_specs = {
-      "idle": (0, 9, 90, 90),
-      "move": (1, 9, 90, 90),
-      "attack": (2, 16, 90),
-      "hit": (3, 3, 90, 90),
-      "die": (4, 8, 90, 90)
-    }
+    animation_specs = ReadData.read_animation_specs("data/worm_animations.txt")
     animations = self.load_animations("res/enemy/worm.png", animation_specs)
     super().__init__(screen, "worm", animations, 1.5, x, y, speed)
 
 class Wolf(Enemy):
   def __init__(self, screen, x, y, speed=5):
-    animation_specs = {
-      "idle": (0, 4, 64, 64),
-      "move": (1, 12, 64, 64),
-      "attack": (2, 5, 64, 64),
-      "die": (3, 6, 64, 64)
-    }
+    animation_specs = ReadData.read_animation_specs("data/wolf_animations.txt")
     animations = self.load_animations("res/enemy/wolf.png", animation_specs)
     super().__init__(screen, "wolf", animations, 1.5, x, y, speed)
 
 class Robot(Enemy):
   def __init__(self, screen, x, y, speed=5):
-    animation_specs = {
-      "idle": (0, 2, 160, 96),
-      "move": (1, 4, 160, 96),
-      "attacks": (2, 8, 160, 96),
-      "protect": (3, 10, 160, 96),
-      "attack2": (4, 7, 160, 96),
-      "die": (6, 10, 160, 96),
-      "angry": (7, 5, 160, 96)
-    }
+    animation_specs = ReadData.read_animation_specs("data/robot_animations.txt")
     animations = self.load_animations("res/enemy/robot.png", animation_specs)
     super().__init__(screen, "robot", animations, 1.5, x, y, speed)

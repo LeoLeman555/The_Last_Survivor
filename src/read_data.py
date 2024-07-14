@@ -39,3 +39,11 @@ class ReadData():
         value = int(parts[1])
         barres[key] = value
     return barres
+  
+  def read_animation_specs(filename):
+    animation_specs = {}
+    with open(filename, 'r') as file:
+      for line in file:
+        key, value = line.strip().split(':')
+        animation_specs[key] = tuple(map(int, value.strip("()").split(',')))
+    return animation_specs
