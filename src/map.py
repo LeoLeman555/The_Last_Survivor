@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import pygame, pytmx, pyscroll
-from chargement import Chargement
+from load import Load
 
 # Utilisation de la dataclass
 @dataclass
@@ -61,7 +61,7 @@ class MapManager:
     Args:
         name (str): nom de la carte à charger
     """
-    tmx_data = Chargement.charge_tmx(self, chemin="map", name=name)
+    tmx_data = Load.charge_tmx(self, chemin="map", name=name)
     map_data = pyscroll.data.TiledMapData(tmx_data)
     map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
     map_layer.zoom = 2

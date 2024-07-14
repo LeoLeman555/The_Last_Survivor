@@ -1,13 +1,13 @@
 import pygame
 from weapon import Bullet, Weapon
 from extras import Grenade
-from chargement import Chargement
+from load import Load
 
 class Player(pygame.sprite.Sprite):
   def __init__(self, screen, name="jim", x=0, y=0):
     super().__init__()
     self.screen = screen
-    self.sprite_sheet = Chargement.charge_image(self, chemin="sprite", name=name, extension="png")
+    self.sprite_sheet = Load.charge_image(self, chemin="sprite", name=name, extension="png")
     self.animation_index = 0
     self.clock = 0
     self.images = {

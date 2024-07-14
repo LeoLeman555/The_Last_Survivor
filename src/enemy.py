@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
     self.frame_index = 0
     self.image = self.current_animation[self.frame_index]
     self.image = pygame.transform.scale(self.image, (self.image.get_width()*self.size, self.image.get_height()*self.size))
-    self.rect = self.image.get_rect(topleft=(self.x, self.y))
+    self.rect = self.image.get_rect(bottomleft=(self.x, self.y))
     self.animation_time = 0
     self.is_alive = True
     self.facing_left = False
@@ -21,7 +21,7 @@ class Enemy(pygame.sprite.Sprite):
 
   def update(self, dt, x, y):
 
-    self.rect = self.image.get_rect(topleft=(self.x, self.y))
+    self.rect = self.image.get_rect(bottomleft=(self.x, self.y))
     self.x += x
     self.y += y
 
@@ -37,13 +37,13 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.transform.flip(self.image, True, False)
 
   def draw(self, screen):
-    pygame.draw.rect(screen, (0, 0, 0), self.rect)
+    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     screen.blit(self.image, (self.x, self.y))
 
   def move(self, dx, dy):
     self.x += dx
     self.y += dy
-    self.rect.topleft = (self.x, self.y)
+    self.rect.bottomleft = (self.x, self.y)
     self.set_animation("move")
     self.facing_left = dx < 0
 
@@ -70,7 +70,7 @@ class Enemy(pygame.sprite.Sprite):
       direction.normalize_ip()
       self.x += direction.x * self.speed
       self.y += direction.y * self.speed
-      self.rect.topleft = (self.x, self.y)
+      self.rect.bottomleft = (self.x, self.y)
       self.set_animation("move")
       self.facing_left = direction.x < 0
 
@@ -79,10 +79,10 @@ class Enemy(pygame.sprite.Sprite):
     animations = {name: self.get_frames(sprite_sheet, *spec) for name, spec in animation_specs.items()}
     return animations
 
-  def get_frames(self, sprite_sheet, row, num_frames, size):
+  def get_frames(self, sprite_sheet, row, num_frames, size_w, size_h):
     frames = []
     for i in range(num_frames):
-      frame = sprite_sheet.subsurface((i * size, row * size, size, size))
+      frame = sprite_sheet.subsurface((i * size_w, row * size_h, size_w, size_h))
       frame = frame.copy()
       frame = frame.subsurface(frame.get_bounding_rect())
       frames.append(frame)
@@ -91,11 +91,11 @@ class Enemy(pygame.sprite.Sprite):
 class Shardsoul(Enemy):
   def __init__(self, screen, x, y, speed=3):
     animation_specs = {
-      "idle": (0, 8, 64),
-      "move": (1, 4, 64),
-      "attack": (2, 5, 64),
-      "angry": (3, 4, 64),
-      "die": (4, 6, 64)
+      "idle": (0, 8, 64, 64),
+      "move": (1, 4, 64, 64),
+      "attack": (2, 5, 64, 64),
+      "angry": (3, 4, 64, 64),
+      "die": (4, 6, 64, 64)
     }
     animations = self.load_animations("res/enemy/shardsoul.png", animation_specs)
     super().__init__(screen, "shardsoul", animations, 2, x, y, speed)
@@ -103,11 +103,11 @@ class Shardsoul(Enemy):
 class Sprout(Enemy):
   def __init__(self, screen, x, y, speed=5):
     animation_specs = {
-      "idle": (0, 2, 45),
-      "move": (1, 6, 45),
-      "attack": (3, 12, 45),
-      "angry": (2, 6, 45),
-      "die": (4, 9, 45)
+      "idle": (0, 2, 45, 45),
+      "move": (1, 6, 45, 45),
+      "attack": (3, 12, 45, 45),
+      "angry": (2, 6, 45, 45),
+      "die": (4, 9, 45, 45)
     }
     animations = self.load_animations("res/enemy/sprout.png", animation_specs)
     super().__init__(screen, "sprout", animations, 2, x, y, speed)
@@ -115,11 +115,36 @@ class Sprout(Enemy):
 class Worm(Enemy):
   def __init__(self, screen, x, y, speed=5):
     animation_specs = {
-      "idle": (0, 9, 90),
-      "move": (1, 9, 90),
+      "idle": (0, 9, 90, 90),
+      "move": (1, 9, 90, 90),
       "attack": (2, 16, 90),
-      "hit": (3, 3, 90),
-      "die": (4, 8, 90)
+      "hit": (3, 3, 90, 90),
+      "die": (4, 8, 90, 90)
     }
     animations = self.load_animations("res/enemy/worm.png", animation_specs)
-    super().__init__(screen, "sprout", animations, 1.5, x, y, speed)
+    super().__init__(screen, "worm", animations, 1.5, x, y, speed)
+
+class Wolf(Enemy):
+  def __init__(self, screen, x, y, speed=5):
+    animation_specs = {
+      "idle": (0, 4, 64, 64),
+      "move": (1, 12, 64, 64),
+      "attack": (2, 5, 64, 64),
+      "die": (3, 6, 64, 64)
+    }
+    animations = self.load_animations("res/enemy/wolf.png", animation_specs)
+    super().__init__(screen, "wolf", animations, 1.5, x, y, speed)
+
+class Robot(Enemy):
+  def __init__(self, screen, x, y, speed=5):
+    animation_specs = {
+      "idle": (0, 2, 160, 96),
+      "move": (1, 4, 160, 96),
+      "attacks": (2, 8, 160, 96),
+      "protect": (3, 10, 160, 96),
+      "attack2": (4, 7, 160, 96),
+      "die": (6, 10, 160, 96),
+      "angry": (7, 5, 160, 96)
+    }
+    animations = self.load_animations("res/enemy/robot.png", animation_specs)
+    super().__init__(screen, "robot", animations, 1.5, x, y, speed)

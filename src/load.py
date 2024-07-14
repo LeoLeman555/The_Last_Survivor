@@ -1,6 +1,6 @@
 import pygame, pytmx
 
-class Chargement():
+class Load():
   def charge_image(self, chemin, name, extension):
     self.image = pygame.image.load(f"res/{chemin}/{name}.{extension}") # recuperation image
     return self.image

@@ -152,19 +152,21 @@ class Run:
 
   def update_enemy(self):
     for enemy in self.enemy:
-      enemy.follow(475, 281)
-      # enemy.attack()
+      # enemy.follow(475, 281)
+      enemy.attack()
       # enemy.die()
-      enemy.update(0.02, self.mouvement[0], self.mouvement[1])
+      enemy.update(0.05, self.mouvement[0], self.mouvement[1])
       enemy.draw(self.screen)
 
   def run(self):
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
-    self.enemy.add(Shardsoul(self.screen, 0, 0))
-    self.enemy.add(Sprout(self.screen, 100, 0))
-    self.enemy.add(Worm(self.screen, 100, 100))
+    # self.enemy.add(Shardsoul(self.screen, 0, 0))
+    # self.enemy.add(Sprout(self.screen, 100, 0))
+    # self.enemy.add(Worm(self.screen, 100, 100))
+    # self.enemy.add(Wolf(self.screen, 200, 100))
+    self.enemy.add(Robot(self.screen, 100, 100))
 
     while run:
       self.cursor_pos = pygame.mouse.get_pos()

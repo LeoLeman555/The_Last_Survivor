@@ -1,5 +1,7 @@
 # The Last Survivor
 
+![Poster of the game](res\menu\logo.jpg "The Last Survivor").
+
 ## Overview
 
 "The Last Survivor" is a survival game where players navigate various challenges to stay alive. This game is written in Python and aims to provide an immersive experience with engaging gameplay mechanics and a captivating story.
