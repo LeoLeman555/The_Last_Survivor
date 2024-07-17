@@ -10,10 +10,12 @@ from read_data import ReadData
 from enemy import *
 
 class Run:
-  def __init__(self):
+  def __init__(self, zoom):
+    pygame.font.init()
+    self.zoom = zoom
+
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Jeu")
-    pygame.font.init()
 
     self.read_data = ReadData()
 
@@ -21,11 +23,10 @@ class Run:
     self.palier_xp = self.read_data.get_paliers("data/paliers.txt")
     self.ressources = self.read_data.read_ressources_data("data/ressources.txt")
     self.barres = self.read_data.read_barres_data("data/barres.txt")
-
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
 
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 7
+    self.weapon_key = 1
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -35,9 +36,9 @@ class Run:
     self.speed_init = 3
     self.speed = self.speed_init
 
-    self.player = Player(self.screen, "jim")  # mettre sur tiled un objet start
-    self.map_manager = MapManager(self.screen, self.player, self) # appel de la classe mapManager
-    self.weapon = Weapon(self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
+    self.player = Player(self.zoom, self.screen, "jim")  # mettre sur tiled un objet start
+    self.map_manager = MapManager(self, self.screen, self.player, self.zoom) # appel de la classe mapManager
+    self.weapon = Weapon(self.zoom, self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
 
     self.mouse_pressed = False
     self.shoot_delay = 100  # Délai entre les tirs en millisecondes
@@ -108,13 +109,15 @@ class Run:
     self.icon.change_palier("xp", self.palier_xp[self.index_palier_xp])
 
   def ajout_particule(self):
+    x = 500 + 10 * self.zoom
+    y = 300 + 5 * self.zoom
     mouse_x, mouse_y = pygame.mouse.get_pos()
     dx = mouse_x - 500
     dy = mouse_y - 300
     distance = math.hypot(dx, dy)
     direction = (dx / distance, dy / distance)  # Normaliser le vecteur
     for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
-      self.particles.append(FireParticle(520, 310, direction))
+      self.particles.append(FireParticle(self.zoom, x, y, direction))
 
   def update_weapon(self):
     if self.mouse_pressed:
@@ -130,6 +133,7 @@ class Run:
         particle.draw(self.screen)
       self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
     else:
+      self.player.bullets.move()
       self.player.bullets.draw(self.screen)
       for bullet in self.player.bullets:
         bullet.move()
@@ -137,11 +141,12 @@ class Run:
           if bullet.explosive:  # Vérifiez si la balle est explosive
             explosion = Explosion(bullet.rect.center, bullet.images_explosion)
             self.explosions.add(explosion)
+          print("surpression")
           bullet.delete()
 
     self.weapon.rotate_to_cursor(self.cursor_pos)
     self.weapon.display(self.screen)
-    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+    self.player.display_weapon(self.zoom, self.weapon_name, self.weapon_taille, self.weapon_position)
 
     self.player.grenades.update(self.mouvement[0], self.mouvement[1])
 
@@ -152,10 +157,10 @@ class Run:
 
   def update_enemy(self):
     for enemy in self.enemy:
-      # enemy.follow(475, 281)
+      enemy.follow(475, 281)
       # enemy.attack()
       # enemy.die()
-      enemy.update(0.05, self.mouvement[0], self.mouvement[1])
+      enemy.update(0.05, self.mouvement[0], self.mouvement[1], self.player.rect_collision)
       enemy.draw(self.screen)
 
   def run(self):
@@ -196,7 +201,6 @@ class Run:
     self.drone.update_drone()
 
     self.update_weapon()
-
 
     self.player.explosions.update()
     self.player.explosions.draw(self.screen)

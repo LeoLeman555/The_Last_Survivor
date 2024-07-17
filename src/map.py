@@ -12,10 +12,11 @@ class Map:
   tmx_data: pytmx.TiledMap
 
 class MapManager:
-  def __init__(self, screen, player, run):
+  def __init__(self, run, screen, player, zoom):
     self.run = run
     self.maps = dict()    #'house' -> map("house", walls, group)
     self.screen = screen
+    self.zoom = zoom
     self.player = player
     self.current_map = "carte_desert"
 
@@ -64,7 +65,7 @@ class MapManager:
     tmx_data = Load.charge_tmx(self, chemin="map", name=name)
     map_data = pyscroll.data.TiledMapData(tmx_data)
     map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
-    map_layer.zoom = 2
+    map_layer.zoom = self.zoom
     
     # rectangles de collision
     walls = []

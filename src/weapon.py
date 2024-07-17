@@ -1,25 +1,32 @@
 import pygame
 import math
 from extras import Explosion
+import player
+from load import *
 
 class Weapon(pygame.sprite.Sprite):
-  def __init__(self, player, name, taille, position):
+  def __init__(self, zoom:int, player:'player.Player', name:str, taille:tuple, position:tuple):
     super().__init__()
+    self.zoom = zoom
     self.player = player
     self.name = name
     self.taille = taille
-    self.image = pygame.image.load(f"res/weapon/{self.name}.png")
-    self.image = pygame.transform.scale(self.image, self.taille)
+    self.image = Load.charge_image(self, self.zoom/2, "weapon", self.name, "png", 0.85)
     self.rect = self.image.get_rect()
-    self.rect.center = position  # Center of the screen
+
+    self.position = list(position)
+    self.position[0] += 10 * self.zoom
+    self.position[1] += 5 * self.zoom
+
+    self.rect.center = self.position  # Center of the screen
     self.original_image = self.image  # Stockage de l'image originale pour la rotation
     self.angle = 0
 
-  def display(self, screen):
+  def display(self, screen:'pygame.surface.Surface'):
     """Affiche l'arme au centre de l'écran."""
     screen.blit(self.image, self.rect)
 
-  def rotate_to_cursor(self, cursor_pos):
+  def rotate_to_cursor(self, cursor_pos:tuple):
     """Tourne l'arme pour qu'elle pointe vers le curseur de la souris."""
     # Calcul de l'angle entre l'arme et le curseur
     dx, dy = cursor_pos[0] - self.rect.centerx, cursor_pos[1] - self.rect.centery
@@ -95,4 +102,3 @@ class Bullet(pygame.sprite.Sprite):
       if self.explosive:  # Déclenche l'explosion uniquement si la balle est explosive
         explosion = Explosion(self.rect.center, self.images_explosion)
         self.player.screen.blit(explosion.image, explosion.rect)
-      

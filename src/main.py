@@ -5,6 +5,8 @@ from run import Run
 
 pygame.init()
 
+run = Run(2)
+
 def Menu_principal():
   direction = None
   screen = pygame.display.set_mode((1000, 600))
@@ -54,11 +56,11 @@ def Menu_principal():
 
   # Exécuter l'action en fonction du bouton cliqué
   if direction == "jeu":
-    Run().run()  # Démarrer le jeu
+    run.run()  # Démarrer le jeu
     Menu_principal()  # Retourner au menu principal après la fin du jeu
 
 # Lancer le jeu directement
 # Menu_principal()
-Run().run()
+run.run()
 
 print("------------------------- FIN -------------------------")
