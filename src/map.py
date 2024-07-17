@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-import pygame, pytmx, pyscroll
+import pygame, pytmx, pyscroll, run, player
 from load import Load
 
 # Utilisation de la dataclass
@@ -12,7 +12,7 @@ class Map:
   tmx_data: pytmx.TiledMap
 
 class MapManager:
-  def __init__(self, run, screen, player, zoom):
+  def __init__(self, run:'run.Run', screen:'pygame.surface.Surface', player:'player.Player', zoom:int):
     self.run = run
     self.maps = dict()    #'house' -> map("house", walls, group)
     self.screen = screen
@@ -45,24 +45,18 @@ class MapManager:
       else:
         self.run.collision_sables(False)
 
-  def teleport(self, name):
+  def teleport(self, name:str):
     """Téléporte le personage aux coordonnées indiqués sur Tiled
-
-    Args:
-        name (str): nom de l'objet 
     """
     point = self.get_object(name)
     self.player.position[0] = point.x
     self.player.position[1] = point.y
     self.player.save_location()
 
-  def register_map(self, name):
+  def register_map(self, name:str):
     """Charge les différentes cartes
-
-    Args:
-        name (str): nom de la carte à charger
     """
-    tmx_data = Load.charge_tmx(self, chemin="map", name=name)
+    tmx_data = Load.charge_tmx(self, "map", name)
     map_data = pyscroll.data.TiledMapData(tmx_data)
     map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
     map_layer.zoom = self.zoom
@@ -102,7 +96,7 @@ class MapManager:
   def get_sables(self):
     return self.get_map().sables
   
-  def get_object(self, name):
+  def get_object(self, name:str):
     return self.get_map().tmx_data.get_object_by_name(name)
   
   # créer une méthode pour centrer le joueur et pour récupérer les collisions

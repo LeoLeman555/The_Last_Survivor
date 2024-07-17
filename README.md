@@ -18,7 +18,7 @@
 
 ## Prerequisites
 
-This project requires Python 3.6+ and Git installed on your machine.
+This project requires [Python 3.6+](https://www.python.org/) and [Git](https://git-scm.com/) installed on your machine. If you need to install them, click on the respective links.
 
 ## Installation
 

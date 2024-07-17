@@ -1,11 +1,9 @@
-import pygame
-import math
+import pygame, math, player, random
 from extras import Explosion
-import player
 from load import *
 
 class Weapon(pygame.sprite.Sprite):
-  def __init__(self, zoom:int, player:'player.Player', name:str, taille:tuple, position:tuple):
+  def __init__(self, zoom:int, player:'player.Player', name:str, taille:tuple, position:list):
     super().__init__()
     self.zoom = zoom
     self.player = player
@@ -13,10 +11,7 @@ class Weapon(pygame.sprite.Sprite):
     self.taille = taille
     self.image = Load.charge_image(self, self.zoom/2, "weapon", self.name, "png", 0.85)
     self.rect = self.image.get_rect()
-
-    self.position = list(position)
-    self.position[0] += 10 * self.zoom
-    self.position[1] += 5 * self.zoom
+    self.position = position
 
     self.rect.center = self.position  # Center of the screen
     self.original_image = self.image  # Stockage de l'image originale pour la rotation
@@ -44,17 +39,22 @@ class Weapon(pygame.sprite.Sprite):
     
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, screen, player, goal, image_path, range=500, speed=30, explosive=False):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', player:'player.Player', goal:tuple, name:str, distance_weapon:int, position:list, range:int =500, explosive:bool =False, speed:int =15):
     super().__init__()
-    self.speed = speed
+    self.zoom = zoom
+    self.speed = speed * self.zoom
     self.player = player
-    self.range = range / 2
+    self.name = name
+    self.range = range * self.zoom
+    self.distance_weapon = distance_weapon * self.zoom
     self.distance_traveled = 0
-    self.image = pygame.image.load(image_path)
+    self.image = Load.charge_image(self, self.zoom/2, "weapon", self.name, "png", 1)
     self.rect = self.image.get_rect()
     self.goal = goal
-    self.rect.x = 520
-    self.rect.y = 310
+    self.position = position
+    self.position[0] += 10 * self.zoom
+    self.position[1] += 5 * self.zoom
+    self.rect.center = self.position
     self.screen = screen
     self.explosive = explosive
 
@@ -64,24 +64,6 @@ class Bullet(pygame.sprite.Sprite):
 
     self.origin_image = self.image
     self.angle = 0
-
-    self.sprite_sheet_explosion = pygame.image.load("res/weapon/explosion.png")
-    self.images_explosion = self.get_images()
-
-  def get_images(self):
-    images_explosion = []
-    sprite_width = 69
-    sprite_height = int(69.4)
-    for y in range(0, self.sprite_sheet_explosion.get_height(), sprite_height):
-      for x in range(0, self.sprite_sheet_explosion.get_width(), sprite_width):
-        img = self.get_image(x, y, sprite_width, sprite_height)
-        images_explosion.append(img)
-    return images_explosion
-  
-  def get_image(self, x, y, width, height):
-    image = pygame.Surface([width, height], pygame.SRCALPHA)
-    image.blit(self.sprite_sheet_explosion, (0, 0), (x, y, width, height))
-    return image
 
   def rotate(self):
     self.angle = math.atan2(-self.vecteur[1], self.vecteur[0]) * 180 / math.pi
@@ -97,8 +79,37 @@ class Bullet(pygame.sprite.Sprite):
     self.rect.y += self.vecteur[1]
     self.distance_traveled += self.speed
 
-    if self.rect.x > 1000 or self.rect.x < 0 or self.rect.y > 600 or self.rect.y < 0 or self.distance_traveled > self.range:
+    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
+    if self.distance_traveled > self.distance_weapon:
+      self.screen.blit(self.image, self.rect)
+
+    if self.distance_traveled > self.range:
       self.delete()
-      if self.explosive:  # Déclenche l'explosion uniquement si la balle est explosive
-        explosion = Explosion(self.rect.center, self.images_explosion)
-        self.player.screen.blit(explosion.image, explosion.rect)
+      self.explode()
+
+  def explode(self):
+    if self.explosive:  # Déclenche l'explosion uniquement si la balle est explosive
+      explosion = Explosion(self.rect.center)
+      self.player.screen.blit(explosion.image, explosion.rect)
+      self.player.explosions.add(explosion)
+
+class FireParticle:
+  def __init__(self, zoom:int, x:int, y:int, direction:tuple):
+    self.zoom = zoom
+    self.x = x
+    self.y = y
+    self.size = random.randint(3*self.zoom, 5*self.zoom)  # Augmenter la taille initiale des particules
+    self.color = (random.randint(200, 255), random.randint(100, 150), 0)
+    self.lifetime = random.randint(10*self.zoom, 12*self.zoom)
+    self.direction = (direction[0] + random.uniform(-0.1, 0.1), direction[1] + random.uniform(-0.1, 0.1))
+    self.speed = random.uniform(6*self.zoom, 8*self.zoom)  # Augmenter la vitesse des particules
+    
+  def update(self):
+    self.x += self.direction[0] * self.speed
+    self.y += self.direction[1] * self.speed
+    self.size -= 0.2  # Les particules rétrécissent plus lentement
+    self.lifetime -= 1
+    
+  def draw(self, screen:'pygame.surface.Surface'):
+    if self.lifetime < 8 * self.zoom:
+      pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), int(self.size))

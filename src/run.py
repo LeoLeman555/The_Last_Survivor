@@ -1,16 +1,15 @@
 import pygame, random, math
-from update import Update
-from items import Icon
-from player import Player
-from map import MapManager
+from update import *
+from items import *
+from player import *
+from map import *
 from weapon import *
-from lance_flamme import *
 from extras import *
-from read_data import ReadData
+from read_data import *
 from enemy import *
 
 class Run:
-  def __init__(self, zoom):
+  def __init__(self, zoom:int):
     pygame.font.init()
     self.zoom = zoom
 
@@ -23,13 +22,16 @@ class Run:
     self.palier_xp = self.read_data.get_paliers("data/paliers.txt")
     self.ressources = self.read_data.read_ressources_data("data/ressources.txt")
     self.barres = self.read_data.read_barres_data("data/barres.txt")
-    self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
 
+    self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
     self.weapon_key = 1
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
+    self.weapon_position = list(self.weapon_position)
+    self.weapon_position[0] += 10 * self.zoom
+    self.weapon_position[1] += 5 * self.zoom
 
     self.icon = Icon(self.ressources, self.barres)
     
@@ -38,6 +40,7 @@ class Run:
 
     self.player = Player(self.zoom, self.screen, "jim")  # mettre sur tiled un objet start
     self.map_manager = MapManager(self, self.screen, self.player, self.zoom) # appel de la classe mapManager
+
     self.weapon = Weapon(self.zoom, self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
 
     self.mouse_pressed = False
@@ -100,9 +103,9 @@ class Run:
       self.mouvement = [0, 0]
 
     if press[pygame.K_r]:
-      self.player.launch_grenade(-3)
+      self.player.launch_grenade(-1.5)
     elif press[pygame.K_t]:
-      self.player.launch_grenade(3)
+      self.player.launch_grenade(1.5)
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
@@ -121,39 +124,40 @@ class Run:
 
   def update_weapon(self):
     if self.mouse_pressed:
-      if self.weapon_key == 7: 
-        self.ajout_particule()
-      elif self.current_time - self.last_shot_time > self.shoot_delay:
-          self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
-          self.last_shot_time = self.current_time
-      
+      self.tir()
+
+    self.update_bullet()
+
+    self.weapon.rotate_to_cursor(self.cursor_pos)
+    self.weapon.display(self.screen)
+    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+
+    self.player.grenades.update(self.mouvement[0], self.mouvement[1])
+    self.player.grenades.draw(self.screen)
+    
+    self.player.explosions.update()
+    self.player.explosions.draw(self.screen)
+
+  def tir(self):
+    if self.weapon_key == 7: 
+      self.ajout_particule()
+    elif self.current_time - self.last_shot_time > self.shoot_delay:
+      if self.weapon_key == 9:
+        # self.player.launch_grenade(3)
+        pass
+      else:
+        self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
+      self.last_shot_time = self.current_time
+
+  def update_bullet(self):
     if self.weapon_key==7:
       for particle in self.particles:
         particle.update()
         particle.draw(self.screen)
       self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
     else:
-      self.player.bullets.move()
-      self.player.bullets.draw(self.screen)
       for bullet in self.player.bullets:
         bullet.move()
-        if bullet.distance_traveled > bullet.range:  # Si la balle atteint sa portée
-          if bullet.explosive:  # Vérifiez si la balle est explosive
-            explosion = Explosion(bullet.rect.center, bullet.images_explosion)
-            self.explosions.add(explosion)
-          print("surpression")
-          bullet.delete()
-
-    self.weapon.rotate_to_cursor(self.cursor_pos)
-    self.weapon.display(self.screen)
-    self.player.display_weapon(self.zoom, self.weapon_name, self.weapon_taille, self.weapon_position)
-
-    self.player.grenades.update(self.mouvement[0], self.mouvement[1])
-
-    self.player.grenades.draw(self.screen)
-
-    self.player.explosions.update()
-    self.player.explosions.draw(self.screen)
 
   def update_enemy(self):
     for enemy in self.enemy:
@@ -167,8 +171,8 @@ class Run:
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
-    self.enemy.add(Shardsoul(self.screen, 0, 0))
-    # self.enemy.add(Sprout(self.screen, 100, 0))
+    # self.enemy.add(Shardsoul(self.screen, 0, 0))
+    self.enemy.add(Sprout(self.screen, 100, 0))
     # self.enemy.add(Worm(self.screen, 100, 100))
     # self.enemy.add(Wolf(self.screen, 200, 100))
     # self.enemy.add(Robot(self.screen, 100, 100))
@@ -207,11 +211,11 @@ class Run:
 
     pygame.display.flip()
 
-  def collision_sables(self, bool):
+  def collision_sables(self, bool:bool):
     if bool:
       self.speed = self.speed_init/2
     else:
       self.speed = self.speed_init
 
-  def collision(self, bool):
+  def collision(self, bool:bool):
     self.collision_caillou = bool

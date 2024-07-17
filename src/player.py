@@ -21,10 +21,10 @@ class Player(pygame.sprite.Sprite):
     self.rect = self.image.get_rect()
 
     self.rect_collision = self.rect.copy()
-    self.rect_collision.x = 483
-    self.rect_collision.y = 262
-    self.rect_collision.width = 34
-    self.rect_collision.height = 76
+    self.rect_collision.width = 17 * self.zoom
+    self.rect_collision.height = 38 * self.zoom
+    self.rect_collision.x = 500 - 8.5 * self.zoom
+    self.rect_collision.y = 300 - 19 * self.zoom
     
     self.position = [x, y]
     self.feet = pygame.Rect(0, 0, self.rect.width * 0.4, 10)
@@ -37,20 +37,19 @@ class Player(pygame.sprite.Sprite):
 
     #TODO change self.ammo_images + his management
     self.ammo_images = {
-      1: "res/weapon/ammo1.png",
-      2: "res/weapon/ammo1.png",
-      3: "res/weapon/ammo2.png",
-      4: "res/weapon/ammo3.png",
-      5: "res/weapon/ammo1.png",
-      6: "res/weapon/ammo4.png",
+      1: "ammo1",
+      2: "ammo1",
+      3: "ammo2",
+      4: "ammo3",
+      5: "ammo1",
+      6: "ammo4",
       7: "lance_flammes",
-      8: "res/weapon/ammo1.png",
-      9: "res/weapon/ammo5.png",
-      10: "res/weapon/ammo6.png",
-      11: "res/weapon/ammo6.png",
-      12: "res/weapon/ammo1.png",
+      8: "ammo1",
+      9: "ammo5",
+      10: "ammo6",
+      11: "ammo6",
+      12: "ammo1",
     }
-    self.grenade_image = "res/weapon/ammo5.png"
 
   def change_animation(self, name:str, speed:int):
     self.speed = speed
@@ -97,7 +96,7 @@ class Player(pygame.sprite.Sprite):
     self.position[1] += self.speed / diagonale
 
   def update(self):
-    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect_collision)
+    pygame.draw.rect(self.screen, (0, 0, 0), self.rect_collision)
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
 
@@ -108,12 +107,16 @@ class Player(pygame.sprite.Sprite):
 
   def launch_bullet(self, goal:tuple, weapon_id:int, data_weapon:dict):
     ammo_image = self.ammo_images.get(weapon_id)
+    position = data_weapon[weapon_id][2]
+    position = list(position)
     weapon_range = data_weapon[weapon_id][3]
     explosive = data_weapon[weapon_id][4] == 1
-    self.bullets.add(Bullet(self.screen, self, goal, ammo_image, weapon_range, explosive))
+    distance = data_weapon[weapon_id][5]
+    # speed bullet is not defined => default value
+    self.bullets.add(Bullet(self.zoom, self.screen, self, goal, ammo_image, distance, position, weapon_range, explosive))
 
-  def display_weapon(self, zoom:int, name:str, size:tuple, position:tuple):
-    self.weapons.add(Weapon(zoom, self, name, size, position))
+  def display_weapon(self, name:str, size:tuple, position:tuple):
+    self.weapons.add(Weapon(self.zoom, self, name, size, position))
 
   def launch_grenade(self, speed:int):
-    self.grenades.add(Grenade(self.screen, self, self.grenade_image, speed))
+    self.grenades.add(Grenade(self.zoom, self.screen, self, speed))

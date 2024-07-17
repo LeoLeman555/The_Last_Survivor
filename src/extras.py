@@ -1,24 +1,26 @@
 import pygame, random
+from load import Load
 
 class Grenade(pygame.sprite.Sprite):
-  def __init__(self, screen, player, image_path, speed):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', player, speed:int):
     super().__init__()
+    self.zoom = zoom
     self.screen = screen
     self.player = player
-    self.image = pygame.image.load(image_path).convert_alpha()
+    self.image = Load.charge_image(self, self.zoom, "weapon", "ammo5", "png", 0.5)
     self.rect = self.image.get_rect()
     # Position initiale de la grenade en fonction du joueur
     self.rect.centerx = player.rect.centerx - (player.rect.x - 500)
     self.rect.centery = player.rect.centery - (player.rect.y - 300)
-    self.speed = speed
+    self.speed = speed * self.zoom
     self.gravity = 0.5
-    self.velocity_y = -10
+    self.velocity_y = -5 * self.zoom
     self.bounce_factor = 0.8
     self.rebound_height = self.screen.get_height() // 2
-    self.lifetime = 50
+    self.lifetime = 25 * self.zoom
 
   def explode(self):
-    explosion = Explosion(self.rect.center)
+    explosion = Explosion(self.zoom, self.rect.center)
     self.player.screen.blit(explosion.image, explosion.rect)
     self.player.explosions.add(explosion)
 
@@ -46,8 +48,9 @@ class Grenade(pygame.sprite.Sprite):
       self.kill()
 
 class Explosion(pygame.sprite.Sprite):
-  def __init__(self, center):
+  def __init__(self, zoom:int, center:tuple):
     super().__init__()
+    self.zoom = zoom
     self.images = self.get_images()
     self.image = self.images[0]
     self.rect = self.image.get_rect(center=center)
@@ -56,9 +59,9 @@ class Explosion(pygame.sprite.Sprite):
 
   def get_images(self):
     images_explosion = []
-    sprite_sheet_explosion = pygame.image.load("res/weapon/explosion.png")
-    sprite_width = 69
-    sprite_height = int(69.4)
+    sprite_sheet_explosion = Load.charge_image(self, self.zoom, "weapon", "explosion", "png", 0.5)
+    sprite_width = int(34.5 * self.zoom)
+    sprite_height = int(34.7 * self.zoom)
     for y in range(0, sprite_sheet_explosion.get_height(), sprite_height):
       for x in range(0, sprite_sheet_explosion.get_width(), sprite_width):
         img = self.get_image(sprite_sheet_explosion, x, y, sprite_width, sprite_height)
