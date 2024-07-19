@@ -171,11 +171,11 @@ class Run:
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
-    # self.enemy.add(Shardsoul(self.screen, 0, 0))
-    self.enemy.add(Sprout(self.screen, 100, 0))
-    # self.enemy.add(Worm(self.screen, 100, 100))
-    # self.enemy.add(Wolf(self.screen, 200, 100))
-    # self.enemy.add(Robot(self.screen, 100, 100))
+    self.enemy.add(Shardsoul(self.zoom, self.screen, 0, 0))
+    # self.enemy.add(Sprout(self.zoom, self.screen, 100, 0))
+    # self.enemy.add(Worm(self.zoom, self.screen, 100, 100))
+    # self.enemy.add(Wolf(self.zoom, self.screen, 200, 100))
+    # self.enemy.add(Robot(self.zoom, self.screen, 100, 100))
 
     while run:
       self.cursor_pos = pygame.mouse.get_pos()

@@ -103,7 +103,7 @@ class Cible:
     
   def draw(self, screen:'pygame.surface.Surface'):
     if not 460 - 40 * (self.zoom - 1) <= self.x <= 500 + 15*self.zoom:
-      pygame.draw.rect(screen, (0, 0, 0), self.rect)
+      # pygame.draw.rect(screen, (0, 0, 0), self.rect)
       screen.blit(self.image, (self.x, self.y))
 
 class Drone:
@@ -129,7 +129,7 @@ class Laser():
     self.rect = pygame.Rect(self.x -25*self.zoom, self.end_y -25*self.zoom , 50*self.zoom, 50*self.zoom)
 
   def draw(self, screen:'pygame.surface.Surface'):
-    pygame.draw.rect(screen, (0, 0, 0), self.rect)
+    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     pygame.draw.line(screen, (255, 100, 100), (self.x, self.start_y), (self.x, self.end_y), 5*self.zoom)
     pygame.draw.line(screen, (255, 0, 0), (self.x, self.start_y), (self.x, self.end_y), int(2.5*self.zoom))
     pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), 5*self.zoom)

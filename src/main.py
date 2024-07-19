@@ -5,7 +5,7 @@ from run import Run
 
 pygame.init()
 
-run = Run(2)
+run = Run(1)
 
 def Menu_principal():
   direction = None

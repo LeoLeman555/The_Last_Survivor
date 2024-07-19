@@ -2,8 +2,9 @@ import pygame, random, math
 from read_data import ReadData
 
 class Enemy(pygame.sprite.Sprite):
-  def __init__(self, screen:'pygame.surface.Surface', name:str, animations:dict, size:float, x:int, y:int, speed:int):
+  def __init__(self, zoom, screen:'pygame.surface.Surface', name:str, animations:dict, size:float, x:int, y:int, speed:int):
     super().__init__()
+    self.zoom = zoom
     self.screen = screen
     self.x = x
     self.y = y
@@ -13,14 +14,16 @@ class Enemy(pygame.sprite.Sprite):
     self.current_animation = self.animations["idle"]
     self.frame_index = 0
     self.image = self.current_animation[self.frame_index]
-    self.image = pygame.transform.scale(self.image, (self.image.get_width()*self.size, self.image.get_height()*self.size))
+    self.image = pygame.transform.scale(self.image, (self.image.get_width()*self.size*0.5*self.zoom, self.image.get_height()*self.size*0.5*self.zoom))
     self.rect = self.image.get_rect(topleft=(self.x, self.y))
     self.animation_time = 0
     self.is_alive = True
     self.facing_left = False
     self.speed = speed
 
-  def update(self, dt:int, x:int, y:int, player_rect:'pygame.Rect'):
+  def update(self, dt:int, x_var:int, y_var:int, player_rect:'pygame.Rect'):
+    x = (x_var/2) * self.zoom
+    y = (y_var/2) * self.zoom
     self.x += x
     self.y += y
     self.rect = self.image.get_rect(topleft=(self.x, self.y))
@@ -33,12 +36,12 @@ class Enemy(pygame.sprite.Sprite):
       self.animation_time = 0
       self.frame_index = (self.frame_index + 1) % len(self.current_animation)
       self.image = self.current_animation[self.frame_index]
-      self.image = pygame.transform.scale(self.image, (self.image.get_width()*self.size, self.image.get_height()*self.size))
+      self.image = pygame.transform.scale(self.image, (self.image.get_width()*self.size*0.5*self.zoom, self.image.get_height()*self.size*0.5*self.zoom))
       if self.facing_left:
         self.image = pygame.transform.flip(self.image, True, False)
     
   def draw(self, screen:'pygame.surface.Surface'):
-    pygame.draw.rect(screen, (0, 0, 0), self.rect)
+    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     screen.blit(self.image, (self.x, self.y))
 
   def move(self, dx:int, dy:int):
@@ -94,31 +97,31 @@ class Enemy(pygame.sprite.Sprite):
     return frames
 
 class Shardsoul(Enemy):
-  def __init__(self, screen:'pygame.surface.Surface', x:int, y:int, speed:int =3):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', x:int, y:int, speed:int =3):
     animation_specs = ReadData.read_animation_specs("data/shardsoul_animations.txt")
     animations = self.load_animations("res/enemy/shardsoul.png", animation_specs)
-    super().__init__(screen, "shardsoul", animations, 2, x, y, speed)
+    super().__init__(zoom, screen, "shardsoul", animations, 2, x, y, speed/zoom)
 
 class Sprout(Enemy):
-  def __init__(self, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
     animation_specs = ReadData.read_animation_specs("data/sprout_animations.txt")
     animations = self.load_animations("res/enemy/sprout.png", animation_specs)
-    super().__init__(screen, "sprout", animations, 2, x, y, speed)
+    super().__init__(zoom, screen, "sprout", animations, 2, x, y, speed/zoom)
 
 class Worm(Enemy):
-  def __init__(self, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
     animation_specs = ReadData.read_animation_specs("data/worm_animations.txt")
     animations = self.load_animations("res/enemy/worm.png", animation_specs)
-    super().__init__(screen, "worm", animations, 1.5, x, y, speed)
+    super().__init__(zoom, screen, "worm", animations, 1.5, x, y, speed/zoom)
 
 class Wolf(Enemy):
-  def __init__(self, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
     animation_specs = ReadData.read_animation_specs("data/wolf_animations.txt")
     animations = self.load_animations("res/enemy/wolf.png", animation_specs)
-    super().__init__(screen, "wolf", animations, 1.5, x, y, speed)
+    super().__init__(zoom, screen, "wolf", animations, 1.5, x, y, speed/zoom)
 
 class Robot(Enemy):
-  def __init__(self, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', x:int, y:int, speed:int =5):
     animation_specs = ReadData.read_animation_specs("data/robot_animations.txt")
     animations = self.load_animations("res/enemy/robot.png", animation_specs)
-    super().__init__(screen, "robot", animations, 1.5, x, y, speed)
+    super().__init__(zoom, screen, "robot", animations, 1.5, x, y, speed/zoom)

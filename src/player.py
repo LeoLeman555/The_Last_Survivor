@@ -96,7 +96,7 @@ class Player(pygame.sprite.Sprite):
     self.position[1] += self.speed / diagonale
 
   def update(self):
-    pygame.draw.rect(self.screen, (0, 0, 0), self.rect_collision)
+    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect_collision)
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
 
