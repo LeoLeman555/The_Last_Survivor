@@ -24,7 +24,7 @@ class Grenade(pygame.sprite.Sprite):
     self.player.screen.blit(explosion.image, explosion.rect)
     self.player.explosions.add(explosion)
 
-  def update(self, x=0, y=0):
+  def update(self, x:int =0, y:int =0):
     # Mise à jour de la position horizontale
     self.rect.x += self.speed + x
     
@@ -68,7 +68,7 @@ class Explosion(pygame.sprite.Sprite):
         images_explosion.append(img)
     return images_explosion
 
-  def get_image(self, sprite_sheet, x, y, width, height):
+  def get_image(self, sprite_sheet:'pygame.surface.Surface', x:int, y:int, width:int, height:int):
     image = pygame.Surface([width, height], pygame.SRCALPHA)
     image.blit(sprite_sheet, (0, 0), (x, y, width, height))
     return image
@@ -84,69 +84,81 @@ class Explosion(pygame.sprite.Sprite):
       else:
         self.kill()
 class Cible:
-  def __init__(self, x, y):
-    self.image = pygame.image.load("res/weapon/cible_drone.png")
+  def __init__(self, zoom:int, x:int, y:int):
+    self.zoom = zoom
+    self.image = Load.charge_image(self, self.zoom, "weapon", "cible_drone", "png", 0.5)
+    self.rect = self.image.get_rect()
+    self.rect.x = x
+    self.rect.y = y
     self.x = x
     self.y = y
     self.direction = 1
-    self.speed = 3
+    self.speed = 4
     
   def update(self):
     self.x += self.direction * self.speed
-    if self.x <= 150 or self.x >= 950 - self.image.get_width():
+    self.rect.x = self.x
+    if self.x <= 300/self.zoom or self.x >= 550 + 150 * self.zoom - self.image.get_width():
       self.direction *= -1  # Inverser la direction
     
-  def draw(self, screen):
-    if self.x <= 200 or self.x >= 800 - self.image.get_width() or 420 <= self.x <= 530:
-      pass
-    else:
+  def draw(self, screen:'pygame.surface.Surface'):
+    if not 460 - 40 * (self.zoom - 1) <= self.x <= 500 + 15*self.zoom:
+      pygame.draw.rect(screen, (0, 0, 0), self.rect)
       screen.blit(self.image, (self.x, self.y))
 
 class Drone:
-  def __init__(self, screen):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface'):
+    self.zoom = zoom
     self.screen = screen
-    self.image_drone = pygame.image.load("res/weapon/drone.png")
-    self.image_drone = pygame.transform.scale(self.image_drone, (81, 20))
+    self.image = Load.charge_image(self, self.zoom, "weapon", "drone", "png", 0.4)
     self.x_cible = 0
-    self.cible = Cible(200, 315)
+    self.cible = Cible(self.zoom, 300/self.zoom, 315)
     
   def update_drone(self):
-    self.screen.blit(self.image_drone, (460, 230))
+    self.screen.blit(self.image, ((478-21*(self.zoom-1)), (260-30*(self.zoom-1))))
     self.cible.update()
     self.cible.draw(self.screen)
 
 class Laser():
-  def __init__(self):
-    if random.randint(1, 2) == 1:
-      self.x = random.randint(100, 400)
-    else:
-      self.x = random.randint(600, 900)
-
+  def __init__(self, zoom:int):
+    self.zoom = zoom
+    self.x = random.choice([random.randint(100, 400), random.randint(600, 900)])
     self.start_y = 0
-    self.end_y = random.randint(200, 550)
+    self.end_y = random.randint(100, 550)
     self.lifetime = 50
+    self.rect = pygame.Rect(self.x -25*self.zoom, self.end_y -25*self.zoom , 50*self.zoom, 50*self.zoom)
 
-  def draw(self, screen):
-    pygame.draw.line(screen, (255, 100, 100), (self.x, self.start_y), (self.x, self.end_y), 10)
-    pygame.draw.line(screen, (255, 0, 0), (self.x, self.start_y), (self.x, self.end_y), 5)
-    pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), 10)
-    pygame.draw.circle(screen, (255, 100, 100), (self.x, self.end_y), 5)
+  def draw(self, screen:'pygame.surface.Surface'):
+    pygame.draw.rect(screen, (0, 0, 0), self.rect)
+    pygame.draw.line(screen, (255, 100, 100), (self.x, self.start_y), (self.x, self.end_y), 5*self.zoom)
+    pygame.draw.line(screen, (255, 0, 0), (self.x, self.start_y), (self.x, self.end_y), int(2.5*self.zoom))
+    pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), 5*self.zoom)
+    pygame.draw.circle(screen, (255, 100, 100), (self.x, self.end_y), int(2.5*self.zoom))
 
   def update(self):
     self.lifetime -= 1
 
 class Missile():
-  def __init__(self):
-    self.cible_missile = pygame.image.load("res/weapon/cible_missile.png")
+  def __init__(self, zoom:int):
+    self.zoom = zoom
+    self.cible_missile = Load.charge_image(self, self.zoom, "weapon", "cible_missile", "png", 0.5)
     self.x = random.randint(300, 700)
     self.y = random.randint(200, 400)
+    self.rect = self.cible_missile.get_rect()
     self.lifetime = 50
   
-  def draw(self, screen):
+  def draw(self, screen:'pygame.surface.Surface'):
     if self.lifetime % 2 == 0 or self.lifetime >= 40:
       screen.blit(self.cible_missile, (self.x, self.y))
 
-  def update(self, x, y):
+  def update(self, x_var:int, y_var:int):
     self.lifetime -= 1
+    x = (x_var/2) * self.zoom
+    y = (y_var/2) * self.zoom
     self.x += x
     self.y += y
+    self.rect.x = self.x
+    self.rect.y = self.y
+
+  def get_rectangle(self):
+    return self.rect

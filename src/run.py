@@ -25,7 +25,7 @@ class Run:
 
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 1
+    self.weapon_key = 6
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -52,12 +52,12 @@ class Run:
 
     self.particles = []
 
-    self.drone = Drone(self.screen)
+    self.drone = Drone(self.zoom, self.screen)
     self.lasers = []
     self.missile = []
     self.mouvement = [0, 0]
 
-    self.update = Update(self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers, self.missile)
+    self.update = Update(self.zoom, self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers, self.missile)
 
     self.collision_caillou = False
 

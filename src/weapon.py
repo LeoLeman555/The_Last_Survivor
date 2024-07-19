@@ -79,17 +79,18 @@ class Bullet(pygame.sprite.Sprite):
     self.rect.y += self.vecteur[1]
     self.distance_traveled += self.speed
 
-    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
-    if self.distance_traveled > self.distance_weapon:
-      self.screen.blit(self.image, self.rect)
+    pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
 
     if self.distance_traveled > self.range:
       self.delete()
       self.explode()
 
+    if self.distance_traveled > self.distance_weapon:
+      self.screen.blit(self.image, self.rect)
+
   def explode(self):
     if self.explosive:  # Déclenche l'explosion uniquement si la balle est explosive
-      explosion = Explosion(self.rect.center)
+      explosion = Explosion(self.zoom, self.rect.center)
       self.player.screen.blit(explosion.image, explosion.rect)
       self.player.explosions.add(explosion)
 

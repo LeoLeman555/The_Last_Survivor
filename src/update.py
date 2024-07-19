@@ -2,7 +2,8 @@ import random
 from extras import *
 
 class Update():
-  def __init__(self, screen, map_manager, ressources, barres, icon, lasers, missile):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', map_manager, ressources:dict, barres:dict, icon, lasers:list, missile:list):
+    self.zoom = zoom
     self.screen = screen
     self.map_manager = map_manager
     self.ressources = ressources
@@ -11,7 +12,7 @@ class Update():
     self.lasers = lasers
     self.missile = missile
 
-  def update_all(self, x=0, y=0):
+  def update_all(self, x:int =0, y:int =0):
     self.update_map()
     self.update_laser()
     self.update_missile(x, y)
@@ -34,17 +35,15 @@ class Update():
 
   def update_laser(self):
     if random.random() < 0.01:
-      self.lasers.append(Laser())
+      self.lasers.append(Laser(self.zoom))
     for laser in self.lasers:
       laser.draw(self.screen)
       laser.update()
     self.lasers = [laser for laser in self.lasers if laser.lifetime > 0]
 
-  def update_missile(self, x, y):
-    if random.random() < 0.05:
-      self.missile.append(Missile())
-      # self.missile.append(Missile())
-      # self.missile.append(Missile())
+  def update_missile(self, x:int, y:int):
+    if random.random() < 0.01:
+      self.missile.append(Missile(self.zoom))
     for mis in self.missile:
       mis.draw(self.screen)
       mis.update(x, y)
