@@ -39,11 +39,13 @@ class Weapon(pygame.sprite.Sprite):
     
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, zoom:int, screen:'pygame.surface.Surface', player:'player.Player', goal:tuple, name:str, distance_weapon:int, position:list, range:int =500, explosive:bool =False, speed:int =15):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', player:'player.Player', enemies, goal:tuple, name:str, distance_weapon:int, position:list, range:int =500, explosive:bool =False, speed:int =15, damage:int = 5):
     super().__init__()
     self.zoom = zoom
     self.speed = speed * self.zoom
     self.player = player
+    self.enemies = enemies
+    self.damage = damage
     self.name = name
     self.range = range * self.zoom
     self.distance_weapon = distance_weapon * self.zoom
@@ -79,20 +81,32 @@ class Bullet(pygame.sprite.Sprite):
     self.rect.y += self.vecteur[1]
     self.distance_traveled += self.speed
 
-    pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
+    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
 
     if self.distance_traveled > self.range:
       self.delete()
       self.explode()
+    else:
+      self.check_collision()
 
     if self.distance_traveled > self.distance_weapon:
       self.screen.blit(self.image, self.rect)
+
+  def check_collision(self):
+    hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
+    if hit_enemy:
+      self.delete()
+      hit_enemy.damage(self.damage)  # Appelle la méthode hit de l'ennemi pour lui infliger des dégâts
+      self.explode()
 
   def explode(self):
     if self.explosive:  # Déclenche l'explosion uniquement si la balle est explosive
       explosion = Explosion(self.zoom, self.rect.center)
       self.player.screen.blit(explosion.image, explosion.rect)
       self.player.explosions.add(explosion)
+
+  def get_rectangle(self):
+    return self.rect
 
 class FireParticle:
   def __init__(self, zoom:int, x:int, y:int, direction:tuple):

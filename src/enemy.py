@@ -2,7 +2,7 @@ import pygame, random, math
 from read_data import ReadData
 
 class Enemy(pygame.sprite.Sprite):
-  def __init__(self, zoom, screen:'pygame.surface.Surface', name:str, animations:dict, size:float, x:int, y:int, speed:int):
+  def __init__(self, zoom, screen:'pygame.surface.Surface', name:str, animations:dict, size:float, x:int, y:int, speed:int, life:int =100):
     super().__init__()
     self.zoom = zoom
     self.screen = screen
@@ -11,6 +11,7 @@ class Enemy(pygame.sprite.Sprite):
     self.name = name
     self.animations = animations
     self.size = size
+    self.life = life
     self.current_animation = self.animations["idle"]
     self.frame_index = 0
     self.image = self.current_animation[self.frame_index]
@@ -21,13 +22,13 @@ class Enemy(pygame.sprite.Sprite):
     self.facing_left = False
     self.speed = speed
 
-  def update(self, dt:int, x_var:int, y_var:int, player_rect:'pygame.Rect'):
+  def update(self, dt:int, x_var:int, y_var:int, player_rect:'pygame.Rect', bullets_rect:list):
     x = (x_var/2) * self.zoom
     y = (y_var/2) * self.zoom
     self.x += x
     self.y += y
     self.rect = self.image.get_rect(topleft=(self.x, self.y))
-    self.check_collision(player_rect)
+    self.check_collision(player_rect, bullets_rect)
 
     if not self.is_alive and self.frame_index == len(self.current_animation) - 1:
       return
@@ -54,6 +55,12 @@ class Enemy(pygame.sprite.Sprite):
   def attack(self):
     self.set_animation("attack")
 
+  def damage(self, damage:int):
+    self.life -= damage
+    print(self.life)
+    if self.life <= 0:
+      self.die()
+
   def die(self):
     self.is_alive = False
     self.kill()
@@ -78,9 +85,9 @@ class Enemy(pygame.sprite.Sprite):
       self.set_animation("move")
       self.facing_left = direction.x < 0
 
-  def check_collision(self, player_rect:'pygame.Rect'):
+  def check_collision(self, player_rect:'pygame.Rect', bullets_rect:list):
     if self.rect.colliderect(player_rect):
-        self.die()
+      self.die()
 
   def load_animations(self, sprite_sheet_path:str, animation_specs):
     sprite_sheet = pygame.image.load(sprite_sheet_path).convert_alpha()

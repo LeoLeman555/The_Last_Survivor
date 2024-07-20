@@ -1,6 +1,7 @@
 import pygame
-from weapon import Bullet, Weapon
-from extras import Grenade
+from weapon import *
+from extras import *
+from enemy import *
 from load import Load
 
 class Player(pygame.sprite.Sprite):
@@ -30,6 +31,7 @@ class Player(pygame.sprite.Sprite):
     self.feet = pygame.Rect(0, 0, self.rect.width * 0.4, 10)
     self.old_position = self.position.copy()
     self.attack = 10
+    self.enemies = pygame.sprite.Group()
     self.bullets = pygame.sprite.Group()
     self.weapons = pygame.sprite.Group()
     self.grenades = pygame.sprite.Group()
@@ -113,10 +115,13 @@ class Player(pygame.sprite.Sprite):
     explosive = data_weapon[weapon_id][4] == 1
     distance = data_weapon[weapon_id][5]
     # speed bullet is not defined => default value
-    self.bullets.add(Bullet(self.zoom, self.screen, self, goal, ammo_image, distance, position, weapon_range, explosive))
+    self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive))
 
   def display_weapon(self, name:str, size:tuple, position:tuple):
     self.weapons.add(Weapon(self.zoom, self, name, size, position))
 
   def launch_grenade(self, speed:int):
     self.grenades.add(Grenade(self.zoom, self.screen, self, speed))
+
+  def add_enemy(self, name:str):
+    self.enemies.add(Shardsoul(self.zoom, self.screen, 0, 0))

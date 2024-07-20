@@ -34,6 +34,8 @@ class Grenade(pygame.sprite.Sprite):
 
     self.rebound_height += y
 
+    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
+
     # Vérifier si la grenade touche la position de rebond
     if self.rect.bottom >= self.rebound_height:
       self.rect.bottom = self.rebound_height
@@ -102,8 +104,8 @@ class Cible:
       self.direction *= -1  # Inverser la direction
     
   def draw(self, screen:'pygame.surface.Surface'):
+    pygame.draw.rect(screen, (0, 0, 0), self.rect)
     if not 460 - 40 * (self.zoom - 1) <= self.x <= 500 + 15*self.zoom:
-      # pygame.draw.rect(screen, (0, 0, 0), self.rect)
       screen.blit(self.image, (self.x, self.y))
 
 class Drone:
@@ -129,10 +131,10 @@ class Laser():
     self.rect = pygame.Rect(self.x -25*self.zoom, self.end_y -25*self.zoom , 50*self.zoom, 50*self.zoom)
 
   def draw(self, screen:'pygame.surface.Surface'):
-    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
-    pygame.draw.line(screen, (255, 100, 100), (self.x, self.start_y), (self.x, self.end_y), 5*self.zoom)
+    pygame.draw.rect(screen, (0, 0, 0), self.rect)
+    pygame.draw.line(screen, (255, 100, 100), (self.x, self.start_y), (self.x, self.end_y), int(5*self.zoom))
     pygame.draw.line(screen, (255, 0, 0), (self.x, self.start_y), (self.x, self.end_y), int(2.5*self.zoom))
-    pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), 5*self.zoom)
+    pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), int(5*self.zoom))
     pygame.draw.circle(screen, (255, 100, 100), (self.x, self.end_y), int(2.5*self.zoom))
 
   def update(self):
@@ -148,6 +150,7 @@ class Missile():
     self.lifetime = 50
   
   def draw(self, screen:'pygame.surface.Surface'):
+    pygame.draw.rect(screen, (0, 0, 0), self.rect)
     if self.lifetime % 2 == 0 or self.lifetime >= 40:
       screen.blit(self.cible_missile, (self.x, self.y))
 
