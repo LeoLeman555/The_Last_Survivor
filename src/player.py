@@ -53,6 +53,13 @@ class Player(pygame.sprite.Sprite):
       12: "ammo1",
     }
 
+    self.enemy_dict = {
+    "shardsoul": Shardsoul,
+    "sprout": Sprout,
+    "worm": Worm,
+    "wolf": Wolf,
+    "robot": Robot}
+
   def change_animation(self, name:str, speed:int):
     self.speed = speed
     self.image = self.images[name][self.animation_index]
@@ -123,5 +130,7 @@ class Player(pygame.sprite.Sprite):
   def launch_grenade(self, speed:int):
     self.grenades.add(Grenade(self.zoom, self.screen, self, speed))
 
-  def add_enemy(self, name:str):
-    self.enemies.add(Shardsoul(self.zoom, self.screen, 0, 0))
+  def add_enemy(self, name:str, x:int=0, y:int=0):
+    if name.lower() in self.enemy_dict:
+      enemy_class = self.enemy_dict[name.lower()]
+      self.enemies.add(enemy_class(self.zoom, self.screen, x, y))

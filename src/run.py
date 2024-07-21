@@ -25,7 +25,7 @@ class Run:
 
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 6
+    self.weapon_key = 1
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -129,7 +129,7 @@ class Run:
     self.update_bullet()
 
     self.weapon.rotate_to_cursor(self.cursor_pos)
-    self.weapon.display(self.screen)
+    self.weapon.draw(self.screen)
     self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
 
     self.player.grenades.update(self.mouvement[0], self.mouvement[1])
@@ -162,26 +162,37 @@ class Run:
   def update_enemy(self):
     for enemy in self.player.enemies:
       enemy.follow(475, 281)
-      # enemy.attack()
-      # enemy.die()
-      list = []
-      for bullet in self.player.bullets:
-        add = bullet.get_rectangle()
-        list.append(add)
-
-      enemy.update(0.05, self.mouvement[0], self.mouvement[1], self.player.rect_collision, list)
+      enemy.update(0.05, self.mouvement[0], self.mouvement[1], self.player.rect_collision)
       enemy.draw(self.screen)
-      
+
+  def random_enemy(self):
+    names = ["shardsoul", "sprout", "worm", "wolf", "robot"]
+    random_name = random.choice(names)
+    x_ranges = {
+        1: (-100, 0),
+        2: (0, 500),
+        3: (500, 1000),
+        4: (1000, 1100)}
+    y_ranges = {
+        1: (-100, 700),
+        2: [(-100, 0), (600, 700)],
+        3: [(-100, 0), (600, 700)],
+        4: (-100, 700)}
+    choice = random.choice([1, 2, 3, 4])
+    x = random.randint(*x_ranges[choice])
+    
+    if choice in [2, 3]:
+        y_range = random.choice(y_ranges[choice])
+        y = random.randint(*y_range)
+    else:
+        y = random.randint(*y_ranges[choice])
+    return random_name, x, y
 
   def run(self):
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
-    self.player.add_enemy("shardsoul")
-    # self.enemies.add(Sprout(self.zoom, self.screen, 100, 0))
-    # self.enemies.add(Worm(self.zoom, self.screen, 100, 100))
-    # self.enemies.add(Wolf(self.zoom, self.screen, 200, 100))
-    # self.enemies.add(Robot(self.zoom, self.screen, 100, 100))
+    self.player.add_enemy("worm", 0, 0)
 
     while run:
       self.cursor_pos = pygame.mouse.get_pos()
@@ -189,6 +200,10 @@ class Run:
       self.player.save_location()
       self.keyboard_input()
       self.map_manager.draw()
+
+      if random.random() <= 0.1:
+          enemy = self.random_enemy()
+          self.player.add_enemy(*enemy)
 
       self.icon.ajout_barres("xp", 1)
       self.icon.ajout_ressource("en", 1)
