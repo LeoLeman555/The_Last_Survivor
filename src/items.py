@@ -1,87 +1,92 @@
 import pygame
 
 class Icon:
-  def __init__(self, ressource:dict,  barres:dict):
-    self.ressource = ressource
-    self.barres = barres
+  def __init__(self, resource: dict, bars: dict):
+    """Initialize the Icon class with resources and bars."""
+    self.resource = resource
+    self.bars = bars
 
-  def ajout_ressource(self, name:str, valeur:int):
-    self.ressource[f"{name}"] += valeur
+  def add_resource(self, name: str, value: int):
+    """Add a value to a resource."""
+    self.resource[f"{name}"] += value
 
-  def change_palier(self, name:str, valeur:int):
-    self.barres[f"{name}_max"] = valeur
+  def change_threshold(self, name: str, value: int):
+    """Change the maximum value for a bar."""
+    self.bars[f"{name}_max"] = value
 
-  def ajout_barres(self, name:str, valeur:int):
-    self.barres[f"{name}"] += valeur
+  def add_bars(self, name: str, value: int):
+    """Add a value to a bar."""
+    self.bars[f"{name}"] += value
 
-  def get_icon(self, screen:'pygame.surface.Surface', name:str, x_pos:int, y_pos:int, x_text:int, y_text:int, width:int, height:int, valeur=0):
-    """Affiche un icon"""
-
+  def draw_icon(self, screen: pygame.Surface, name: str, x_pos: int, y_pos: int, x_text: int, y_text: int, width: int, height: int, value=0):
+    """Draw an icon on the screen."""
     image = pygame.image.load(f"res/sprite/{name}.png")
     image = pygame.transform.scale(image, (width, height))
     screen.blit(image, (x_pos, y_pos))
-    police = pygame.font.Font("res/texte/dialog_font.ttf", 18)
-    self.get_score(screen, police, valeur, x_pos + x_text, y_pos + y_text)
-    
-  def get_score(self, screen:'pygame.surface.Surface', police , valeur, x, y):
-      msg_score = police.render(f"{valeur}", True, (0, 0, 0) )
-      screen.blit(msg_score, (x, y))
+    font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
+    self.draw_score(screen, font, value, x_pos + x_text, y_pos + y_text)
 
-  def get_bar(self, screen:'pygame.surface.Surface', name:str, x_bar:int, y_bar:int, valeur:int =0):
-    """Affiche les barres de mécanique à l'écran (0=>79)"""
+  def draw_score(self, screen: pygame.Surface, font, value, x, y):
+    """Draw the score value on the screen."""
+    score_text = font.render(f"{value}", True, (0, 0, 0))
+    screen.blit(score_text, (x, y))
 
+  def draw_bar(self, screen: pygame.Surface, name: str, x_bar: int, y_bar: int, value: int = 0):
+    """Draw mechanical bars on the screen based on the given value."""
     sprite_sheet = pygame.image.load(f"res/sprite/{name}.png")
 
     images = {
-      '0': self.get_images(sprite_sheet, 0),   # 10 premières unités
-      '10': self.get_images(sprite_sheet, 22),  # 10 suivantes unités (décalé de 22 pixels en y)
-      '20': self.get_images(sprite_sheet, 44), 
+      '0': self.get_images(sprite_sheet, 0),
+      '10': self.get_images(sprite_sheet, 22),
+      '20': self.get_images(sprite_sheet, 44),
       '30': self.get_images(sprite_sheet, 66),
-      '40': self.get_images(sprite_sheet, 88), 
+      '40': self.get_images(sprite_sheet, 88),
       '50': self.get_images(sprite_sheet, 110),
-      '60': self.get_images(sprite_sheet, 132), 
+      '60': self.get_images(sprite_sheet, 132),
       '70': self.get_images(sprite_sheet, 154),
     }
 
-    if valeur < 10:
+    if value < 10:
       key = "0"
-    elif valeur < 20:
+    elif value < 20:
       key = '10'
-    elif valeur < 30:
+    elif value < 30:
       key = '20'
-    elif valeur < 40:
+    elif value < 40:
       key = '30'
-    elif valeur < 50:
+    elif value < 50:
       key = '40'
-    elif valeur < 60:
+    elif value < 60:
       key = '50'
-    elif valeur < 70:
+    elif value < 70:
       key = '60'
-    elif valeur < 80:
+    elif value < 80:
       key = '70'
     else:
-      print(f"Erreur d'affichage de barre de mécanique : valeur = {valeur}")
+      print(f"Error displaying mechanical bar: value = {value}")
       key = '0'
 
     loop = 0
     for image in images[key]:
-      if loop == valeur % 10:
-        barre = image
-        barre.set_colorkey([0, 0 , 0])
-        screen.blit(barre, (x_bar, y_bar))
+      if loop == value % 10:
+        bar = image
+        bar.set_colorkey([0, 0, 0])
+        screen.blit(bar, (x_bar, y_bar))
         break
       else:
         loop += 1
 
-  def get_image(self, sheet:'pygame.surface.Surface', x:int, y:int):
-      image = pygame.Surface([186, 22])
-      image.blit(sheet, (0, 0), (x, y, 186, 22))
-      return image
+  def get_image(self, sheet: pygame.Surface, x: int, y: int):
+    """Extract a single image from the sprite sheet."""
+    image = pygame.Surface([186, 22])
+    image.blit(sheet, (0, 0), (x, y, 186, 22))
+    return image
 
-  def get_images(self, sheet:'pygame.surface.Surface', y:int):
+  def get_images(self, sheet: pygame.Surface, y: int):
+    """Extract a series of images from the sprite sheet."""
     images = []
     for i in range(0, 10):
-      x = i*186
+      x = i * 186
       image = self.get_image(sheet, x, y)
       images.append(image)
     return images

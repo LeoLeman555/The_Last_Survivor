@@ -99,8 +99,11 @@ class Bullet(pygame.sprite.Sprite):
     """Checks for collisions with enemies."""
     hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
     if hit_enemy:
-      self.delete()
       hit_enemy.damage(self.damage)
+      self.rect.x += self.vector[0]
+      self.rect.y += self.vector[1]
+      self.distance_traveled += self.speed
+      self.delete()
       self.explode()
 
   def explode(self):

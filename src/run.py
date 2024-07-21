@@ -5,27 +5,28 @@ from player import *
 from map import *
 from weapon import *
 from extras import *
-from read_data import *
+from load import *
 from enemy import *
 
 class Run:
   def __init__(self, zoom:int):
     pygame.font.init()
-    self.zoom = zoom
 
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Jeu")
+    
+    self.zoom = zoom
 
     self.read_data = ReadData()
 
     self.index_palier_xp = 45
-    self.palier_xp = self.read_data.get_paliers("data/paliers.txt")
-    self.ressources = self.read_data.read_ressources_data("data/ressources.txt")
-    self.barres = self.read_data.read_barres_data("data/barres.txt")
+    self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
+    self.ressources = self.read_data.read_resources_data("data/ressources.txt")
+    self.barres = self.read_data.read_bars_data("data/barres.txt")
 
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 1
+    self.weapon_key = 6
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -38,7 +39,7 @@ class Run:
     self.speed_init = 3
     self.speed = self.speed_init
 
-    self.player = Player(self.zoom, self.screen, "jim")  # mettre sur tiled un objet start
+    self.player = Player(self.zoom, self.screen, self.icon, "jim")  # mettre sur tiled un objet start
     self.map_manager = MapManager(self, self.screen, self.player, self.zoom) # appel de la classe mapManager
 
     self.weapon = Weapon(self.zoom, self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
@@ -109,7 +110,7 @@ class Run:
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
-    self.icon.change_palier("xp", self.palier_xp[self.index_palier_xp])
+    self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
   def ajout_particule(self):
     x = 500 + 10 * self.zoom
@@ -201,12 +202,12 @@ class Run:
       self.keyboard_input()
       self.map_manager.draw()
 
-      if random.random() <= 0.1:
+      if random.random() <= 0.05:
           enemy = self.random_enemy()
           self.player.add_enemy(*enemy)
 
-      self.icon.ajout_barres("xp", 1)
-      self.icon.ajout_ressource("en", 1)
+      self.icon.add_bars("xp", 1)
+      self.icon.add_resource("en", 1)
 
       self.update_class()
 

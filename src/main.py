@@ -51,16 +51,11 @@ def Menu_principal():
             direction = name
             running = False
             break
-
-  pygame.quit()
-
-  # Exécuter l'action en fonction du bouton cliqué
-  if direction == "jeu":
-    run.run()  # Démarrer le jeu
-    Menu_principal()  # Retourner au menu principal après la fin du jeu
+  return direction
 
 # Lancer le jeu directement
-# Menu_principal()
-run.run()
+if Menu_principal() == "jeu":
+  run.run()
+  pygame.quit()
 
 print("------------------------- FIN -------------------------")

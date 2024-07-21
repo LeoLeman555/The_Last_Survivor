@@ -5,10 +5,11 @@ from enemy import *
 from load import Load
 
 class Player(pygame.sprite.Sprite):
-  def __init__(self, zoom:int, screen:'pygame.surface.Surface', name:str ="jim", x:int =0, y:int =0):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', icon :'items.Icon', name:str ="jim", x:int =0, y:int =0):
     super().__init__()
     self.zoom = zoom
     self.screen = screen
+    self.icon = icon
     self.sprite_sheet = Load.charge_image(self, 1, "sprite", name, "png")
     self.animation_index = 0
     self.clock = 0
@@ -133,4 +134,4 @@ class Player(pygame.sprite.Sprite):
   def add_enemy(self, name:str, x:int=0, y:int=0):
     if name.lower() in self.enemy_dict:
       enemy_class = self.enemy_dict[name.lower()]
-      self.enemies.add(enemy_class(self.zoom, self.screen, x, y))
+      self.enemies.add(enemy_class(self.zoom, self.screen, self.icon, x, y))

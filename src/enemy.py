@@ -1,10 +1,11 @@
 import pygame
 import random
 import math
-from read_data import ReadData
+import items
+from load import ReadData
 
 class Enemy(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', name: str, animations: dict, size: float, x: int, y: int, speed: int, life: int = 100):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', name: str, animations: dict, size: float, x: int, y: int, speed: int, icon : 'items.Icon', life: int = 100):
     super().__init__()
     self.zoom = zoom
     self.screen = screen
@@ -15,6 +16,7 @@ class Enemy(pygame.sprite.Sprite):
     self.y = y
     self.life = life
     self.speed = speed
+    self.icon = icon
     self.current_animation = self.animations.get("idle", [])
     self.frame_index = 0
     self.image = self._resize_image(self.current_animation[self.frame_index])
@@ -50,7 +52,7 @@ class Enemy(pygame.sprite.Sprite):
 
   def draw(self, screen: 'pygame.surface.Surface'):
     """Draw the enemy on the screen."""
-    pygame.draw.rect(screen, (0, 0, 0,), self.rect)
+    # pygame.draw.rect(screen, (0, 0, 0,), self.rect)
     screen.blit(self.image, (self.x, self.y))
 
   def move(self, dx: int, dy: int):
@@ -74,6 +76,7 @@ class Enemy(pygame.sprite.Sprite):
   def die(self):
     """Handle enemy death."""
     self.is_alive = False
+    self.icon.add_resource("me", 5)
     self.kill()
 
   def set_animation(self, animation: str):
@@ -119,31 +122,31 @@ class Enemy(pygame.sprite.Sprite):
 
 # Enemy subclasses
 class Shardsoul(Enemy):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', x: int, y: int, speed: int = 3):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon :'items.Icon', x: int, y: int, speed: int = 3):
     animation_specs = ReadData.read_animation_specs("data/shardsoul_animations.txt")
     animations = self.load_animations("res/enemy/shardsoul.png", animation_specs)
-    super().__init__(zoom, screen, "shardsoul", animations, 2, x, y, speed / zoom)
+    super().__init__(zoom, screen, "shardsoul", animations, 2, x, y, speed * zoom * 0.5, icon)
 
 class Sprout(Enemy):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', x: int, y: int, speed: int = 5):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon :'items.Icon', x: int, y: int, speed: int = 6):
     animation_specs = ReadData.read_animation_specs("data/sprout_animations.txt")
     animations = self.load_animations("res/enemy/sprout.png", animation_specs)
-    super().__init__(zoom, screen, "sprout", animations, 2, x, y, speed / zoom)
+    super().__init__(zoom, screen, "sprout", animations, 2, x, y, speed  * zoom * 0.5, icon)
 
 class Worm(Enemy):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', x: int, y: int, speed: int = 5):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon :'items.Icon', x: int, y: int, speed: int = 2):
     animation_specs = ReadData.read_animation_specs("data/worm_animations.txt")
     animations = self.load_animations("res/enemy/worm.png", animation_specs)
-    super().__init__(zoom, screen, "worm", animations, 1.5, x, y, speed / zoom)
+    super().__init__(zoom, screen, "worm", animations, 1.5, x, y, speed  * zoom * 0.5, icon)
 
 class Wolf(Enemy):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', x: int, y: int, speed: int = 5):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon :'items.Icon', x: int, y: int, speed: int = 5):
     animation_specs = ReadData.read_animation_specs("data/wolf_animations.txt")
     animations = self.load_animations("res/enemy/wolf.png", animation_specs)
-    super().__init__(zoom, screen, "wolf", animations, 1.5, x, y, speed / zoom)
+    super().__init__(zoom, screen, "wolf", animations, 1.5, x, y, speed  * zoom * 0.5, icon)
 
 class Robot(Enemy):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', x: int, y: int, speed: int = 5):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon :'items.Icon', x: int, y: int, speed: int = 1):
     animation_specs = ReadData.read_animation_specs("data/robot_animations.txt")
     animations = self.load_animations("res/enemy/robot.png", animation_specs)
-    super().__init__(zoom, screen, "robot", animations, 1.5, x, y, speed / zoom)
+    super().__init__(zoom, screen, "robot", animations, 1.5, x, y, speed  * zoom * 0.5, icon)
