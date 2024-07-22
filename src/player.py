@@ -37,6 +37,7 @@ class Player(pygame.sprite.Sprite):
     self.weapons = pygame.sprite.Group()
     self.grenades = pygame.sprite.Group()
     self.explosions = pygame.sprite.Group()
+    self.particles = pygame.sprite.Group()
 
     #TODO change self.ammo_images + his management
     self.ammo_images = {
@@ -124,6 +125,17 @@ class Player(pygame.sprite.Sprite):
     distance = data_weapon[weapon_id][5]
     # speed bullet is not defined => default value
     self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive))
+
+  def add_fire(self):
+    x = 500 + 10 * self.zoom
+    y = 300 + 5 * self.zoom
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    dx = mouse_x - 500
+    dy = mouse_y - 300
+    distance = math.hypot(dx, dy)
+    direction = (dx / distance, dy / distance)  # Normaliser le vecteur
+    for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
+      self.particles.add(FireParticle(self.zoom, self.enemies, x, y, direction))
 
   def display_weapon(self, name:str, size:tuple, position:tuple):
     self.weapons.add(Weapon(self.zoom, self, name, size, position))

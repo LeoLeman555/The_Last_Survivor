@@ -26,7 +26,7 @@ class Run:
 
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
     self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 6
+    self.weapon_key = 7
     self.weapon_name = self.data_weapon[self.weapon_key][0]
     self.weapon_taille = self.data_weapon[self.weapon_key][1]
     self.weapon_position = self.data_weapon[self.weapon_key][2]
@@ -50,8 +50,7 @@ class Run:
 
     self.explosions = pygame.sprite.Group()
     self.grenades = pygame.sprite.Group()
-
-    self.particles = []
+    self.particles = pygame.sprite.Group()
 
     self.drone = Drone(self.zoom, self.screen)
     self.lasers = []
@@ -112,16 +111,7 @@ class Run:
     self.index_palier_xp = palier
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
-  def ajout_particule(self):
-    x = 500 + 10 * self.zoom
-    y = 300 + 5 * self.zoom
-    mouse_x, mouse_y = pygame.mouse.get_pos()
-    dx = mouse_x - 500
-    dy = mouse_y - 300
-    distance = math.hypot(dx, dy)
-    direction = (dx / distance, dy / distance)  # Normaliser le vecteur
-    for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
-      self.particles.append(FireParticle(self.zoom, x, y, direction))
+
 
   def update_weapon(self):
     if self.mouse_pressed:
@@ -141,7 +131,8 @@ class Run:
 
   def tir(self):
     if self.weapon_key == 7: 
-      self.ajout_particule()
+      # self.ajout_particule()
+      self.player.add_fire()
     elif self.current_time - self.last_shot_time > self.shoot_delay:
       if self.weapon_key == 9:
         # self.player.launch_grenade(3)
@@ -152,7 +143,7 @@ class Run:
 
   def update_bullet(self):
     if self.weapon_key==7:
-      for particle in self.particles:
+      for particle in self.player.particles:
         particle.update()
         particle.draw(self.screen)
       self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
