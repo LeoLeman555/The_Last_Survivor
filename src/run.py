@@ -19,20 +19,24 @@ class Run:
 
     self.read_data = ReadData()
 
-    self.index_palier_xp = 45
+    self.index_palier_xp = 1
     self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
     self.ressources = self.read_data.read_resources_data("data/ressources.txt")
     self.barres = self.read_data.read_bars_data("data/barres.txt")
 
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
-    self.weapon_key = random.choice(list(self.data_weapon.keys()))
-    self.weapon_key = 7
-    self.weapon_name = self.data_weapon[self.weapon_key][0]
-    self.weapon_taille = self.data_weapon[self.weapon_key][1]
-    self.weapon_position = self.data_weapon[self.weapon_key][2]
-    self.weapon_position = list(self.weapon_position)
-    self.weapon_position[0] += 10 * self.zoom
-    self.weapon_position[1] += 5 * self.zoom
+
+    self.weapon_id = random.choice(list(self.data_weapon.keys()))
+    self.weapon_dict = {
+      "id": self.weapon_id,
+      "name": self.data_weapon[self.weapon_id][0],
+      "size": self.data_weapon[self.weapon_id][1],
+      "position": list(self.data_weapon[self.weapon_id][2]),
+      "range": self.data_weapon[self.weapon_id][3],
+      "explosive": self.data_weapon[self.weapon_id][4],
+    }
+    self.weapon_dict["position"][0] += 10 * self.zoom
+    self.weapon_dict["position"][1] += 5 * self.zoom
 
     self.icon = Icon(self.ressources, self.barres)
     
@@ -41,27 +45,22 @@ class Run:
 
     self.player = Player(self.zoom, self.screen, self.icon, "jim")  # mettre sur tiled un objet start
     self.map_manager = MapManager(self, self.screen, self.player, self.zoom) # appel de la classe mapManager
+    self.weapon = Weapon(self.zoom, self.player, self.weapon_dict["name"], self.weapon_dict["size"], self.weapon_dict["position"])
 
-    self.weapon = Weapon(self.zoom, self.player, self.weapon_name, self.weapon_taille, self.weapon_position)
+    self.mouse = {
+      "press": False,
+      "position": pygame.mouse.get_pos(),
+      "current_time": pygame.time.get_ticks(),
+      "shoot_delay": 100
+    }
 
-    self.mouse_pressed = False
-    self.shoot_delay = 100  # Délai entre les tirs en millisecondes
-    self.last_shot_time = 0  # Temps du dernier tir
+    self.drone = Drone(self.zoom, self.screen, self.player.enemies)
 
-    self.explosions = pygame.sprite.Group()
-    self.grenades = pygame.sprite.Group()
-    self.particles = pygame.sprite.Group()
-
-    self.drone = Drone(self.zoom, self.screen)
-    self.lasers = []
-    self.missile = []
     self.mouvement = [0, 0]
 
-    self.update = Update(self.zoom, self.screen, self.map_manager, self.ressources, self.barres, self.icon, self.lasers, self.missile)
+    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.data_weapon, self.weapon_id, self.weapon_dict["name"], self.weapon_dict["size"], self.weapon_dict["position"], self.mouvement, self.mouse)
 
     self.collision_caillou = False
-
-    self.enemies = pygame.sprite.Group()
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -111,52 +110,6 @@ class Run:
     self.index_palier_xp = palier
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
-
-
-  def update_weapon(self):
-    if self.mouse_pressed:
-      self.tir()
-
-    self.update_bullet()
-
-    self.weapon.rotate_to_cursor(self.cursor_pos)
-    self.weapon.draw(self.screen)
-    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
-
-    self.player.grenades.update(self.mouvement[0], self.mouvement[1])
-    self.player.grenades.draw(self.screen)
-    
-    self.player.explosions.update()
-    self.player.explosions.draw(self.screen)
-
-  def tir(self):
-    if self.weapon_key == 7: 
-      # self.ajout_particule()
-      self.player.add_fire()
-    elif self.current_time - self.last_shot_time > self.shoot_delay:
-      if self.weapon_key == 9:
-        # self.player.launch_grenade(3)
-        pass
-      else:
-        self.player.launch_bullet(self.cursor_pos, self.weapon_key, self.data_weapon)
-      self.last_shot_time = self.current_time
-
-  def update_bullet(self):
-    if self.weapon_key==7:
-      for particle in self.player.particles:
-        particle.update()
-        particle.draw(self.screen)
-      self.particles = [particle for particle in self.particles if particle.lifetime > 0 and particle.size > 0]
-    else:
-      for bullet in self.player.bullets:
-        bullet.move()
-
-  def update_enemy(self):
-    for enemy in self.player.enemies:
-      enemy.follow(475, 281)
-      enemy.update(0.05, self.mouvement[0], self.mouvement[1], self.player.rect_collision)
-      enemy.draw(self.screen)
-
   def random_enemy(self):
     names = ["shardsoul", "sprout", "worm", "wolf", "robot"]
     random_name = random.choice(names)
@@ -187,8 +140,8 @@ class Run:
     self.player.add_enemy("worm", 0, 0)
 
     while run:
-      self.cursor_pos = pygame.mouse.get_pos()
-      self.current_time = pygame.time.get_ticks()
+      self.mouse["position"] = pygame.mouse.get_pos()
+      self.mouse["current_time"] = pygame.time.get_ticks()
       self.player.save_location()
       self.keyboard_input()
       self.map_manager.draw()
@@ -197,8 +150,8 @@ class Run:
           enemy = self.random_enemy()
           self.player.add_enemy(*enemy)
 
-      self.icon.add_bars("xp", 1)
-      self.icon.add_resource("en", 1)
+      # self.icon.add_bars("xp", 1)
+      # self.icon.add_resource("en", 1)
 
       self.update_class()
 
@@ -206,21 +159,16 @@ class Run:
         if event.type == pygame.QUIT:
           run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-          self.mouse_pressed = True
+          self.mouse["press"] = True
         elif event.type == pygame.MOUSEBUTTONUP:
-          self.mouse_pressed = False
+          self.mouse["press"] = False
 
       clock.tick(60)
 
   def update_class(self):
-    self.update_enemy()
-    self.update.update_all(self.mouvement[0], self.mouvement[1])
+    self.update.update_all(self.mouvement, self.mouse)
+
     self.drone.update_drone()
-
-    self.update_weapon()
-
-    self.player.explosions.update()
-    self.player.explosions.draw(self.screen)
 
     pygame.display.flip()
 

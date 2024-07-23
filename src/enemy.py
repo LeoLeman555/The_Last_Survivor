@@ -77,6 +77,7 @@ class Enemy(pygame.sprite.Sprite):
     """Handle enemy death."""
     self.is_alive = False
     self.icon.add_resource("me", 5)
+    self.icon.add_bars("xp", 50)
     self.kill()
 
   def set_animation(self, animation: str):

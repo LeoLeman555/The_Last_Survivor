@@ -3,10 +3,11 @@ import random
 from load import Load
 
 class Grenade(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, screen: pygame.Surface, player, speed: int):
+  def __init__(self, zoom: int, screen: pygame.Surface, enemies, player, speed: int, damage: int = 100):
     super().__init__()
     self.zoom = zoom
     self.screen = screen
+    self.enemies = enemies
     self.player = player
     self.image = Load.charge_image(self, self.zoom, "weapon", "ammo5", "png", 0.5)
     self.rect = self.image.get_rect()
@@ -19,6 +20,7 @@ class Grenade(pygame.sprite.Sprite):
     self.bounce_factor = 0.8
     self.rebound_height = self.screen.get_height() // 2
     self.lifetime = 25 * self.zoom
+    self.damage = damage
 
   def explode(self):
     """Trigger an explosion."""
@@ -40,9 +42,19 @@ class Grenade(pygame.sprite.Sprite):
         self.velocity_y = 0
 
     self.lifetime -= 1
+
+    self.check_collision()
     
     if self.lifetime <= 0:
       self.explode()
+      self.kill()
+
+  def check_collision(self):
+    """Checks for collisions with enemies."""
+    hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
+    if hit_enemy:
+      self.explode()
+      hit_enemy.damage(self.damage)
       self.kill()
 
 class Explosion(pygame.sprite.Sprite):
@@ -87,8 +99,9 @@ class Explosion(pygame.sprite.Sprite):
         self.kill()
 
 class Cible:
-  def __init__(self, zoom: int, x: int, y: int):
+  def __init__(self, zoom: int, enemies, x: int, y: int, damage :int =10):
     self.zoom = zoom
+    self.enemies = enemies
     self.image = Load.charge_image(self, self.zoom, "weapon", "cible_drone", "png", 0.5)
     self.rect = self.image.get_rect()
     self.rect.x = x
@@ -97,13 +110,16 @@ class Cible:
     self.y = y
     self.direction = 1
     self.speed = 4
-    
+    self.damage = damage
+
   def update(self):
     """Update the position of the target."""
     self.x += self.direction * self.speed
     self.rect.x = self.x
     if self.x <= 300 / self.zoom or self.x >= 550 + 150 * self.zoom - self.image.get_width():
       self.direction *= -1  # Invert direction
+
+    self.check_collision()
     
   def draw(self, screen: pygame.Surface):
     """Draw the target on the screen."""
@@ -111,13 +127,20 @@ class Cible:
     if not 460 - 40 * (self.zoom - 1) <= self.x <= 500 + 15 * self.zoom:
       screen.blit(self.image, (self.x, self.y))
 
+  def check_collision(self):
+    """Checks for collisions with enemies."""
+    hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
+    if hit_enemy:
+      hit_enemy.damage(self.damage)
+
 class Drone:
-  def __init__(self, zoom: int, screen: pygame.Surface):
+  def __init__(self, zoom: int, screen: pygame.Surface, enemies):
     self.zoom = zoom
     self.screen = screen
+    self.enemies = enemies
     self.image = Load.charge_image(self, self.zoom, "weapon", "drone", "png", 0.4)
     self.x_cible = 0
-    self.cible = Cible(self.zoom, 300 / self.zoom, 315)
+    self.cible = Cible(self.zoom, self.enemies, 300 / self.zoom, 315)
     
   def update_drone(self):
     """Update the drone's position and draw it on the screen."""
@@ -125,9 +148,12 @@ class Drone:
     self.cible.update()
     self.cible.draw(self.screen)
 
-class Laser:
-  def __init__(self, zoom: int):
+class Laser(pygame.sprite.Sprite):
+  def __init__(self, zoom: int, enemies, damage :int =100):
+    super().__init__()
     self.zoom = zoom
+    self.enemies = enemies
+    self.damage = damage
     self.x = random.choice([random.randint(100, 400), random.randint(600, 900)])
     self.start_y = 0
     self.end_y = random.randint(100, 550)
@@ -145,10 +171,23 @@ class Laser:
   def update(self):
     """Update the laser's lifetime."""
     self.lifetime -= 1
+    self.check_collision()
 
-class Missile:
-  def __init__(self, zoom: int):
+    if self.lifetime <= 0:
+      self.kill()
+
+  def check_collision(self):
+    """Checks for collisions with enemies."""
+    hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
+    if hit_enemy:
+      hit_enemy.damage(self.damage)
+
+class Missile(pygame.sprite.Sprite):
+  def __init__(self, zoom: int, enemies, damage: int =5):
+    super().__init__()
     self.zoom = zoom
+    self.enemies = enemies
+    self.damage = damage
     self.cible_missile = Load.charge_image(self, self.zoom, "weapon", "cible_missile", "png", 0.5)
     self.x = random.randint(300, 700)
     self.y = random.randint(200, 400)
@@ -170,6 +209,17 @@ class Missile:
     self.y += y
     self.rect.x = self.x
     self.rect.y = self.y
+
+    self.check_collision()
+
+    if self.lifetime <= 0:
+      self.kill()
+
+  def check_collision(self):
+    """Checks for collisions with enemies."""
+    hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
+    if hit_enemy:
+      hit_enemy.damage(self.damage)
 
   def get_rectangle(self):
     """Return the missile's rectangle."""

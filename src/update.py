@@ -2,21 +2,81 @@ import random
 from extras import *
 
 class Update():
-  def __init__(self, zoom:int, screen:'pygame.surface.Surface', map_manager, ressources:dict, barres:dict, icon, lasers:list, missile:list):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', map_manager, player, weapon, ressources:dict, barres:dict, icon, data_weapon, weapon_key: int, weapon_name, weapon_taille, weapon_position, mouvement, mouse):
     self.zoom = zoom
     self.screen = screen
     self.map_manager = map_manager
+    self.player = player
+    self.weapon = weapon
     self.ressources = ressources
     self.barres = barres
     self.icon = icon
-    self.lasers = lasers
-    self.missile = missile
+    self.enemies = self.player.enemies
 
-  def update_all(self, x:int =0, y:int =0):
+    self.mouvement = mouvement
+    self.data_weapon = data_weapon
+    self.weapon_key = weapon_key
+    self.weapon_name = weapon_name
+    self.weapon_taille = weapon_taille
+    self.weapon_position = weapon_position
+
+    self.mouse = mouse
+
+    self.last_shot_time = self.mouse["current_time"]
+
+  def update_all(self, mouvement, mouse):
+    self.mouvement = mouvement
+
+    self.mouse = mouse
+
     self.update_map()
     self.update_laser()
-    self.update_missile(x, y)
+    self.update_missile()
+    self.update_weapon()
+    self.update_bullets()
+    self.update_enemies()
     self.update_icon()
+
+  def update_weapon(self):
+
+    if self.mouse["press"]:
+      self.shoot()
+
+    self.weapon.rotate_to_cursor(self.mouse["position"])
+    self.weapon.draw(self.screen)
+    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+
+    self.player.grenades.update(*self.mouvement)
+    self.player.grenades.draw(self.screen)
+    
+    self.player.explosions.update()
+    self.player.explosions.draw(self.screen)
+
+  def shoot(self):
+    if self.weapon_key == 7: 
+      self.player.add_fire()
+    elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
+      if self.weapon_key == 9:
+        # self.player.launch_grenade(3)
+        pass
+      else:
+        self.player.launch_bullet(self.mouse["position"] , self.weapon_key, self.data_weapon)
+      self.last_shot_time = self.mouse["current_time"] 
+
+  def update_bullets(self):
+    if self.weapon_key==7:
+      for particle in self.player.particles:
+        particle.update()
+        particle.draw(self.screen)
+    else:
+      for bullet in self.player.bullets:
+        bullet.move()
+
+  def update_enemies(self):
+    for enemy in self.player.enemies:
+      enemy.follow(475, 281)
+      enemy.update(0.05, self.mouvement[0], self.mouvement[1], self.player.rect_collision)
+      enemy.draw(self.screen)
 
   def update_map(self):
     self.map_manager.update()
@@ -34,17 +94,15 @@ class Update():
     self.icon.draw_icon(self.screen, "df_icon", 20, 127, 30, -1, 30, 21, self.ressources["do"])
 
   def update_laser(self):
-    if random.random() < 0.01:
-      self.lasers.append(Laser(self.zoom))
-    for laser in self.lasers:
+    if random.random() < 0.005:
+      self.player.add_laser()
+    for laser in self.player.lasers:
       laser.draw(self.screen)
       laser.update()
-    self.lasers = [laser for laser in self.lasers if laser.lifetime > 0]
 
-  def update_missile(self, x:int, y:int):
+  def update_missile(self):
     if random.random() < 0.01:
-      self.missile.append(Missile(self.zoom))
-    for mis in self.missile:
-      mis.draw(self.screen)
-      mis.update(x, y)
-    self.missile = [mis for mis in self.missile if mis.lifetime > 0]
+      self.player.add_missile()
+    for missile in self.player.missiles:
+      missile.draw(self.screen)
+      missile.update(*self.mouvement)

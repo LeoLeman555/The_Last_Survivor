@@ -38,8 +38,9 @@ class Player(pygame.sprite.Sprite):
     self.grenades = pygame.sprite.Group()
     self.explosions = pygame.sprite.Group()
     self.particles = pygame.sprite.Group()
+    self.lasers = pygame.sprite.Group()
+    self.missiles = pygame.sprite.Group()
 
-    #TODO change self.ammo_images + his management
     self.ammo_images = {
       1: "ammo1",
       2: "ammo1",
@@ -141,9 +142,15 @@ class Player(pygame.sprite.Sprite):
     self.weapons.add(Weapon(self.zoom, self, name, size, position))
 
   def launch_grenade(self, speed:int):
-    self.grenades.add(Grenade(self.zoom, self.screen, self, speed))
+    self.grenades.add(Grenade(self.zoom, self.screen, self.enemies, self, speed))
 
   def add_enemy(self, name:str, x:int=0, y:int=0):
     if name.lower() in self.enemy_dict:
       enemy_class = self.enemy_dict[name.lower()]
       self.enemies.add(enemy_class(self.zoom, self.screen, self.icon, x, y))
+
+  def add_laser(self):
+    self.lasers.add(Laser(self.zoom, self.enemies))
+
+  def add_missile(self):
+    self.missiles.add(Missile(self.zoom, self.enemies))
