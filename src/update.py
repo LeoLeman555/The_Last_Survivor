@@ -33,14 +33,11 @@ class Update():
     self.update_laser()
     self.update_missile()
     self.update_weapon()
-    self.update_bullets()
     self.update_enemies()
+    self.update_bullets()
     self.update_icon()
 
   def update_weapon(self):
-
-    if self.mouse["press"]:
-      self.shoot()
 
     self.weapon.rotate_to_cursor(self.mouse["position"])
     self.weapon.draw(self.screen)
@@ -50,18 +47,7 @@ class Update():
     self.player.grenades.draw(self.screen)
     
     self.player.explosions.update()
-    self.player.explosions.draw(self.screen)
-
-  def shoot(self):
-    if self.weapon_key == 7: 
-      self.player.add_fire()
-    elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
-      if self.weapon_key == 9:
-        # self.player.launch_grenade(3)
-        pass
-      else:
-        self.player.launch_bullet(self.mouse["position"] , self.weapon_key, self.data_weapon)
-      self.last_shot_time = self.mouse["current_time"] 
+    self.player.explosions.draw(self.screen) 
 
   def update_bullets(self):
     if self.weapon_key==7:
@@ -70,7 +56,7 @@ class Update():
         particle.draw(self.screen)
     else:
       for bullet in self.player.bullets:
-        bullet.move()
+        bullet.update()
 
   def update_enemies(self):
     for enemy in self.player.enemies:

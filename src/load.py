@@ -41,7 +41,11 @@ class ReadData:
         power = int(parts[6])
         explosion = int(parts[7])
         distance = int(parts[8])
-        data_weapon[key] = (name, dimensions, position, power, explosion, distance)
+        rate = int(parts[9])
+        precision = int(parts[10])
+        number_shoot = int(parts[11])
+        delay = int(parts[12])
+        data_weapon[key] = (name, dimensions, position, power, explosion, distance, rate, precision, number_shoot, delay)
     return data_weapon
 
   def read_resources_data(self, path: str):

@@ -41,7 +41,7 @@ class Weapon(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player: 'player.Player', enemies, goal: tuple,
-              name: str, distance_weapon: int, position: list, range: int = 500, explosive: bool = False, speed: int = 15, damage: int = 100):
+              name: str, distance_weapon: int, position: list, range: int = 500, explosive: bool = False, time: int=0, speed: int = 15, damage: int = 100):
     super().__init__()
     self.zoom = zoom
     self.speed = speed * self.zoom
@@ -62,6 +62,8 @@ class Bullet(pygame.sprite.Sprite):
     self.screen = screen
     self.explosive = explosive
 
+    self.time = time
+
     dx, dy = self.goal[0] - self.rect.x, self.goal[1] - self.rect.y
     distance = math.sqrt(dx ** 2 + dy ** 2)
     self.vector = (self.speed * dx / distance, self.speed * dy / distance)
@@ -79,21 +81,25 @@ class Bullet(pygame.sprite.Sprite):
     """Removes the bullet from the player's bullets list."""
     self.player.bullets.remove(self)
 
-  def move(self):
+  def update(self):
     """Moves the bullet and handles collisions."""
-    self.rotate()
-    self.rect.x += self.vector[0]
-    self.rect.y += self.vector[1]
-    self.distance_traveled += self.speed
 
-    if self.distance_traveled > self.range:
-      self.delete()
-      self.explode()
+    if self.time == 0:
+      self.rotate()
+      self.rect.x += self.vector[0]
+      self.rect.y += self.vector[1]
+      self.distance_traveled += self.speed
+
+      if self.distance_traveled > self.range:
+        self.delete()
+        self.explode()
+      else:
+        self.check_collision()
+
+      if self.distance_traveled > self.distance_weapon:
+        self.screen.blit(self.image, self.rect)
     else:
-      self.check_collision()
-
-    if self.distance_traveled > self.distance_weapon:
-      self.screen.blit(self.image, self.rect)
+      self.time -= 1
 
   def check_collision(self):
     """Checks for collisions with enemies."""

@@ -27,6 +27,7 @@ class Run:
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
 
     self.weapon_id = random.choice(list(self.data_weapon.keys()))
+    self.weapon_id = 11
     self.weapon_dict = {
       "id": self.weapon_id,
       "name": self.data_weapon[self.weapon_id][0],
@@ -34,9 +35,14 @@ class Run:
       "position": list(self.data_weapon[self.weapon_id][2]),
       "range": self.data_weapon[self.weapon_id][3],
       "explosive": self.data_weapon[self.weapon_id][4],
+      "rate": self.data_weapon[self.weapon_id][6],
+      "precision": self.data_weapon[self.weapon_id][7],
+      "number_shoot": self.data_weapon[self.weapon_id][8],
+      "delay": self.data_weapon[self.weapon_id][9]
     }
     self.weapon_dict["position"][0] += 10 * self.zoom
     self.weapon_dict["position"][1] += 5 * self.zoom
+    print(self.weapon_dict)
 
     self.icon = Icon(self.ressources, self.barres)
     
@@ -51,8 +57,10 @@ class Run:
       "press": False,
       "position": pygame.mouse.get_pos(),
       "current_time": pygame.time.get_ticks(),
-      "shoot_delay": 100
+      "shoot_delay": self.weapon_dict["rate"]
     }
+
+    self.last_shot_time = self.mouse["current_time"]
 
     self.drone = Drone(self.zoom, self.screen, self.player.enemies)
 
@@ -132,6 +140,24 @@ class Run:
     else:
         y = random.randint(*y_ranges[choice])
     return random_name, x, y
+  
+  def shoot(self):
+    if self.weapon_id == 7:
+      self.player.add_fire()
+    elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
+      if self.weapon_id == 9:
+        # self.player.launch_grenade(3)
+        pass
+      else:
+        if self.weapon_dict["delay"] == 0:
+          for position in range(-30, self.weapon_dict["number_shoot"], int(30/self.weapon_dict["number_shoot"])):
+            self.player.launch_bullet((list(self.mouse["position"])[0] + position, (list(self.mouse["position"])[1] + position)), self.weapon_id, self.data_weapon)
+        else:
+          for delay in range(0, self.weapon_dict["number_shoot"], self.weapon_dict["delay"]):
+            self.player.launch_bullet(((list(self.mouse["position"])[0] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"])), (list(self.mouse["position"])[1] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"]))), self.weapon_id, self.data_weapon, delay)
+
+        # self.player.launch_bullet(self.mouse["position"] , self.weapon_id, self.data_weapon)
+      self.last_shot_time = self.mouse["current_time"]
 
   def run(self):
     clock = pygame.time.Clock()
@@ -167,6 +193,9 @@ class Run:
 
   def update_class(self):
     self.update.update_all(self.mouvement, self.mouse)
+
+    if self.mouse["press"]:
+      self.shoot()
 
     self.drone.update_drone()
 

@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite):
       8: "ammo1",
       9: "ammo5",
       10: "ammo6",
-      11: "ammo6",
+      11: "ammo7",
       12: "ammo1",
     }
 
@@ -117,15 +117,16 @@ class Player(pygame.sprite.Sprite):
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
 
-  def launch_bullet(self, goal:tuple, weapon_id:int, data_weapon:dict):
+  def launch_bullet(self, goal:tuple, weapon_id:int, data_weapon:dict, time :int =0):
     ammo_image = self.ammo_images.get(weapon_id)
     position = data_weapon[weapon_id][2]
     position = list(position)
     weapon_range = data_weapon[weapon_id][3]
     explosive = data_weapon[weapon_id][4] == 1
     distance = data_weapon[weapon_id][5]
+    time = time
     # speed bullet is not defined => default value
-    self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive))
+    self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive, time))
 
   def add_fire(self):
     x = 500 + 10 * self.zoom
