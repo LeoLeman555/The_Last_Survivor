@@ -15,7 +15,7 @@ class Grenade(pygame.sprite.Sprite):
     self.rect.centerx = player.rect.centerx - (player.rect.x - 500)
     self.rect.centery = player.rect.centery - (player.rect.y - 300)
     self.speed = speed * self.zoom
-    self.gravity = 0.5
+    self.gravity = 0.4
     self.velocity_y = -5 * self.zoom
     self.bounce_factor = 0.8
     self.rebound_height = self.screen.get_height() // 2

@@ -2,7 +2,7 @@ import random
 from extras import *
 
 class Update():
-  def __init__(self, zoom:int, screen:'pygame.surface.Surface', map_manager, player, weapon, ressources:dict, barres:dict, icon, data_weapon, weapon_key: int, weapon_name, weapon_taille, weapon_position, mouvement, mouse):
+  def __init__(self, zoom:int, screen:'pygame.surface.Surface', map_manager, player, weapon, ressources:dict, barres:dict, icon, data_weapon, weapon_key: int, weapon_name, weapon_taille, weapon_position, weapon_id, mouvement, mouse):
     self.zoom = zoom
     self.screen = screen
     self.map_manager = map_manager
@@ -19,6 +19,7 @@ class Update():
     self.weapon_name = weapon_name
     self.weapon_taille = weapon_taille
     self.weapon_position = weapon_position
+    self.weapon_id = weapon_id
 
     self.mouse = mouse
 
@@ -41,7 +42,7 @@ class Update():
 
     self.weapon.rotate_to_cursor(self.mouse["position"])
     self.weapon.draw(self.screen)
-    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position)
+    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position, self.weapon_id)
 
     self.player.grenades.update(*self.mouvement)
     self.player.grenades.draw(self.screen)

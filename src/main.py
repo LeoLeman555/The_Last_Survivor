@@ -6,7 +6,7 @@ from menu import Menu_principal
 
 pygame.init()
 
-run = Run(2)
+run = Run(1)
 
 # Lancer le jeu directement
 # if Menu_principal() == "jeu":

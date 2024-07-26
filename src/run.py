@@ -27,7 +27,7 @@ class Run:
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
 
     self.weapon_id = random.choice(list(self.data_weapon.keys()))
-    self.weapon_id = 11
+    self.weapon_id = 9
     self.weapon_dict = {
       "id": self.weapon_id,
       "name": self.data_weapon[self.weapon_id][0],
@@ -51,7 +51,7 @@ class Run:
 
     self.player = Player(self.zoom, self.screen, self.icon, "jim")  # mettre sur tiled un objet start
     self.map_manager = MapManager(self, self.screen, self.player, self.zoom) # appel de la classe mapManager
-    self.weapon = Weapon(self.zoom, self.player, self.weapon_dict["name"], self.weapon_dict["size"], self.weapon_dict["position"])
+    self.weapon = Weapon(self.zoom, self.player, self.weapon_dict["name"], self.weapon_dict["size"], self.weapon_dict["position"], self.weapon_dict["id"])
 
     self.mouse = {
       "press": False,
@@ -66,7 +66,7 @@ class Run:
 
     self.mouvement = [0, 0]
 
-    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.data_weapon, self.weapon_id, self.weapon_dict["name"], self.weapon_dict["size"], self.weapon_dict["position"], self.mouvement, self.mouse)
+    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.data_weapon, self.weapon_id, self.weapon_dict["name"], self.weapon_dict["size"], self.weapon_dict["position"], self.weapon_dict["id"], self.mouvement, self.mouse)
 
     self.collision_caillou = False
 
@@ -146,8 +146,11 @@ class Run:
       self.player.add_fire()
     elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
       if self.weapon_id == 9:
-        # self.player.launch_grenade(3)
-        pass
+        if self.mouse["position"][0] > 500:
+          self.player.launch_grenade(10/self.zoom)
+        else:
+          self.player.launch_grenade(-10/self.zoom)
+
       else:
         if self.weapon_dict["delay"] == 0:
           for position in range(-30, self.weapon_dict["number_shoot"], int(30/self.weapon_dict["number_shoot"])):

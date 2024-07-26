@@ -6,7 +6,7 @@ from load import Load
 import player
 
 class Weapon(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, player: 'player.Player', name: str, size: tuple, position: list):
+  def __init__(self, zoom: int, player: 'player.Player', name: str, size: tuple, position: list, id :int):
     super().__init__()
     self.zoom = zoom
     self.player = player
@@ -15,6 +15,7 @@ class Weapon(pygame.sprite.Sprite):
     self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.name, "png", 0.85)
     self.rect = self.image.get_rect()
     self.position = position
+    self.id = id
     self.rect.center = self.position
     self.original_image = self.image
     self.angle = 0
@@ -24,17 +25,15 @@ class Weapon(pygame.sprite.Sprite):
     screen.blit(self.image, self.rect)
 
   def rotate_to_cursor(self, cursor_pos: tuple):
-    """Rotates the weapon to point towards the mouse cursor."""
+    """Rotates the weapon to point towards the mouse cursor or flips it if the id is 9."""   
     dx, dy = cursor_pos[0] - self.rect.centerx, cursor_pos[1] - self.rect.centery
     self.angle = math.degrees(math.atan2(dy, dx))
 
-    # Flip image if needed
     if 90 < self.angle < 270 or -270 < self.angle < -90:
       self.image = pygame.transform.flip(self.original_image, False, True)
     else:
       self.image = self.original_image
 
-    # Rotate the image
     self.image = pygame.transform.rotozoom(self.image, -self.angle, 1)
     self.rect = self.image.get_rect(center=self.rect.center)
 
