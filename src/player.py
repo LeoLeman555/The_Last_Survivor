@@ -34,7 +34,6 @@ class Player(pygame.sprite.Sprite):
     self.attack = 10
     self.enemies = pygame.sprite.Group()
     self.bullets = pygame.sprite.Group()
-    self.weapons = pygame.sprite.Group()
     self.grenades = pygame.sprite.Group()
     self.explosions = pygame.sprite.Group()
     self.particles = pygame.sprite.Group()
@@ -138,9 +137,6 @@ class Player(pygame.sprite.Sprite):
     direction = (dx / distance, dy / distance)  # Normaliser le vecteur
     for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
       self.particles.add(FireParticle(self.zoom, self.enemies, x, y, direction))
-
-  def display_weapon(self, name:str, size:tuple, position:tuple, id):
-    self.weapons.add(Weapon(self.zoom, self, name, size, position, id))
 
   def launch_grenade(self, speed:int):
     self.grenades.add(Grenade(self.zoom, self.screen, self.enemies, self, speed))

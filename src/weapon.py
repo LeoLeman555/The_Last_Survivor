@@ -6,17 +6,14 @@ from load import Load
 import player
 
 class Weapon(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, player: 'player.Player', name: str, size: tuple, position: list, id :int):
+  def __init__(self, zoom: int, player: 'player.Player', weapon_dict: dict):
     super().__init__()
     self.zoom = zoom
     self.player = player
-    self.name = name
-    self.size = size
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.name, "png", 0.85)
+    self.weapon_dict = weapon_dict
+    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
     self.rect = self.image.get_rect()
-    self.position = position
-    self.id = id
-    self.rect.center = self.position
+    self.rect.center = self.weapon_dict["position"]
     self.original_image = self.image
     self.angle = 0
 
@@ -40,7 +37,7 @@ class Weapon(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player: 'player.Player', enemies, goal: tuple,
-              name: str, distance_weapon: int, position: list, range: int = 500, explosive: bool = False, time: int=0, speed: int = 15, damage: int = 100):
+  name: str, distance_weapon: int, position: list, range: int = 500, explosive: bool = False, time: int=0, speed: int = 15, damage: int = 100):
     super().__init__()
     self.zoom = zoom
     self.speed = speed * self.zoom

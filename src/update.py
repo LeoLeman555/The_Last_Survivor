@@ -2,7 +2,7 @@ import random
 from extras import *
 
 class Update():
-  def __init__(self, zoom:int, screen:'pygame.surface.Surface', map_manager, player, weapon, ressources:dict, barres:dict, icon, data_weapon, weapon_key: int, weapon_name, weapon_taille, weapon_position, weapon_id, mouvement, mouse):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', map_manager, player, weapon, ressources: dict, barres: dict, icon, weapon_dict: dict, mouvement :list, mouse: dict):
     self.zoom = zoom
     self.screen = screen
     self.map_manager = map_manager
@@ -13,21 +13,13 @@ class Update():
     self.icon = icon
     self.enemies = self.player.enemies
 
+    self.weapon_dict = weapon_dict
     self.mouvement = mouvement
-    self.data_weapon = data_weapon
-    self.weapon_key = weapon_key
-    self.weapon_name = weapon_name
-    self.weapon_taille = weapon_taille
-    self.weapon_position = weapon_position
-    self.weapon_id = weapon_id
-
     self.mouse = mouse
 
-    self.last_shot_time = self.mouse["current_time"]
-
-  def update_all(self, mouvement, mouse):
+  def update_all(self, weapon_dict, mouvement, mouse):
+    self.weapon_dict = weapon_dict
     self.mouvement = mouvement
-
     self.mouse = mouse
 
     self.update_map()
@@ -42,7 +34,6 @@ class Update():
 
     self.weapon.rotate_to_cursor(self.mouse["position"])
     self.weapon.draw(self.screen)
-    self.player.display_weapon(self.weapon_name, self.weapon_taille, self.weapon_position, self.weapon_id)
 
     self.player.grenades.update(*self.mouvement)
     self.player.grenades.draw(self.screen)
@@ -51,7 +42,7 @@ class Update():
     self.player.explosions.draw(self.screen) 
 
   def update_bullets(self):
-    if self.weapon_key==7:
+    if self.weapon_dict["id"]==7:
       for particle in self.player.particles:
         particle.update()
         particle.draw(self.screen)
@@ -62,7 +53,7 @@ class Update():
   def update_enemies(self):
     for enemy in self.player.enemies:
       enemy.follow(475, 281)
-      enemy.update(0.05, self.mouvement[0], self.mouvement[1], self.player.rect_collision)
+      enemy.update(0.05, *self.mouvement, self.player.rect_collision)
       enemy.draw(self.screen)
 
   def update_map(self):
