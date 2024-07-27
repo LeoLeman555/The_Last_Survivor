@@ -123,9 +123,10 @@ class Player(pygame.sprite.Sprite):
     weapon_range = data_weapon[weapon_id][3]
     explosive = data_weapon[weapon_id][4] == 1
     distance = data_weapon[weapon_id][5]
+    dps = data_weapon[weapon_id][10]
     time = time
     # speed bullet is not defined => default value
-    self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive, time))
+    self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive, time, dps))
 
   def add_fire(self):
     x = 500 + 10 * self.zoom

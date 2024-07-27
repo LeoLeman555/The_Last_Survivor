@@ -37,7 +37,7 @@ class Weapon(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player: 'player.Player', enemies, goal: tuple,
-  name: str, distance_weapon: int, position: list, range: int = 500, explosive: bool = False, time: int=0, speed: int = 15, damage: int = 10):
+  name: str, distance_weapon: int, position: list, range: int = 500, explosive: bool = False, time: int=0, damage: int = 10, speed: int = 15):
     super().__init__()
     self.zoom = zoom
     self.speed = speed * self.zoom

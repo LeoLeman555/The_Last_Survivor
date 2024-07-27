@@ -27,7 +27,7 @@ class Run:
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
 
     self.weapon_id = random.choice(list(self.data_weapon.keys()))
-    self.weapon_id = 7
+    self.weapon_id = 8
     self.weapon_dict = {
       "id": self.weapon_id,
       "name": self.data_weapon[self.weapon_id][0],
@@ -38,7 +38,8 @@ class Run:
       "rate": self.data_weapon[self.weapon_id][6],
       "precision": self.data_weapon[self.weapon_id][7],
       "number_shoot": self.data_weapon[self.weapon_id][8],
-      "delay": self.data_weapon[self.weapon_id][9]
+      "delay": self.data_weapon[self.weapon_id][9],
+      "dps": self.data_weapon[self.weapon_id][10]
     }
     self.weapon_dict["position"][0] += 10 * self.zoom
     self.weapon_dict["position"][1] += 5 * self.zoom
