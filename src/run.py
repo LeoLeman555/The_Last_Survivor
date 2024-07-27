@@ -27,7 +27,7 @@ class Run:
     self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
 
     self.weapon_id = random.choice(list(self.data_weapon.keys()))
-    self.weapon_id = 1
+    self.weapon_id = 7
     self.weapon_dict = {
       "id": self.weapon_id,
       "name": self.data_weapon[self.weapon_id][0],

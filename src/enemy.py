@@ -3,9 +3,10 @@ import random
 import math
 import items
 from load import ReadData
+from health_bar import HealthBar
 
 class Enemy(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', name: str, animations: dict, size: float, x: int, y: int, speed: int, icon : 'items.Icon', life: int = 100):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', name: str, animations: dict, size: float, x: int, y: int, speed: int, icon : 'items.Icon', max_health: int = 100):
     super().__init__()
     self.zoom = zoom
     self.screen = screen
@@ -14,7 +15,9 @@ class Enemy(pygame.sprite.Sprite):
     self.size = size
     self.x = x
     self.y = y
-    self.life = life
+    self.max_health = max_health
+    self.health = max_health
+
     self.speed = speed
     self.icon = icon
     self.current_animation = self.animations.get("idle", [])
@@ -24,6 +27,9 @@ class Enemy(pygame.sprite.Sprite):
     self.animation_time = 0
     self.is_alive = True
     self.facing_left = False
+
+    self.width = self.image.get_width()
+    self.health_bar = HealthBar(self.zoom, self.x, self.y - 10, self.width, self.max_health)  # Adjusted health bar position
 
   def _resize_image(self, image: pygame.Surface) -> pygame.Surface:
     """Resize image based on zoom and size."""
@@ -44,16 +50,21 @@ class Enemy(pygame.sprite.Sprite):
     self.animation_time += dt
     if self.animation_time >= 0.1:
       self.animation_time = 0
-      if not len(self.current_animation) == 0 :
+      if not len(self.current_animation) == 0:
         self.frame_index = (self.frame_index + 1) % len(self.current_animation)
         self.image = self._resize_image(self.current_animation[self.frame_index])
       if self.facing_left:
         self.image = pygame.transform.flip(self.image, True, False)
 
+    # Update the health bar position and value
+    self.health_bar.rect.topleft = (self.x, self.y - 10)
+    self.health_bar.update(self.health)
+
   def draw(self, screen: 'pygame.surface.Surface'):
-    """Draw the enemy on the screen."""
+    """Draw the enemy and its health bar on the screen."""
     # pygame.draw.rect(screen, (0, 0, 0,), self.rect)
     screen.blit(self.image, (self.x, self.y))
+    screen.blit(self.health_bar.image, self.health_bar.rect.topleft)
 
   def move(self, dx: int, dy: int):
     """Move the enemy and set its animation."""
@@ -69,8 +80,8 @@ class Enemy(pygame.sprite.Sprite):
 
   def damage(self, damage: int):
     """Apply damage to the enemy."""
-    self.life -= damage
-    if self.life <= 0:
+    self.health -= damage
+    if self.health <= 0:
       self.die()
 
   def die(self):
