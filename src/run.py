@@ -32,7 +32,6 @@ class Run:
 
     self.weapon_dict = self.get_weapon(self.weapon_id, self.data_weapons)
     print(self.weapon_dict)
-    print(self.data_enemies)
 
     self.icon = Icon(self.ressources, self.barres)
     
