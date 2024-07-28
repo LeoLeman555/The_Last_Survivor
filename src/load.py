@@ -1,4 +1,6 @@
-import pygame, pytmx
+import pygame
+import pytmx
+import ast
 
 class Load:
   def charge_image(self, zoom: int, path: str, name: str, extension: str, ratio: int = 1):
@@ -71,11 +73,18 @@ class ReadData:
         bars[key] = value
     return bars
 
-  def read_animation_specs(filename: str):
+  def read_animation_specs(self, filepath: str):
     """Read animation specs from a file and return as a dictionary."""
     animation_specs = {}
-    with open(filename, 'r') as file:
+    with open(filepath, 'r') as file:
       for line in file:
         key, value = line.strip().split(':')
         animation_specs[key] = tuple(map(int, value.strip("()").split(',')))
     return animation_specs
+  
+  def read_enemy_params(self, filepath: str):
+      with open(filepath, 'r') as file:
+          content = file.read()
+      content = content.replace("ENEMY_PARAMS = ", "", 1)
+      enemy_params_dict = ast.literal_eval(content)
+      return enemy_params_dict

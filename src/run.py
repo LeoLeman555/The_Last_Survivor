@@ -24,13 +24,15 @@ class Run:
     self.ressources = self.read_data.read_resources_data("data/ressources.txt")
     self.barres = self.read_data.read_bars_data("data/barres.txt")
 
-    self.data_weapons = self.read_data.read_weapon_data('data/weapons.txt')
+    self.data_weapons = self.read_data.read_weapon_data("data/weapons.txt")
+    self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
 
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    self.weapon_id = 11
+    self.weapon_id = 1
 
     self.weapon_dict = self.get_weapon(self.weapon_id, self.data_weapons)
     print(self.weapon_dict)
+    print(self.data_enemies)
 
     self.icon = Icon(self.ressources, self.barres)
     
@@ -126,7 +128,7 @@ class Run:
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
   def random_enemy(self):
-    names = ["shardsoul", "sprout", "worm", "wolf", "robot", "yorn"]
+    names = list(self.data_enemies.keys())
     random_name = random.choice(names)
     x_ranges = {
         1: (-100, 0),
@@ -171,7 +173,7 @@ class Run:
     clock = pygame.time.Clock()
     run = True
     self.change_max_xp(5)
-    self.player.add_enemy("worm", 0, 0)
+    self.player.add_enemy(self.data_enemies, "worm", 0, 0)
 
     while run:
       self.mouse["position"] = pygame.mouse.get_pos()
@@ -182,7 +184,7 @@ class Run:
 
       if random.random() <= 0.05:
           enemy = self.random_enemy()
-          self.player.add_enemy(*enemy)
+          self.player.add_enemy(self.data_enemies, *enemy)
 
       # self.icon.add_bars("xp", 1)
       # self.icon.add_resource("en", 1)

@@ -1,0 +1,44 @@
+ENEMY_PARAMS = {
+  "shardsoul": {
+    "sprite_sheet": "res/enemy/shardsoul.png",
+    "animation_specs": "data/shardsoul_animations.txt",
+    "size": 2,
+    "speed": 3,
+    "max_health": 150,
+  },
+  "sprout": {
+    "sprite_sheet": "res/enemy/sprout.png",
+    "animation_specs": "data/sprout_animations.txt",
+    "size": 2,
+    "speed": 6,
+    "max_health": 40,
+  },
+  "worm": {
+    "sprite_sheet": "res/enemy/worm.png",
+    "animation_specs": "data/worm_animations.txt",
+    "size": 1.5,
+    "speed": 2,
+    "max_health": 100,
+  },
+  "wolf": {
+    "sprite_sheet": "res/enemy/wolf.png",
+    "animation_specs": "data/wolf_animations.txt",
+    "size": 1.5,
+    "speed": 5,
+    "max_health": 60,
+  },
+  "robot": {
+    "sprite_sheet": "res/enemy/robot.png",
+    "animation_specs": "data/robot_animations.txt",
+    "size": 1.5,
+    "speed": 1,
+    "max_health": 300,
+  },
+  "yorn": {
+    "sprite_sheet": "res/enemy/yorn.png",
+    "animation_specs": "data/yorn_animations.txt",
+    "size": 1.5,
+    "speed": 1,
+    "max_health": 200,
+  },
+}

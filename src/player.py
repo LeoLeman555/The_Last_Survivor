@@ -2,10 +2,10 @@ import pygame
 from weapon import *
 from extras import *
 from enemy import *
-from load import Load
+from load import *
 
 class Player(pygame.sprite.Sprite):
-  def __init__(self, zoom:int, screen:'pygame.surface.Surface', icon :'items.Icon', name:str ="jim", x:int =0, y:int =0):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon : 'items.Icon', name: str ="jim", x: int =0, y: int =0):
     super().__init__()
     self.zoom = zoom
     self.screen = screen
@@ -54,14 +54,6 @@ class Player(pygame.sprite.Sprite):
       11: "ammo7",
       12: "ammo1",
     }
-
-    self.enemy_dict = {
-    "shardsoul": Shardsoul,
-    "sprout": Sprout,
-    "worm": Worm,
-    "wolf": Wolf,
-    "robot": Robot,
-    "yorn": Yorn}
 
   def change_animation(self, name:str, speed:int):
     self.speed = speed
@@ -143,10 +135,10 @@ class Player(pygame.sprite.Sprite):
   def launch_grenade(self, speed:int):
     self.grenades.add(Grenade(self.zoom, self.screen, self.enemies, self, speed))
 
-  def add_enemy(self, name:str, x:int=0, y:int=0):
-    if name.lower() in self.enemy_dict:
-      enemy_class = self.enemy_dict[name.lower()]
-      self.enemies.add(enemy_class(self.zoom, self.screen, self.icon, x, y))
+  def add_enemy(self, data: dict, name: str, x: int = 0, y: int = 0):
+    if name.lower() in data:
+      enemy = Enemy(self.zoom, self.screen, name, self.icon, x, y, data)
+      self.enemies.add(enemy)
 
   def add_laser(self):
     self.lasers.add(Laser(self.zoom, self.enemies))
