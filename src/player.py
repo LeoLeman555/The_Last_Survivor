@@ -60,7 +60,8 @@ class Player(pygame.sprite.Sprite):
     "sprout": Sprout,
     "worm": Worm,
     "wolf": Wolf,
-    "robot": Robot}
+    "robot": Robot,
+    "yorn": Yorn}
 
   def change_animation(self, name:str, speed:int):
     self.speed = speed
@@ -128,7 +129,7 @@ class Player(pygame.sprite.Sprite):
     # speed bullet is not defined => default value
     self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive, time, dps))
 
-  def add_fire(self):
+  def add_fire(self, damage: int):
     x = 500 + 10 * self.zoom
     y = 300 + 5 * self.zoom
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -137,7 +138,7 @@ class Player(pygame.sprite.Sprite):
     distance = math.hypot(dx, dy)
     direction = (dx / distance, dy / distance)  # Normaliser le vecteur
     for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
-      self.particles.add(FireParticle(self.zoom, self.enemies, x, y, direction))
+      self.particles.add(FireParticle(self.zoom, self.enemies, x, y, direction, damage))
 
   def launch_grenade(self, speed:int):
     self.grenades.add(Grenade(self.zoom, self.screen, self.enemies, self, speed))

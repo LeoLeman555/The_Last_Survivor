@@ -162,3 +162,9 @@ class Robot(Enemy):
     animation_specs = ReadData.read_animation_specs("data/robot_animations.txt")
     animations = self.load_animations("res/enemy/robot.png", animation_specs)
     super().__init__(zoom, screen, "robot", animations, 1.5, x, y, speed  * zoom * 0.5, icon, 300)
+
+class Yorn(Enemy):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon: 'items.Icon', x: int, y: int, speed: int = 1):
+    animation_specs = ReadData.read_animation_specs("data/yorn_animations.txt")
+    animations = self.load_animations("res/enemy/yorn.png", animation_specs)
+    super().__init__(zoom, screen, "yorn", animations, 1.5, x, y, speed  * zoom * 0.5, icon, 200)

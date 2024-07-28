@@ -121,12 +121,13 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class FireParticle(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, enemies, x: int, y: int, direction: tuple):
+  def __init__(self, zoom: int, enemies, x: int, y: int, direction: tuple, damage: int):
     super().__init__()
     self.zoom = zoom
     self.x = x
     self.y = y
     self.enemies = enemies
+    self.damage = damage
     self.size = random.randint(3 * self.zoom, 5 * self.zoom)
     self.color = (random.randint(200, 255), random.randint(100, 150), 0)
     self.lifetime = random.randint(10 * self.zoom, 12 * self.zoom)
@@ -155,4 +156,4 @@ class FireParticle(pygame.sprite.Sprite):
     """Checks for collisions with enemies."""
     hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
     if hit_enemy:
-      hit_enemy.damage(1)
+      hit_enemy.damage(self.damage)

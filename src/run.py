@@ -24,25 +24,12 @@ class Run:
     self.ressources = self.read_data.read_resources_data("data/ressources.txt")
     self.barres = self.read_data.read_bars_data("data/barres.txt")
 
-    self.data_weapon = self.read_data.read_weapon_data('data/weapons.txt')
+    self.data_weapons = self.read_data.read_weapon_data('data/weapons.txt')
 
-    self.weapon_id = random.choice(list(self.data_weapon.keys()))
-    self.weapon_id = 8
-    self.weapon_dict = {
-      "id": self.weapon_id,
-      "name": self.data_weapon[self.weapon_id][0],
-      "size": self.data_weapon[self.weapon_id][1],
-      "position": list(self.data_weapon[self.weapon_id][2]),
-      "range": self.data_weapon[self.weapon_id][3],
-      "explosive": self.data_weapon[self.weapon_id][4],
-      "rate": self.data_weapon[self.weapon_id][6],
-      "precision": self.data_weapon[self.weapon_id][7],
-      "number_shoot": self.data_weapon[self.weapon_id][8],
-      "delay": self.data_weapon[self.weapon_id][9],
-      "dps": self.data_weapon[self.weapon_id][10]
-    }
-    self.weapon_dict["position"][0] += 10 * self.zoom
-    self.weapon_dict["position"][1] += 5 * self.zoom
+    self.weapon_id = random.choice(list(self.data_weapons.keys()))
+    self.weapon_id = 11
+
+    self.weapon_dict = self.get_weapon(self.weapon_id, self.data_weapons)
     print(self.weapon_dict)
 
     self.icon = Icon(self.ressources, self.barres)
@@ -70,6 +57,25 @@ class Run:
     self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse)
 
     self.collision_caillou = False
+
+  def get_weapon(self, id: int, data: dict):
+    weapon_dict = {
+      "id": self.weapon_id,
+      "name": data[id][0],
+      "size": data[id][1],
+      "position": list(data[id][2]),
+      "range": data[id][3],
+      "explosive": data[id][4],
+      "rate": data[id][6],
+      "precision": data[id][7],
+      "number_shoot": data[id][8],
+      "delay": data[id][9],
+      "dps": data[id][10],
+      # "speed": data[id][11]
+    }
+    weapon_dict["position"][0] += 10 * self.zoom
+    weapon_dict["position"][1] += 5 * self.zoom
+    return weapon_dict
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -120,7 +126,7 @@ class Run:
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
   def random_enemy(self):
-    names = ["shardsoul", "sprout", "worm", "wolf", "robot"]
+    names = ["shardsoul", "sprout", "worm", "wolf", "robot", "yorn"]
     random_name = random.choice(names)
     x_ranges = {
         1: (-100, 0),
@@ -144,7 +150,7 @@ class Run:
   
   def shoot(self):
     if self.weapon_id == 7:
-      self.player.add_fire()
+      self.player.add_fire(0.25)
     elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
       if self.weapon_id == 9:
         if self.mouse["position"][0] > 500:
@@ -155,12 +161,10 @@ class Run:
       else:
         if self.weapon_dict["delay"] == 0:
           for position in range(-30, self.weapon_dict["number_shoot"], int(30/self.weapon_dict["number_shoot"])):
-            self.player.launch_bullet((list(self.mouse["position"])[0] + position, (list(self.mouse["position"])[1] + position)), self.weapon_id, self.data_weapon)
+            self.player.launch_bullet((list(self.mouse["position"])[0] + position, (list(self.mouse["position"])[1] + position)), self.weapon_id, self.data_weapons)
         else:
           for delay in range(0, self.weapon_dict["number_shoot"], self.weapon_dict["delay"]):
-            self.player.launch_bullet(((list(self.mouse["position"])[0] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"])), (list(self.mouse["position"])[1] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"]))), self.weapon_id, self.data_weapon, delay)
-
-        # self.player.launch_bullet(self.mouse["position"] , self.weapon_id, self.data_weapon)
+            self.player.launch_bullet(((list(self.mouse["position"])[0] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"])), (list(self.mouse["position"])[1] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"]))), self.weapon_id, self.data_weapons, delay)
       self.last_shot_time = self.mouse["current_time"]
 
   def run(self):
