@@ -6,13 +6,14 @@ from load import ReadData
 from health_bar import HealthBar
 
 class Enemy(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', name: str, icon: 'items.Icon', x: int, y: int, data: dict):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', name: str, player, icon: 'items.Icon', x: int, y: int, data: dict):
     super().__init__()
     self.data = data
     self.params = self.data[name.lower()]
     self.zoom = zoom
     self.screen = screen
     self.name = name
+    self.player = player
     self.animations = self.load_animations(self.params["sprite_sheet"], ReadData.read_animation_specs(self, self.params["animation_specs"]))
     self.size = self.params["size"]
     self.x = x
@@ -89,6 +90,7 @@ class Enemy(pygame.sprite.Sprite):
     self.is_alive = False
     self.icon.add_resource("me", 5)
     self.icon.add_bars("xp", 50)
+    self.player.add_object(*self.rect.center)
     self.kill()
 
   def set_animation(self, animation: str):

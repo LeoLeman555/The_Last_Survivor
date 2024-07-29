@@ -28,7 +28,7 @@ class Run:
     self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
 
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    self.weapon_id = 1
+    self.weapon_id = 10
 
     self.weapon_dict = self.get_weapon(self.weapon_id, self.data_weapons)
     print(self.weapon_dict)
@@ -117,10 +117,13 @@ class Run:
     if self.collision_caillou:
       self.mouvement = [0, 0]
 
-    if press[pygame.K_r]:
-      self.player.launch_grenade(-1.5)
-    elif press[pygame.K_t]:
-      self.player.launch_grenade(1.5)
+    if press[pygame.K_r] and self.mouse["current_time"] - self.last_shot_time > 750:
+      if self.mouse["position"][0] > 500:
+        self.player.launch_grenade(3/self.zoom)
+      else:
+        self.player.launch_grenade(-3/self.zoom)
+
+      self.last_shot_time = self.mouse["current_time"]
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
@@ -173,6 +176,8 @@ class Run:
     run = True
     self.change_max_xp(5)
     self.player.add_enemy(self.data_enemies, "worm", 0, 0)
+
+    self.player.add_object(0, 0)
 
     while run:
       self.mouse["position"] = pygame.mouse.get_pos()

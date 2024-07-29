@@ -3,6 +3,7 @@ from weapon import *
 from extras import *
 from enemy import *
 from load import *
+from objects import *
 
 class Player(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon : 'items.Icon', name: str ="jim", x: int =0, y: int =0):
@@ -39,6 +40,7 @@ class Player(pygame.sprite.Sprite):
     self.particles = pygame.sprite.Group()
     self.lasers = pygame.sprite.Group()
     self.missiles = pygame.sprite.Group()
+    self.objects = pygame.sprite.Group()
 
     self.ammo_images = {
       1: "ammo1",
@@ -100,7 +102,7 @@ class Player(pygame.sprite.Sprite):
     self.position[1] += self.speed / diagonale
 
   def update(self):
-    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect_collision)
+    pygame.draw.rect(self.screen, (0, 0, 0), self.rect_collision)
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
 
@@ -137,7 +139,7 @@ class Player(pygame.sprite.Sprite):
 
   def add_enemy(self, data: dict, name: str, x: int = 0, y: int = 0):
     if name.lower() in data:
-      enemy = Enemy(self.zoom, self.screen, name, self.icon, x, y, data)
+      enemy = Enemy(self.zoom, self.screen, name, self, self.icon, x, y, data)
       self.enemies.add(enemy)
 
   def add_laser(self):
@@ -145,3 +147,6 @@ class Player(pygame.sprite.Sprite):
 
   def add_missile(self):
     self.missiles.add(Missile(self.zoom, self.enemies))
+
+  def add_object(self, x: int, y: int):
+    self.objects.add(Objects(self.zoom, self.icon, x, y))

@@ -23,6 +23,7 @@ class Update():
     self.mouse = mouse
 
     self.update_map()
+    self.update_objects()
     self.update_laser()
     self.update_missile()
     self.update_weapon()
@@ -55,6 +56,11 @@ class Update():
       enemy.follow(475, 281)
       enemy.update(0.05, *self.mouvement, self.player.rect_collision)
       enemy.draw(self.screen)
+
+  def update_objects(self):
+    for objet in self.player.objects:
+      objet.update(*self.mouvement, self.player.rect_collision)
+      objet.draw(self.screen)
 
   def update_map(self):
     self.map_manager.update()

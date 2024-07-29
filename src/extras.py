@@ -111,6 +111,7 @@ class Cible:
     self.direction = 1
     self.speed = 4
     self.damage = damage
+    self.visual = False
 
   def update(self):
     """Update the position of the target."""
@@ -119,13 +120,17 @@ class Cible:
     if self.x <= 300 / self.zoom or self.x >= 550 + 150 * self.zoom - self.image.get_width():
       self.direction *= -1  # Invert direction
 
-    self.check_collision()
+    if self.visual:
+      self.check_collision()
     
   def draw(self, screen: pygame.Surface):
     """Draw the target on the screen."""
     # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     if not 460 - 40 * (self.zoom - 1) <= self.x <= 500 + 15 * self.zoom:
       screen.blit(self.image, (self.x, self.y))
+      self.visual = True
+    else:
+      self.visual = False
 
   def check_collision(self):
     """Checks for collisions with enemies."""
