@@ -6,17 +6,17 @@ class Objects(pygame.sprite.Sprite):
   def __init__(self, zoom: int, icon: 'items.Icon', x: int, y: int):
     super().__init__()
     self.zoom = zoom
-    # self.image = Load.charge_image(self, self.zoom, "weapon", "cible_missile", "png", 0.5)
+    self.image = Load.charge_image(self, self.zoom, "", "jeton2", "png", 0.25)
     self.x = x
     self.y = y
-    self.rect = pygame.Rect(self.x, self.y, 5 * self.zoom, 5 * self.zoom)
-    self.lifetime = 1000
+    self.rect = self.image.get_rect()
+    self.lifetime = 500
     self.icon = icon
   
   def draw(self, screen: pygame.Surface):
     """Draw the missile on the screen."""
-    pygame.draw.rect(screen, (0, 0, 0), self.rect)
-    # screen.blit(self.cible_missile, (self.x, self.y))
+    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
+    screen.blit(self.image, (self.x, self.y))
 
   def update(self, x_var: int, y_var: int, player_rect: 'pygame.Rect'):
     """Update the missile's position and lifetime."""
