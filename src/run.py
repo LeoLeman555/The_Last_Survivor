@@ -28,10 +28,11 @@ class Run:
     self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
 
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    self.weapon_id = 10
+    # self.weapon_id = 10
 
     self.weapon_dict = self.get_weapon(self.weapon_id, self.data_weapons)
     print(self.weapon_dict)
+    print(list(self.data_enemies.keys()))
 
     self.icon = Icon(self.ressources, self.barres)
     
