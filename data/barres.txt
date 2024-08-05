@@ -1,6 +1,6 @@
 xp,0
 hp,100
-faim,100
+food,0
 xp_max,100
 hp_max,100
-faim_max,100
+food_max,100

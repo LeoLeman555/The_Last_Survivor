@@ -1,86 +1,122 @@
 ENEMY_PARAMS = {
   "shardsoul": {
+    "id": 1.1,
+    "type": "humanoid",
     "sprite_sheet": "res/enemy/shardsoul.png",
     "animation_specs": "data/animations/shardsoul.txt",
     "size": 2,
+    "speed": 2,
+    "max_health": 150,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 75, 10]
+  },
+  "darkbane": {
+    "id": 1.2,
+    "type": "humanoid",
+    "sprite_sheet": "res/enemy/darkbane.png",
+    "animation_specs": "data/animations/darkbane.txt",
+    "size": 1.5,
+    "speed": 2,
+    "max_health": 300,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 75, 10]
+  },
+  "champo": {
+    "id": 2.1,
+    "type": "monster",
+    "sprite_sheet": "res/enemy/champo.png",
+    "animation_specs": "data/animations/champo.txt",
+    "size": 2,
+    "speed": 3,
+    "max_health": 75,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 50, 10]
+  },
+  "worm": {
+    "id": 2.2,
+    "type": "fire",
+    "sprite_sheet": "res/enemy/worm.png",
+    "animation_specs": "data/animations/worm.txt",
+    "size": 1.5,
     "speed": 3,
     "max_health": 150,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 50, 10]
   },
   "sprout": {
+    "id": 3.1,
+    "type": "mutant",
     "sprite_sheet": "res/enemy/sprout.png",
     "animation_specs": "data/animations/sprout.txt",
     "size": 2,
     "speed": 6,
     "max_health": 40,
-  },
-  "worm": {
-    "sprite_sheet": "res/enemy/worm.png",
-    "animation_specs": "data/animations/worm.txt",
-    "size": 1.5,
-    "speed": 2,
-    "max_health": 100,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 75, 10]
   },
   "wolf": {
+    "id": 3.2,
+    "type": "fire",
     "sprite_sheet": "res/enemy/wolf.png",
     "animation_specs": "data/animations/wolf.txt",
     "size": 1.5,
-    "speed": 5,
-    "max_health": 60,
+    "speed": 7,
+    "max_health": 80,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 75, 10]
+  },
+  "goblin": {
+    "id": 4.2,
+    "type": "humanoid",
+    "sprite_sheet": "res/enemy/goblin.png",
+    "animation_specs": "data/animations/goblin.txt",
+    "size": 2,
+    "speed": 4,
+    "max_health": 150,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 100, 10]
+  },
+  "flying_junk": {
+    "id": 5.1,
+    "type": "technology",
+    "sprite_sheet": "res/enemy/flying_junk.png",
+    "animation_specs": "data/animations/flying_junk.txt",
+    "size": 2,
+    "speed": 4,
+    "max_health": 50,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 60, 10]
+  },
+  "mornsoul": {
+    "id": 5.2,
+    "type": "mutant",
+    "sprite_sheet": "res/enemy/mornsoul.png",
+    "animation_specs": "data/animations/mornsoul.txt",
+    "size": 2,
+    "speed": 4,
+    "max_health": 100,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 60, 10]
   },
   "robot": {
+    "id": 6.1,
+    "type": "technology",
     "sprite_sheet": "res/enemy/robot.png",
     "animation_specs": "data/animations/robot.txt",
     "size": 1.5,
     "speed": 1,
     "max_health": 500,
+    "reward": [(70, 30, 90, 10, 55, 35, 10), 200, 100]
   },
-  "tarbtree": {
-    "sprite_sheet": "res/enemy/tarbtree.png",
-    "animation_specs": "data/animations/tarbtree.txt",
-    "size": 1.5,
+  "malefic_tree": {
+    "id": 6.2,
+    "type": "monster",
+    "sprite_sheet": "res/enemy/malefic_tree.png",
+    "animation_specs": "data/animations/malefic_tree.txt",
+    "size": 2.5,
     "speed": 1,
-    "max_health": 300,
-  },
-  "darkbane": {
-    "sprite_sheet": "res/enemy/darkbane.png",
-    "animation_specs": "data/animations/darkbane.txt",
-    "size": 1.5,
-    "speed": 2,
-    "max_health": 200,
-  },
-  "champo": {
-    "sprite_sheet": "res/enemy/champo.png",
-    "animation_specs": "data/animations/champo.txt",
-    "size": 1.5,
-    "speed": 2,
-    "max_health": 75,
+    "max_health": 750,
+    "reward": [(70, 30, 90, 10, 55, 35, 10), 200, 100]
   },
   "ghosty": {
+    "id": 7.1,
+    "type": "clone",
     "sprite_sheet": "res/enemy/ghosty.png",
     "animation_specs": "data/animations/ghosty.txt",
     "size": 2,
-    "speed": 6,
+    "speed": 4,
     "max_health": 25,
-  },
-  "mornsoul": {
-    "sprite_sheet": "res/enemy/mornsoul.png",
-    "animation_specs": "data/animations/mornsoul.txt",
-    "size": 1.5,
-    "speed": 3,
-    "max_health": 100,
-  },
-  "nethervine": {
-    "sprite_sheet": "res/enemy/nethervine.png",
-    "animation_specs": "data/animations/nethervine.txt",
-    "size": 2,
-    "speed": 4,
-    "max_health": 150,
-  },
-  "tharger": {
-    "sprite_sheet": "res/enemy/tharger.png",
-    "animation_specs": "data/animations/tharger.txt",
-    "size": 2,
-    "speed": 4,
-    "max_health": 50,
+    "reward": [(80, 20, 90, 10, 60, 35, 5), 75, 10]
   },
 }

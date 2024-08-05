@@ -4,6 +4,7 @@ import math
 import items
 from load import ReadData
 from health_bar import HealthBar
+from choice import *
 
 class Enemy(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', name: str, player, icon: 'items.Icon', x: int, y: int, data: dict):
@@ -31,6 +32,7 @@ class Enemy(pygame.sprite.Sprite):
     self.facing_left = False
     self.width = self.image.get_width()
     self.health_bar = HealthBar(self.zoom, self.x, self.y - 10, self.width, self.max_health)
+    self.choice = Choice(self.name, self.params)
 
   def _resize_image(self, image: pygame.Surface) -> pygame.Surface:
     """Resize image based on zoom and size."""
@@ -88,9 +90,10 @@ class Enemy(pygame.sprite.Sprite):
   def die(self):
     """Handle enemy death."""
     self.is_alive = False
-    self.icon.add_resource("me", 5)
-    self.icon.add_bars("xp", 50)
-    self.player.add_object(*self.rect.center)
+    award = self.choice.choose(*self.params["reward"][0])
+    if award == "energy" or award == "metal" or award == "food":
+      self.player.add_object(f"{award}", 25, *self.rect.center)
+    self.player.add_object("xp", self.params["reward"][1], *self.rect.center)
     self.kill()
 
   def set_animation(self, animation: str):

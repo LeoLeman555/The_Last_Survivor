@@ -1,7 +1,7 @@
 xp_bar,0
 hp_bar,0
-faim_bar,0
-en,0
-me,0
-mu,500
-do,0
+food_bar,0
+energy,0
+metal,0
+ammo,500
+data,0

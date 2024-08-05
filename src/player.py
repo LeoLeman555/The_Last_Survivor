@@ -148,5 +148,5 @@ class Player(pygame.sprite.Sprite):
   def add_missile(self):
     self.missiles.add(Missile(self.zoom, self.enemies))
 
-  def add_object(self, x: int, y: int):
-    self.objects.add(Objects(self.zoom, self.icon, x, y))
+  def add_object(self, name: str, value: int, x: int, y: int):
+    self.objects.add(Objects(self.zoom, self.icon, name, value, x, y))

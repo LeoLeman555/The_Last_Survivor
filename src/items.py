@@ -8,7 +8,10 @@ class Icon:
 
   def add_resource(self, name: str, value: int):
     """Add a value to a resource."""
-    self.resource[f"{name}"] += value
+    try :
+      self.resource[f"{name}"] += value
+    except KeyError:
+      self.add_bars(name, value)
 
   def change_threshold(self, name: str, value: int):
     """Change the maximum value for a bar."""

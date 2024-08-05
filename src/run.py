@@ -7,13 +7,14 @@ from weapon import *
 from extras import *
 from load import *
 from enemy import *
+from enemy_selector import *
 
 class Run:
   def __init__(self, zoom:int):
     pygame.font.init()
 
     self.screen = pygame.display.set_mode((1000, 600))
-    pygame.display.set_caption("The Last Survivor - Jeu")
+    pygame.display.set_caption("The Last Survivor - Game")
     
     self.zoom = zoom
 
@@ -27,12 +28,14 @@ class Run:
     self.data_weapons = self.read_data.read_weapon_data("data/weapons.txt")
     self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
 
+    self.random_enemy = EnemySelector(self.data_enemies)
+
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
     # self.weapon_id = 10
 
     self.weapon_dict = self.get_weapon(self.weapon_id, self.data_weapons)
-    print(self.weapon_dict)
-    print(list(self.data_enemies.keys()))
+    # print(self.weapon_dict)
+    # print(list(self.data_enemies.keys()))
 
     self.icon = Icon(self.ressources, self.barres)
     
@@ -130,29 +133,6 @@ class Run:
     self.index_palier_xp = palier
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
-  def random_enemy(self):
-    names = list(self.data_enemies.keys())
-    random_name = random.choice(names)
-    x_ranges = {
-        1: (-100, 0),
-        2: (0, 500),
-        3: (500, 1000),
-        4: (1000, 1100)}
-    y_ranges = {
-        1: (-100, 700),
-        2: [(-100, 0), (600, 700)],
-        3: [(-100, 0), (600, 700)],
-        4: (-100, 700)}
-    choice = random.choice([1, 2, 3, 4])
-    x = random.randint(*x_ranges[choice])
-    
-    if choice in [2, 3]:
-        y_range = random.choice(y_ranges[choice])
-        y = random.randint(*y_range)
-    else:
-        y = random.randint(*y_ranges[choice])
-    return random_name, x, y
-  
   def shoot(self):
     if self.weapon_id == 7:
       self.player.add_fire(0.25)
@@ -175,10 +155,10 @@ class Run:
   def run(self):
     clock = pygame.time.Clock()
     run = True
-    self.change_max_xp(5)
-    self.player.add_enemy(self.data_enemies, "worm", 0, 0)
-
-    self.player.add_object(0, 0)
+    self.change_max_xp(1)
+    for loop in range(0, 10):
+      enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
+      self.player.add_enemy(self.data_enemies, *enemy)
 
     while run:
       self.mouse["position"] = pygame.mouse.get_pos()
@@ -187,8 +167,9 @@ class Run:
       self.keyboard_input()
       self.map_manager.draw()
 
-      if random.random() <= 0.05:
-          enemy = self.random_enemy()
+      if random.random() <= 0.005:
+        for loop in range(0, 10):
+          enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
           self.player.add_enemy(self.data_enemies, *enemy)
 
       # self.icon.add_bars("xp", 1)
