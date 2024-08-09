@@ -11,14 +11,14 @@ class Choice:
     if initial_choice == 'A':
       choice_A = random.choices(['resources', 'food'], [prob_Resource, prob_Food])[0]
       if choice_A == 'resources':
-        choice_A = random.choices(['energy', 'metal'], [50, 50])[0]
+        choice_A = random.choices(['energy', 'metal', 'data'], [50, 50, 50])[0]
       return choice_A
 
     elif initial_choice == 'B':
       choice_B = random.choices(['weapon', 'ESP', 'module'], [prob_Weapon, prob_ESP, prob_Module])[0]
 
       if choice_B == 'module':
-        rarity = random.choices(['Common', 'Rare'], [30, 70])[0]
+        rarity = random.choices(['Common', 'Rare'], [70, 30])[0]
         return f"Module ({rarity})"
 
       return f"{choice_B}"
