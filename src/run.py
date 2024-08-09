@@ -25,17 +25,17 @@ class Run:
     self.ressources = self.read_data.read_resources_data("data/ressources.txt")
     self.barres = self.read_data.read_bars_data("data/barres.txt")
 
-    self.data_weapons = self.read_data.read_weapon_data("data/weapons.txt")
     self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
-
     self.random_enemy = EnemySelector(self.data_enemies)
-
-    self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    # self.weapon_id = 10
-
-    self.weapon_dict = self.get_weapon(self.weapon_id, self.data_weapons)
-    # print(self.weapon_dict)
     # print(list(self.data_enemies.keys()))
+
+    self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
+    self.weapon_id = random.choice(list(self.data_weapons.keys()))
+    # self.weapon_id = 12
+    self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
+    self.weapon_dict["position"][0] += 10 * self.zoom
+    self.weapon_dict["position"][1] += 5 * self.zoom
+    # print(self.weapon_dict)
 
     self.icon = Icon(self.ressources, self.barres)
     
@@ -134,10 +134,12 @@ class Run:
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
   def shoot(self):
-    if self.weapon_id == 7:
-      self.player.add_fire(0.25)
+
+    if self.weapon_dict["type"] == "flamethrower":
+      self.player.add_fire(self.weapon_dict)
+
     elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
-      if self.weapon_id == 9:
+      if self.weapon_dict["type"] == "grenade_launcher":
         if self.mouse["position"][0] > 500:
           self.player.launch_grenade(10/self.zoom)
         else:
@@ -146,19 +148,16 @@ class Run:
       else:
         if self.weapon_dict["delay"] == 0:
           for position in range(-30, self.weapon_dict["number_shoot"], int(30/self.weapon_dict["number_shoot"])):
-            self.player.launch_bullet((list(self.mouse["position"])[0] + position, (list(self.mouse["position"])[1] + position)), self.weapon_id, self.data_weapons)
+            self.player.launch_bullet((list(self.mouse["position"])[0] + position, (list(self.mouse["position"])[1] + position)), self.weapon_dict)
         else:
           for delay in range(0, self.weapon_dict["number_shoot"], self.weapon_dict["delay"]):
-            self.player.launch_bullet(((list(self.mouse["position"])[0] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"])), (list(self.mouse["position"])[1] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"]))), self.weapon_id, self.data_weapons, delay)
+            self.player.launch_bullet(((list(self.mouse["position"])[0] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"])), (list(self.mouse["position"])[1] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"]))), self.weapon_dict, delay)
       self.last_shot_time = self.mouse["current_time"]
 
   def run(self):
     clock = pygame.time.Clock()
     run = True
-    self.change_max_xp(1)
-    for loop in range(0, 10):
-      enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
-      self.player.add_enemy(self.data_enemies, *enemy)
+    self.change_max_xp(30)
 
     while run:
       self.mouse["position"] = pygame.mouse.get_pos()
@@ -167,13 +166,11 @@ class Run:
       self.keyboard_input()
       self.map_manager.draw()
 
-      if random.random() <= 0.005:
+      if random.random() <= 0.005 or self.player.number_enemies < 5:
         for loop in range(0, 10):
           enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
           self.player.add_enemy(self.data_enemies, *enemy)
-
-      # self.icon.add_bars("xp", 1)
-      # self.icon.add_resource("en", 1)
+          self.player.number_enemies += 1
 
       self.update_class()
 

@@ -29,6 +29,7 @@ class Update():
     self.update_weapon()
     self.update_enemies()
     self.update_bullets()
+    self.update_messages()
     self.update_icon()
 
   def update_weapon(self):
@@ -61,6 +62,11 @@ class Update():
     for objet in self.player.objects:
       objet.update(*self.mouvement, self.player.rect_collision)
       objet.draw(self.screen)
+
+  def update_messages(self):
+    for message in self.player.messages:
+      message.update()
+      message.draw(self.screen)
 
   def update_map(self):
     self.map_manager.update()

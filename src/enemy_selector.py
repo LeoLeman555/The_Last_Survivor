@@ -37,16 +37,16 @@ class EnemySelector:
   def random_enemy(self, enemy_list: list):
     """Generates a random position based on x and y ranges."""
     x_ranges = {
-      1: (-100, 0),
+      1: (-500, 0),
       2: (0, 500),
       3: (500, 1000),
-      4: (1000, 1100)
+      4: (1000, 1500)
     }
     y_ranges = {
-      1: (-100, 700),
-      2: [(-100, 0), (600, 700)],
-      3: [(-100, 0), (600, 700)],
-      4: (-100, 700)
+      1: (-500, 1400),
+      2: [(-500, 0), (600, 1200)],
+      3: [(-500, 0), (600, 1200)],
+      4: (-500, 1200)
     }
     choice = random.choice(list(x_ranges.keys()))
     x = random.randint(*x_ranges[choice])

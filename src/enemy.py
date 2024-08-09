@@ -79,7 +79,8 @@ class Enemy(pygame.sprite.Sprite):
 
   def attack(self):
     """Set attack animation."""
-    self.set_animation("attack")
+    self.icon.add_bars("hp", -1)
+    # self.set_animation("attack")
 
   def damage(self, damage: int):
     """Apply damage to the enemy."""
@@ -94,6 +95,7 @@ class Enemy(pygame.sprite.Sprite):
     if award == "energy" or award == "metal" or award == "food":
       self.player.add_object(f"{award}", 25, *self.rect.center)
     self.player.add_object("xp", self.params["reward"][1], *self.rect.center)
+    self.player.number_enemies -= 1
     self.kill()
 
   def set_animation(self, animation: str):

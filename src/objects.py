@@ -13,7 +13,7 @@ class Objects(pygame.sprite.Sprite):
     self.x = x + random.randint(-5 * self.zoom, 5 * self.zoom)
     self.y = y + random.randint(-5 * self.zoom, 5 * self.zoom)
 
-    self.range = 50 * self.zoom
+    self.range = 25 * self.zoom
     self.speed = 4 * self.zoom
     self.rect = self.image.get_rect()
     self.lifetime = 500

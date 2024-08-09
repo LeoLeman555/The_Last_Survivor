@@ -4,6 +4,7 @@ from extras import *
 from enemy import *
 from load import *
 from objects import *
+from message import *
 
 class Player(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon : 'items.Icon', name: str ="jim", x: int =0, y: int =0):
@@ -41,21 +42,11 @@ class Player(pygame.sprite.Sprite):
     self.lasers = pygame.sprite.Group()
     self.missiles = pygame.sprite.Group()
     self.objects = pygame.sprite.Group()
+    self.messages = pygame.sprite.Group()
 
-    self.ammo_images = {
-      1: "ammo1",
-      2: "ammo1",
-      3: "ammo2",
-      4: "ammo3",
-      5: "ammo1",
-      6: "ammo4",
-      7: "lance_flammes",
-      8: "ammo1",
-      9: "ammo5",
-      10: "ammo6",
-      11: "ammo7",
-      12: "ammo1",
-    }
+    self.number_enemies = 0
+
+    self.health = 100
 
   def change_animation(self, name:str, speed:int):
     self.speed = speed
@@ -102,7 +93,6 @@ class Player(pygame.sprite.Sprite):
     self.position[1] += self.speed / diagonale
 
   def update(self):
-    # pygame.draw.rect(self.screen, (0, 0, 0), self.rect_collision)
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
 
@@ -111,19 +101,10 @@ class Player(pygame.sprite.Sprite):
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
 
-  def launch_bullet(self, goal:tuple, weapon_id:int, data_weapon:dict, time :int =0):
-    ammo_image = self.ammo_images.get(weapon_id)
-    position = data_weapon[weapon_id][2]
-    position = list(position)
-    weapon_range = data_weapon[weapon_id][3]
-    explosive = data_weapon[weapon_id][4] == 1
-    distance = data_weapon[weapon_id][5]
-    dps = data_weapon[weapon_id][10]
-    time = time
-    # speed bullet is not defined => default value
-    self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, ammo_image, distance, position, weapon_range, explosive, time, dps))
+  def launch_bullet(self, goal:tuple, weapon_dict: dict, delay: int =0):
+    self.bullets.add(Bullet(self.zoom, self.screen, self, self.enemies, goal, weapon_dict, delay))
 
-  def add_fire(self, damage: int):
+  def add_fire(self, weapon_dict: dict):
     x = 500 + 10 * self.zoom
     y = 300 + 5 * self.zoom
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -131,7 +112,8 @@ class Player(pygame.sprite.Sprite):
     dy = mouse_y - 300
     distance = math.hypot(dx, dy)
     direction = (dx / distance, dy / distance)  # Normaliser le vecteur
-    for _ in range(10):  # Ajouter plus de particules à la fois pour plus de diffusion
+    damage = weapon_dict["damage"] / 60
+    for _ in range(10):
       self.particles.add(FireParticle(self.zoom, self.enemies, x, y, direction, damage))
 
   def launch_grenade(self, speed:int):
@@ -150,3 +132,6 @@ class Player(pygame.sprite.Sprite):
 
   def add_object(self, name: str, value: int, x: int, y: int):
     self.objects.add(Objects(self.zoom, self.icon, name, value, x, y))
+
+  def add_message(self, text: str, start_position, end_position, color, font_size, duration):
+    self.messages.add((Message(text, start_position, end_position, color, font_size, duration)))
