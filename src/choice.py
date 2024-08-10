@@ -19,6 +19,6 @@ class Choice:
 
       if choice_B == 'module':
         rarity = random.choices(['Common', 'Rare'], [70, 30])[0]
-        return f"Module ({rarity})"
+        return f"module ({rarity})"
 
       return f"{choice_B}"

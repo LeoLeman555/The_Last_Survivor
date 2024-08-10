@@ -9,7 +9,7 @@ class Grenade(pygame.sprite.Sprite):
     self.screen = screen
     self.enemies = enemies
     self.player = player
-    self.image = Load.charge_image(self, self.zoom, "weapon", "ammo5", "png", 0.5)
+    self.image = Load.charge_image(self, self.zoom, "weapon", "grenade", "png", 0.5)
     self.rect = self.image.get_rect()
     # Initial position of the grenade based on the player
     self.rect.centerx = player.rect.centerx - (player.rect.x - 500)

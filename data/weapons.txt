@@ -25,7 +25,7 @@ WEAPON_PARAMS = {
     "dimension": (36, 14),
     "position": [500, 300],
     "range": 175,
-    "damage": 15,
+    "damage": 20,
     "critical": 0.1,
     "explosion": 0,
     "ammo_name": "classical_ammo",

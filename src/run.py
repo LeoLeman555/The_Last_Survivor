@@ -22,8 +22,9 @@ class Run:
 
     self.index_palier_xp = 1
     self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
-    self.ressources = self.read_data.read_resources_data("data/ressources.txt")
     self.barres = self.read_data.read_bars_data("data/barres.txt")
+
+    self.ressources = self.read_data.read_resources_data("data/ressources.txt")
 
     self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
     self.random_enemy = EnemySelector(self.data_enemies)
@@ -31,19 +32,19 @@ class Run:
 
     self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    # self.weapon_id = 12
+    self.weapon_id = 11
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.weapon_dict["position"][0] += 10 * self.zoom
     self.weapon_dict["position"][1] += 5 * self.zoom
     # print(self.weapon_dict)
 
-    self.icon = Icon(self.ressources, self.barres)
+    self.icon = Icon(self, self.ressources, self.barres)
     
     self.speed_init = 3
     self.speed = self.speed_init
 
-    self.player = Player(self.zoom, self.screen, self.icon, "jim")  # mettre sur tiled un objet start
-    self.map_manager = MapManager(self, self.screen, self.player, self.zoom) # appel de la classe mapManager
+    self.player = Player(self.zoom, self.screen, self, self.icon, "jim")  # mettre sur tiled un objet start
+    self.map_manager = MapManager(self, self.screen, self.player, self.zoom)
     self.weapon = Weapon(self.zoom, self.player, self.weapon_dict)
 
     self.mouse = {
@@ -62,25 +63,6 @@ class Run:
     self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse)
 
     self.collision_caillou = False
-
-  def get_weapon(self, id: int, data: dict):
-    weapon_dict = {
-      "id": self.weapon_id,
-      "name": data[id][0],
-      "size": data[id][1],
-      "position": list(data[id][2]),
-      "range": data[id][3],
-      "explosive": data[id][4],
-      "rate": data[id][6],
-      "precision": data[id][7],
-      "number_shoot": data[id][8],
-      "delay": data[id][9],
-      "dps": data[id][10],
-      # "speed": data[id][11]
-    }
-    weapon_dict["position"][0] += 10 * self.zoom
-    weapon_dict["position"][1] += 5 * self.zoom
-    return weapon_dict
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -156,10 +138,10 @@ class Run:
 
   def run(self):
     clock = pygame.time.Clock()
-    run = True
-    self.change_max_xp(30)
+    self.running = True
+    self.change_max_xp(1)
 
-    while run:
+    while self.running:
       self.mouse["position"] = pygame.mouse.get_pos()
       self.mouse["current_time"] = pygame.time.get_ticks()
       self.player.save_location()
@@ -176,7 +158,7 @@ class Run:
 
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
-          run = False
+          self.running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
           self.mouse["press"] = True
         elif event.type == pygame.MOUSEBUTTONUP:

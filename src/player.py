@@ -7,10 +7,11 @@ from objects import *
 from message import *
 
 class Player(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', icon : 'items.Icon', name: str ="jim", x: int =0, y: int =0):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', run, icon: 'items.Icon', name: str ="jim", x: int =0, y: int =0):
     super().__init__()
     self.zoom = zoom
     self.screen = screen
+    self.run = run
     self.icon = icon
     self.sprite_sheet = Load.charge_image(self, 1, "sprite", name, "png")
     self.animation_index = 0
@@ -45,8 +46,6 @@ class Player(pygame.sprite.Sprite):
     self.messages = pygame.sprite.Group()
 
     self.number_enemies = 0
-
-    self.health = 100
 
   def change_animation(self, name:str, speed:int):
     self.speed = speed
@@ -93,8 +92,12 @@ class Player(pygame.sprite.Sprite):
     self.position[1] += self.speed / diagonale
 
   def update(self):
+    if self.icon.resource["health"] <= 0 or self.icon.resource["food"] <= 0:
+      print("DEATH")
+      self.die()
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
+    self.icon.resource["food"] -= 0.02
 
   def move_back(self):
     self.position = self.old_position
@@ -135,3 +138,6 @@ class Player(pygame.sprite.Sprite):
 
   def add_message(self, text: str, start_position, end_position, color, font_size, duration):
     self.messages.add((Message(text, start_position, end_position, color, font_size, duration)))
+
+  def die(self):
+    self.run.running = False

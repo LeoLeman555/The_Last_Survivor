@@ -72,16 +72,8 @@ class Update():
     self.map_manager.update()
 
   def update_icon(self):
-    self.ressources["xp_bar"] =  round(self.barres["xp"] * 79 / self.barres["xp_max"])
-    self.ressources["hp_bar"] =  round(self.barres["hp"] * 79 / self.barres["hp_max"])
-    self.ressources["food_bar"] =  round(self.barres["food"] * 79 / self.barres["food_max"])
-    self.icon.draw_bar(self.screen, "xp_bar", 20, 20, self.ressources["xp_bar"])
-    self.icon.draw_bar(self.screen, "hp_bar", 20, 45, self.ressources["hp_bar"])
-    self.icon.draw_bar(self.screen, "food_bar", 20, 70, self.ressources["food_bar"])
-    self.icon.draw_icon(self.screen, "energy_icon", 130, 100, 25, -3, 22, 20, self.ressources["energy"])
-    self.icon.draw_icon(self.screen, "metal_icon", 20, 100, 25, -3, 22, 20, self.ressources["metal"])
-    self.icon.draw_icon(self.screen, "ammo_icon", 134, 125, 21, 1, 15, 29, self.ressources["ammo"])
-    self.icon.draw_icon(self.screen, "data_icon", 20, 127, 30, -1, 30, 21, self.ressources["data"])
+    self.icon.update()
+    self.icon.draw(self.screen)
 
   def update_laser(self):
     if random.random() < 0.005:

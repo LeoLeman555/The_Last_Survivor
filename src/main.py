@@ -8,10 +8,10 @@ pygame.init()
 
 run = Run(2)
 
-if Menu_principal() == "jeu":
-  run.run()
-  pygame.quit()
+# if Menu_principal() == "jeu":
+#   run.run()
+#   pygame.quit()
 
-# run.run()
+run.run()
 
-print("------------------------- FIN -------------------------")
+print("------------------------- END -------------------------")

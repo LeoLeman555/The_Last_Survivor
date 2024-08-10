@@ -1,10 +1,47 @@
 import pygame
 
 class Icon:
-  def __init__(self, resource: dict, bars: dict):
-    """Initialize the Icon class with resources and bars."""
+  def __init__(self, run, resource: dict, bars: dict):
+    """Initialize the Icon class with resources"""
     self.resource = resource
     self.bars = bars
+    self.run = run
+
+  def update(self):
+    if self.resource["food"] > self.bars["food_max"]:
+      self.resource["food"] = self.bars["food_max"]
+    elif self.resource["food"] < 0:
+      self.resource["food"] = 0
+
+    if self.resource["health"] > self.bars["health_max"]:
+      self.resource["health"] = self.bars["health_max"]
+    elif self.resource["health"] < 0:
+      self.resource["health"] = 0
+
+    if self.resource["xp"] > self.bars["xp_max"]:
+      self.resource["xp"] = 0
+      self.run.change_max_xp(self.run.index_palier_xp + 1)
+      print("dépassement_xp")
+
+  def draw(self, screen):
+    def calculate_bar_length(current, maximum):
+      return round(current * 79 / maximum)
+    
+    def draw_resource_icon(name, x, y, width, height, shift_x, shift_y, value):
+      self.draw_icon(screen, name, x, y, width, height, shift_x, shift_y, value)
+
+    self.bars["xp_bar"] = calculate_bar_length(self.resource["xp"], self.bars["xp_max"])
+    self.bars["health_bar"] = calculate_bar_length(self.resource["health"], self.bars["health_max"])
+    self.bars["food_bar"] = calculate_bar_length(self.resource["food"], self.bars["food_max"])
+
+    self.draw_bar(screen, "xp_bar", 20, 20, self.bars["xp_bar"])
+    self.draw_bar(screen, "health_bar", 20, 45, self.bars["health_bar"])
+    self.draw_bar(screen, "food_bar", 20, 70, self.bars["food_bar"])
+
+    draw_resource_icon("energy_icon", 130, 100, 25, -3, 22, 20, self.resource["energy"])
+    draw_resource_icon("metal_icon", 20, 100, 25, -3, 22, 20, self.resource["metal"])
+    draw_resource_icon("ammo_icon", 134, 125, 21, 1, 15, 29, self.resource["ammo"])
+    draw_resource_icon("data_icon", 20, 127, 30, -1, 30, 21, self.resource["data"])
 
   def add_resource(self, name: str, value: int):
     """Add a value to a resource."""
@@ -67,7 +104,7 @@ class Icon:
       key = '70'
     else:
       print(f"Error displaying mechanical bar: value = {value}")
-      key = '0'
+      key = '70'
 
     loop = 0
     for image in images[key]:
