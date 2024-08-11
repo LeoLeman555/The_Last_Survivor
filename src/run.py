@@ -32,7 +32,7 @@ class Run:
 
     self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    self.weapon_id = 11
+    self.weapon_id = 2
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.weapon_dict["position"][0] += 10 * self.zoom
     self.weapon_dict["position"][1] += 5 * self.zoom
@@ -63,6 +63,9 @@ class Run:
     self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse)
 
     self.collision_caillou = False
+
+    self.current_shot = 0
+    self.time = 0
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -115,8 +118,32 @@ class Run:
     self.index_palier_xp = palier
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
-  def shoot(self):
 
+  def test_shooting(self):
+    if self.mouse["press"] and self.current_shot < self.weapon_dict["charger_capacity"] and self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
+      self.shoot()
+      self.current_shot += self.weapon_dict["number_shoot"]
+      self.last_shot_time = self.mouse["current_time"]
+    elif not self.current_shot < self.weapon_dict["charger_capacity"]:
+      if self.time >= self.weapon_dict["recharge_time"]:
+        self.current_shot = 0
+        self.icon.resource["ammo"] -= self.weapon_dict["charger_capacity"]
+        self.time = 0
+      else:
+        self.time += 1
+        self.draw_reload_bar()
+
+  def draw_reload_bar(self):
+    bar_width = 100
+    bar_height = 5
+    bar_x = 450
+    bar_y = 350
+    reload_progress = self.time / self.weapon_dict["recharge_time"]
+    fill_width = int(bar_width * reload_progress)
+    pygame.draw.rect(self.screen, (100, 100, 100), (bar_x, bar_y, bar_width, bar_height))
+    pygame.draw.rect(self.screen, (255, 255, 255), (bar_x, bar_y, fill_width, bar_height))
+
+  def shoot(self):
     if self.weapon_dict["type"] == "flamethrower":
       self.player.add_fire(self.weapon_dict)
 
@@ -129,7 +156,7 @@ class Run:
 
       else:
         if self.weapon_dict["delay"] == 0:
-          for position in range(-30, self.weapon_dict["number_shoot"], int(30/self.weapon_dict["number_shoot"])):
+          for position in range(-30, 10, 3):
             self.player.launch_bullet((list(self.mouse["position"])[0] + position, (list(self.mouse["position"])[1] + position)), self.weapon_dict)
         else:
           for delay in range(0, self.weapon_dict["number_shoot"], self.weapon_dict["delay"]):
@@ -169,8 +196,7 @@ class Run:
   def update_class(self):
     self.update.update_all(self.weapon_dict, self.mouvement, self.mouse)
 
-    if self.mouse["press"]:
-      self.shoot()
+    self.test_shooting()
 
     self.drone.update_drone()
 

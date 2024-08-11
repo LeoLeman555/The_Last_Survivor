@@ -10,8 +10,8 @@ class Objects(pygame.sprite.Sprite):
     self.name = name
     self.value = value
     self.image = Load.charge_image(self, self.zoom, "token", self.name, "png", 0.25)
-    self.x = x + random.randint(-5 * self.zoom, 5 * self.zoom)
-    self.y = y + random.randint(-5 * self.zoom, 5 * self.zoom)
+    self.x = x + random.randint(-10 * self.zoom, 10 * self.zoom)
+    self.y = y + random.randint(-10 * self.zoom, 10 * self.zoom)
 
     self.range = 25 * self.zoom
     self.speed = 4 * self.zoom
