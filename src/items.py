@@ -21,7 +21,7 @@ class Icon:
     if self.resource["xp"] > self.bars["xp_max"]:
       self.resource["xp"] = 0
       self.run.change_max_xp(self.run.index_palier_xp + 1)
-      print("dépassement_xp")
+      print("+1 level XP")
 
   def draw(self, screen):
     def calculate_bar_length(current, maximum):
@@ -45,6 +45,7 @@ class Icon:
 
   def add_resource(self, name: str, value: int):
     """Add a value to a resource."""
+    self.run.player.add_message(f"+{value} {name}", (500, 200), (500, 125), (0, 0, 0), 20, 750)
     try :
       self.resource[f"{name}"] += value
     except KeyError:

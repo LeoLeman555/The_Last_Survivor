@@ -134,10 +134,12 @@ class Run:
         self.draw_reload_bar()
 
   def draw_reload_bar(self):
-    bar_width = 100
-    bar_height = 5
-    bar_x = 450
-    bar_y = 350
+    bar_width = 50 * self.zoom
+    bar_height = 2 * self.zoom
+    
+    bar_x = 500 - bar_width/2
+    bar_y = 300 + bar_width/2
+    
     reload_progress = self.time / self.weapon_dict["recharge_time"]
     fill_width = int(bar_width * reload_progress)
     pygame.draw.rect(self.screen, (100, 100, 100), (bar_x, bar_y, bar_width, bar_height))

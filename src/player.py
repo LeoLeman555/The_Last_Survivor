@@ -136,8 +136,8 @@ class Player(pygame.sprite.Sprite):
   def add_object(self, name: str, value: int, x: int, y: int):
     self.objects.add(Objects(self.zoom, self.icon, name, value, x, y))
 
-  def add_message(self, text: str, start_position, end_position, color, font_size, duration):
-    self.messages.add((Message(text, start_position, end_position, color, font_size, duration)))
+  def add_message(self, text: str, start_position: tuple, end_position: tuple, color: tuple, font_size: int, duration: int):
+    self.messages.add((Message(self.zoom, text, start_position, end_position, color, font_size, duration)))
 
   def die(self):
     self.run.running = False

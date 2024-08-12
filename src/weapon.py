@@ -111,7 +111,7 @@ class Bullet(pygame.sprite.Sprite):
       self.rect.x += self.vector[0]
       self.rect.y += self.vector[1]
       if self.critical == 1:
-        self.player.add_message("CRITICAL!!!", (self.rect.center[0], self.rect.center[1]), (self.rect.center[0], self.rect.center[1]-100), (255, 0, 0), 15, 1000)
+        self.player.add_message("CRITICAL!!!", (self.rect.center[0], self.rect.center[1]), (self.rect.center[0], self.rect.center[1]-50*self.zoom), (255, 0, 0), 8*self.zoom, 1000)
       self.delete()
       self.explode()
 
