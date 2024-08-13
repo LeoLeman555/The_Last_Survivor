@@ -38,6 +38,9 @@ class Run:
     self.weapon_dict["position"][1] += 5 * self.zoom
     # print(self.weapon_dict)
 
+    self.data_extras = self.read_data.read_extras_params("data/extras.txt")
+    print(self.data_extras)
+
     self.icon = Icon(self, self.ressources, self.barres)
     
     self.speed_init = 3
@@ -60,7 +63,7 @@ class Run:
 
     self.mouvement = [0, 0]
 
-    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse)
+    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse, self.data_extras)
 
     self.collision_caillou = False
 
@@ -106,7 +109,7 @@ class Run:
     if self.collision_caillou:
       self.mouvement = [0, 0]
 
-    if press[pygame.K_r] and self.mouse["current_time"] - self.last_shot_time > 750:
+    if press[pygame.K_SPACE] and self.mouse["current_time"] - self.last_shot_time > 750 and self.data_extras["grenade"]["activate"] == True:
       if self.mouse["position"][0] > 500:
         self.player.launch_grenade(3/self.zoom)
       else:
@@ -117,7 +120,6 @@ class Run:
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
-
 
   def test_shooting(self):
     if self.mouse["press"] and self.current_shot < self.weapon_dict["charger_capacity"] and self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
@@ -196,11 +198,12 @@ class Run:
       clock.tick(60)
 
   def update_class(self):
-    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse)
+    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras)
 
     self.test_shooting()
 
-    self.drone.update_drone()
+    if self.data_extras["drone"]["activate"] == True:
+      self.drone.update_drone()
 
     pygame.display.flip()
 

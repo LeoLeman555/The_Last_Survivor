@@ -2,7 +2,7 @@ import random
 from extras import *
 
 class Update():
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', map_manager, player, weapon, ressources: dict, barres: dict, icon, weapon_dict: dict, mouvement :list, mouse: dict):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', map_manager, player, weapon, ressources: dict, barres: dict, icon, weapon_dict: dict, mouvement :list, mouse: dict, data_extras: dict):
     self.zoom = zoom
     self.screen = screen
     self.map_manager = map_manager
@@ -17,19 +17,24 @@ class Update():
     self.mouvement = mouvement
     self.mouse = mouse
 
-  def update_all(self, weapon_dict, mouvement, mouse):
+    self.data_extras = data_extras
+
+  def update_all(self, weapon_dict, mouvement, mouse, data_extras):
     self.weapon_dict = weapon_dict
     self.mouvement = mouvement
     self.mouse = mouse
+    self.data_extras = data_extras
 
     self.update_map()
     self.update_objects()
-    self.update_laser()
-    self.update_missile()
+    if self.data_extras["missile"]["activate"] == True:
+      self.update_missile()
     self.update_weapon()
     self.update_enemies()
     self.update_bullets()
     self.update_messages()
+    if self.data_extras["laser"]["activate"] == True:
+      self.update_laser()
     self.update_icon()
 
   def update_weapon(self):
@@ -37,8 +42,9 @@ class Update():
     self.weapon.rotate_to_cursor(self.mouse["position"])
     self.weapon.draw(self.screen)
 
-    self.player.grenades.update(*self.mouvement)
-    self.player.grenades.draw(self.screen)
+    if self.data_extras["drone"]["activate"] == True:
+      self.player.grenades.update(*self.mouvement)
+      self.player.grenades.draw(self.screen)
     
     self.player.explosions.update()
     self.player.explosions.draw(self.screen) 

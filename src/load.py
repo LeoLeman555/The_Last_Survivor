@@ -62,15 +62,22 @@ class ReadData:
     return animation_specs
   
   def read_enemy_params(self, filepath: str):
-      with open(filepath, 'r') as file:
-          content = file.read()
-      content = content.replace("ENEMY_PARAMS = ", "", 1)
-      enemy_params_dict = ast.literal_eval(content)
-      return enemy_params_dict
+    with open(filepath, 'r') as file:
+      content = file.read()
+    content = content.replace("ENEMY_PARAMS = ", "", 1)
+    enemy_params_dict = ast.literal_eval(content)
+    return enemy_params_dict
 
   def read_weapon_params(self, filepath: str):
-      with open(filepath, 'r') as file:
-          content = file.read()
-      content = content.replace("WEAPON_PARAMS = ", "", 1)
-      enemy_params_dict = ast.literal_eval(content)
-      return enemy_params_dict
+    with open(filepath, 'r') as file:
+      content = file.read()
+    content = content.replace("WEAPON_PARAMS = ", "", 1)
+    enemy_params_dict = ast.literal_eval(content)
+    return enemy_params_dict
+  
+  def read_extras_params(self, filepath: str):
+    with open(filepath, 'r') as file:
+      content = file.read()
+    content = content.replace("EXTRAS_PARAMS = ", "", 1)
+    enemy_params_dict = ast.literal_eval(content)
+    return enemy_params_dict

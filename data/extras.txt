@@ -1,0 +1,14 @@
+EXTRAS_PARAMS = {
+  "grenade":{
+    "activate": False,
+  },
+  "drone":{
+    "activate": False,
+  },
+  "missile":{
+    "activate": False,
+  },
+  "laser":{
+    "activate": False,
+  },
+}
