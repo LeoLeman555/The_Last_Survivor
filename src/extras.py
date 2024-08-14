@@ -1,5 +1,6 @@
 import pygame
 import random
+from grenade import Explosion
 from load import Load
 
 class Cible:
@@ -29,7 +30,6 @@ class Cible:
     
   def draw(self, screen: pygame.Surface):
     """Draw the target on the screen."""
-    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     if not 460 - 40 * (self.zoom - 1) <= self.x <= 500 + 15 * self.zoom:
       screen.blit(self.image, (self.x, self.y))
       self.visual = True
@@ -43,13 +43,14 @@ class Cible:
       hit_enemy.damage(self.damage)
 
 class Drone:
-  def __init__(self, zoom: int, screen: pygame.Surface, enemies):
+  def __init__(self, zoom: int, screen: pygame.Surface, enemies, data):
     self.zoom = zoom
     self.screen = screen
     self.enemies = enemies
+    self.data = data
     self.image = Load.charge_image(self, self.zoom, "weapon", "drone", "png", 0.4)
     self.x_cible = 0
-    self.cible = Cible(self.zoom, self.enemies, 300 / self.zoom, 315)
+    self.cible = Cible(self.zoom, self.enemies, 300 / self.zoom, 315,  self.data["damage"])
     
   def update_drone(self):
     """Update the drone's position and draw it on the screen."""
@@ -58,20 +59,20 @@ class Drone:
     self.cible.draw(self.screen)
 
 class Laser(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, enemies, damage :int =100):
+  def __init__(self, zoom: int, enemies, data):
     super().__init__()
     self.zoom = zoom
     self.enemies = enemies
-    self.damage = damage
+    self.data = data
+    self.damage = self.data["damage"]
     self.x = random.choice([random.randint(100, 400), random.randint(600, 900)])
     self.start_y = 0
     self.end_y = random.randint(100, 550)
-    self.lifetime = 50
+    self.lifetime = self.data["lifetime"]
     self.rect = pygame.Rect(self.x - 25 * self.zoom, self.end_y - 25 * self.zoom , 50 * self.zoom, 50 * self.zoom)
 
   def draw(self, screen: pygame.Surface):
     """Draw the laser on the screen."""
-    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     pygame.draw.line(screen, (255, 100, 100), (self.x, self.start_y), (self.x, self.end_y), int(5 * self.zoom))
     pygame.draw.line(screen, (255, 0, 0), (self.x, self.start_y), (self.x, self.end_y), int(2.5 * self.zoom))
     pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), int(5 * self.zoom))
@@ -80,10 +81,9 @@ class Laser(pygame.sprite.Sprite):
   def update(self):
     """Update the laser's lifetime."""
     self.lifetime -= 1
-    self.check_collision()
-
     if self.lifetime <= 0:
       self.kill()
+    self.check_collision()
 
   def check_collision(self):
     """Checks for collisions with enemies."""
@@ -92,11 +92,13 @@ class Laser(pygame.sprite.Sprite):
       hit_enemy.damage(self.damage)
 
 class Missile(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, enemies, damage: int =5):
+  def __init__(self, zoom: int, player, enemies, data):
     super().__init__()
     self.zoom = zoom
+    self.player = player
     self.enemies = enemies
-    self.damage = damage
+    self.data = data
+    self.damage = self.data["damage"]
     self.cible_missile = Load.charge_image(self, self.zoom, "weapon", "cible_missile", "png", 0.5)
     self.x = random.randint(300, 700)
     self.y = random.randint(200, 400)
@@ -105,7 +107,6 @@ class Missile(pygame.sprite.Sprite):
   
   def draw(self, screen: pygame.Surface):
     """Draw the missile on the screen."""
-    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     if self.lifetime % 2 == 0 or self.lifetime >= 40:
       screen.blit(self.cible_missile, (self.x, self.y))
 
@@ -119,17 +120,8 @@ class Missile(pygame.sprite.Sprite):
     self.rect.x = self.x
     self.rect.y = self.y
 
-    self.check_collision()
-
     if self.lifetime <= 0:
+      explosion = Explosion(self.zoom, self.rect.center, self.damage, self.enemies)
+      self.player.screen.blit(explosion.image, explosion.rect)
+      self.player.explosions.add(explosion)
       self.kill()
-
-  def check_collision(self):
-    """Checks for collisions with enemies."""
-    hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
-    if hit_enemy:
-      hit_enemy.damage(self.damage)
-
-  def get_rectangle(self):
-    """Return the missile's rectangle."""
-    return self.rect

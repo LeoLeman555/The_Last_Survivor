@@ -90,14 +90,14 @@ class Update():
     self.icon.draw(self.screen)
 
   def update_laser(self):
-    if random.random() < 0.005:
+    if random.random() < self.data_extras["laser"]["rarity"]:
       self.player.add_laser()
     for laser in self.player.lasers:
       laser.draw(self.screen)
       laser.update()
 
   def update_missile(self):
-    if random.random() < 0.01:
+    if random.random() < self.data_extras["missile"]["rarity"]:
       self.player.add_missile()
     for missile in self.player.missiles:
       missile.draw(self.screen)

@@ -131,10 +131,10 @@ class Player(pygame.sprite.Sprite):
       self.enemies.add(enemy)
 
   def add_laser(self):
-    self.lasers.add(Laser(self.zoom, self.enemies))
+    self.lasers.add(Laser(self.zoom, self.enemies, self.run.data_extras["laser"]))
 
   def add_missile(self):
-    self.missiles.add(Missile(self.zoom, self.enemies))
+    self.missiles.add(Missile(self.zoom, self, self.enemies, self.run.data_extras["missile"]))
 
   def add_object(self, name: str, value: int, x: int, y: int):
     self.objects.add(Objects(self.zoom, self.icon, name, value, x, y))

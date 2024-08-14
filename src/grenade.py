@@ -42,7 +42,6 @@ class Grenade(pygame.sprite.Sprite):
     self.lifetime = self.data["lifetime"] * self.zoom
     self.damage = self.data["damage"]
 
-
   def explode(self):
     """Trigger an explosion."""
     explosion = Explosion(self.zoom, self.rect.center, self.damage, self.enemies)

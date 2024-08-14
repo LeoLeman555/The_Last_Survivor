@@ -13,11 +13,17 @@ EXTRAS_PARAMS = {
   },
   "drone":{
     "activate": False,
+    "damage": 10,
   },
   "missile":{
-    "activate": False,
+    "activate": True,
+    "rarity": 0.01,
+    "damage": 100,
   },
   "laser":{
-    "activate": False,
+    "activate": True,
+    "rarity": 0.005,
+    "damage": 150,
+    "lifetime": 100,
   },
 }

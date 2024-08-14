@@ -9,7 +9,6 @@ from load import *
 from enemy import *
 from enemy_selector import *
 
-# todo faire le reste des paramètres pour ces extras (DPS, path, image, portée, rareté, etc...)
 class Run:
   def __init__(self, zoom:int):
     pygame.font.init()
@@ -29,18 +28,15 @@ class Run:
 
     self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
     self.random_enemy = EnemySelector(self.data_enemies)
-    # print(list(self.data_enemies.keys()))
 
     self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    self.weapon_id = 9
+    self.weapon_id = 11
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.weapon_dict["position"][0] += 10 * self.zoom
     self.weapon_dict["position"][1] += 5 * self.zoom
-    # print(self.weapon_dict)
 
     self.data_extras = self.read_data.read_extras_params("data/extras.txt")
-    print(self.data_extras)
 
     self.icon = Icon(self, self.ressources, self.barres)
     
@@ -60,7 +56,7 @@ class Run:
 
     self.last_shot_time = self.mouse["current_time"]
 
-    self.drone = Drone(self.zoom, self.screen, self.player.enemies)
+    self.drone = Drone(self.zoom, self.screen, self.player.enemies, self.data_extras["drone"])
 
     self.mouvement = [0, 0]
 
