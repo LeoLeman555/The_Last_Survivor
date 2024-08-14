@@ -1,6 +1,15 @@
 EXTRAS_PARAMS = {
   "grenade":{
+    "activate": True,
+    "last_shot_time": 0,
+    "rate": 2000,
+    "damage": 100,
+    "speed": 1,
+    "lifetime": 25,
+    "toxic_grenade": {
     "activate": False,
+    "name": "toxic_grenade",
+    },
   },
   "drone":{
     "activate": False,

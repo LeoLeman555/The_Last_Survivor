@@ -29,20 +29,28 @@ class Update():
     self.update_objects()
     if self.data_extras["missile"]["activate"] == True:
       self.update_missile()
-    self.update_weapon()
-    self.update_enemies()
     self.update_bullets()
+    self.update_enemies()
+    self.update_weapon()
+    self.update_toxic()
     self.update_messages()
     if self.data_extras["laser"]["activate"] == True:
       self.update_laser()
     self.update_icon()
 
-  def update_weapon(self):
+  def update_toxic(self):
+    particles_list = list(self.player.toxic_particles)
+    particles_list.sort(key=lambda p: p.creation_time, reverse=True)
 
+    for particle in particles_list:
+      particle.update(*self.mouvement)
+      particle.draw(self.screen)
+
+  def update_weapon(self):
     self.weapon.rotate_to_cursor(self.mouse["position"])
     self.weapon.draw(self.screen)
 
-    if self.data_extras["drone"]["activate"] == True:
+    if self.data_extras["grenade"]["activate"] == True:
       self.player.grenades.update(*self.mouvement)
       self.player.grenades.draw(self.screen)
     

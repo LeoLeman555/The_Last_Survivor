@@ -9,6 +9,7 @@ from load import *
 from enemy import *
 from enemy_selector import *
 
+# todo faire le reste des paramètres pour ces extras (DPS, path, image, portée, rareté, etc...)
 class Run:
   def __init__(self, zoom:int):
     pygame.font.init()
@@ -32,7 +33,7 @@ class Run:
 
     self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    self.weapon_id = 2
+    self.weapon_id = 9
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.weapon_dict["position"][0] += 10 * self.zoom
     self.weapon_dict["position"][1] += 5 * self.zoom
@@ -109,13 +110,13 @@ class Run:
     if self.collision_caillou:
       self.mouvement = [0, 0]
 
-    if press[pygame.K_SPACE] and self.mouse["current_time"] - self.last_shot_time > 750 and self.data_extras["grenade"]["activate"] == True:
+    if press[pygame.K_SPACE] and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"] and self.data_extras["grenade"]["activate"] == True:
       if self.mouse["position"][0] > 500:
-        self.player.launch_grenade(3/self.zoom)
+        self.player.launch_grenade(self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
       else:
-        self.player.launch_grenade(-3/self.zoom)
+        self.player.launch_grenade(-self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
 
-      self.last_shot_time = self.mouse["current_time"]
+      self.data_extras["grenade"]["last_shot_time"] = self.mouse["current_time"]
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
@@ -154,9 +155,9 @@ class Run:
     elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
       if self.weapon_dict["type"] == "grenade_launcher":
         if self.mouse["position"][0] > 500:
-          self.player.launch_grenade(10/self.zoom)
+          self.player.launch_grenade(1*self.zoom, self.data_extras["grenade"])
         else:
-          self.player.launch_grenade(-10/self.zoom)
+          self.player.launch_grenade(-1*self.zoom, self.data_extras["grenade"])
 
       else:
         if self.weapon_dict["delay"] == 0:

@@ -1,7 +1,7 @@
 import pygame
 import math
 import random
-from extras import Explosion
+from grenade import Explosion
 from load import Load
 import player
 

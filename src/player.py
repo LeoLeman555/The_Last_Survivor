@@ -5,6 +5,7 @@ from enemy import *
 from load import *
 from objects import *
 from message import *
+from grenade import *
 
 class Player(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', run, icon: 'items.Icon', name: str ="jim", x: int =0, y: int =0):
@@ -44,6 +45,8 @@ class Player(pygame.sprite.Sprite):
     self.missiles = pygame.sprite.Group()
     self.objects = pygame.sprite.Group()
     self.messages = pygame.sprite.Group()
+
+    self.toxic_particles = pygame.sprite.Group()
 
     self.number_enemies = 0
 
@@ -119,8 +122,8 @@ class Player(pygame.sprite.Sprite):
     for _ in range(10):
       self.particles.add(FireParticle(self.zoom, self.enemies, x, y, direction, damage))
 
-  def launch_grenade(self, speed:int):
-    self.grenades.add(Grenade(self.zoom, self.screen, self.enemies, self, speed))
+  def launch_grenade(self, speed: int, grenade_dict: dict):
+    self.grenades.add(Grenade(self.zoom, self.screen, self.enemies, self, grenade_dict, speed))
 
   def add_enemy(self, data: dict, name: str, x: int = 0, y: int = 0):
     if name.lower() in data:
