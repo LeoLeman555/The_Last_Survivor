@@ -34,6 +34,16 @@ class Weapon(pygame.sprite.Sprite):
     self.image = pygame.transform.rotozoom(self.image, -self.angle, 1)
     self.rect = self.image.get_rect(center=self.rect.center)
 
+  def change_weapon(self, zoom: int, player: 'player.Player', weapon_dict: dict):
+    self.zoom = zoom
+    self.player = player
+    self.weapon_dict = weapon_dict
+    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
+    self.rect = self.image.get_rect()
+    self.rect.center = self.weapon_dict["position"]
+    self.original_image = self.image
+    self.angle = 0
+
 
 class Bullet(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player: 'player.Player', enemies, goal: tuple,

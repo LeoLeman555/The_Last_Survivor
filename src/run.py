@@ -31,7 +31,8 @@ class Run:
 
     self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
     self.weapon_id = random.choice(list(self.data_weapons.keys()))
-    self.weapon_id = 11
+    self.weapon_id = 1
+
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.weapon_dict["position"][0] += 10 * self.zoom
     self.weapon_dict["position"][1] += 5 * self.zoom
@@ -66,6 +67,16 @@ class Run:
 
     self.current_shot = 0
     self.time = 0
+
+    self.change_weapon(1)
+
+  def change_weapon(self, id):
+    self.weapon_dict = self.data_weapons[f"{id}"]
+    if self.weapon_dict["position"][0] == 500:
+      self.weapon_dict["position"][0] += 10 * self.zoom
+      self.weapon_dict["position"][1] += 5 * self.zoom
+    self.weapon.change_weapon(self.zoom, self.player, self.weapon_dict)
+
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""

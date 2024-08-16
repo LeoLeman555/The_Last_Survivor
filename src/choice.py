@@ -22,3 +22,14 @@ class Choice:
         return f"module ({rarity})"
 
       return f"{choice_B}"
+    
+  def weapon(self, current_weapon):
+    outcomes = [-1, 0, 1, 2, 3]
+    probabilities = [0.10, 0.25, 0.50, 0.10, 0.05]
+    result = random.choices(outcomes, probabilities)[0]
+    futur_weapon = current_weapon + result
+    if futur_weapon < 1:
+      futur_weapon = 1
+    if futur_weapon > 12:
+      futur_weapon = 12
+    return futur_weapon
