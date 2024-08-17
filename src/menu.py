@@ -6,7 +6,8 @@ def Menu_principal():
   pygame.display.set_caption("The Last Survivor - Menu principal")
 
   # Noms des boutons à afficher
-  buttons = ["jeu", "intro", "boutique", "elements", "options"]
+  # buttons = ["jeu", "intro", "boutique", "elements", "options"]
+  buttons = ["jeu"]
 
   # Charger et redimensionner les images des boutons
   images = {

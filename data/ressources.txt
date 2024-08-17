@@ -1,7 +1,7 @@
 xp,0
-health,100
-food,100
+health,0
+food,0
 energy,0
 metal,0
-ammo,500
+ammo,0
 data,0
