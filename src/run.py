@@ -70,6 +70,12 @@ class Run:
 
     self.change_weapon(1)
 
+  def start_run(self):
+    self.ressources["ammo"] = 500
+    self.ressources["health"] = 100
+    self.ressources["food"] = 100
+    self.run()
+
   def change_weapon(self, id):
     self.weapon_dict = self.data_weapons[f"{id}"]
     if self.weapon_dict["position"][0] == 500:
@@ -204,6 +210,8 @@ class Run:
           self.mouse["press"] = False
 
       clock.tick(60)
+
+    pygame.quit()
 
   def update_class(self):
     self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras)

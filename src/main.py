@@ -6,12 +6,15 @@ from menu import Menu_principal
 
 pygame.init()
 
-run = Run(2)
+running = True
 
-# if Menu_principal() == "jeu":
-#   run.run()
-#   pygame.quit()
+while running == True:
+  if Menu_principal() == "jeu":
+    run = Run(2)
+    run.start_run()
+  else:
+    running = False
 
-run.run()
+# run.run()
 
 print("------------------------- END -------------------------")
