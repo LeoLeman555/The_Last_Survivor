@@ -107,11 +107,12 @@ class Bullet(pygame.sprite.Sprite):
         self.explode()
       else:
         self.check_collision()
-
-      if self.distance_traveled > self.distance_weapon:
-        self.screen.blit(self.image, self.rect)
     else:
       self.delay -= 1
+
+  def draw(self):
+    if self.distance_traveled > self.distance_weapon:
+        self.screen.blit(self.image, self.rect)
 
   def check_collision(self):
     """Checks for collisions with enemies."""

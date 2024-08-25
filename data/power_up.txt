@@ -1,0 +1,38 @@
+POWER_UP_PARAMS = {
+  "care_kit": {
+    "id": 1,
+    "effect": "hp",
+    "value": "+50",
+    "activate": False,
+  },
+  "critical_hit": {
+    "id": 2,
+    "effect": "2x damage",
+    "value": "+10%",
+    "activate": False,
+  },
+  "survival_ration": {
+    "id": 3,
+    "effect": "food",
+    "value": "+50",
+    "activate": False,
+  },
+  "2nd_life": {
+    "id": 4,
+    "effect": "life",
+    "value": "+1",
+    "activate": False,
+  },
+  "expert": {
+    "id": 5,
+    "effect": "xp",
+    "value": "+20%",
+    "activate": False,
+  },
+  "boost": {
+    "id": 6,
+    "effect": "speed",
+    "value": "+10%",
+    "activate": False,
+  },
+}

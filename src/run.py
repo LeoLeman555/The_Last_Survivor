@@ -8,6 +8,7 @@ from extras import *
 from load import *
 from enemy import *
 from enemy_selector import *
+from power_up import *
 
 class Run:
   def __init__(self, zoom:int):
@@ -18,6 +19,7 @@ class Run:
     
     self.zoom = zoom
 
+    self.load = Load()
     self.read_data = ReadData()
 
     self.index_palier_xp = 1
@@ -38,6 +40,10 @@ class Run:
     self.weapon_dict["position"][1] += 5 * self.zoom
 
     self.data_extras = self.read_data.read_extras_params("data/extras.txt")
+
+    self.data_power_up = self.read_data.read_power_up_params("data/power_up.txt")
+    self.load_power_up()
+    self.power_up = PowerUp(self.data_power_up, self.cards_positions, self)
 
     self.icon = Icon(self, self.ressources, self.barres)
     
@@ -61,12 +67,14 @@ class Run:
 
     self.mouvement = [0, 0]
 
-    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse, self.data_extras)
+    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.power_up)
 
     self.collision_caillou = False
 
     self.current_shot = 0
     self.time = 0
+
+    self.pause = False
 
     self.change_weapon(1)
 
@@ -76,13 +84,21 @@ class Run:
     self.ressources["food"] = 100
     self.run()
 
+  def load_power_up(self):
+    for power_up_name, power_up_data in self.data_power_up.items():
+      image_path = f"res/power_up/{power_up_name}.png"
+      resized_image = self.load.load_and_resize_image(image_path, 268, 189)
+      left_image, right_image = self.load.split_image(resized_image)
+      power_up_data["left_image"] = left_image
+      power_up_data["right_image"] = right_image
+    self.cards_positions = [(274, 200), (432, 200), (590, 200)]
+
   def change_weapon(self, id):
     self.weapon_dict = self.data_weapons[f"{id}"]
     if self.weapon_dict["position"][0] == 500:
       self.weapon_dict["position"][0] += 10 * self.zoom
       self.weapon_dict["position"][1] += 5 * self.zoom
     self.weapon.change_weapon(self.zoom, self.player, self.weapon_dict)
-
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -123,6 +139,10 @@ class Run:
     if self.collision_caillou:
       self.mouvement = [0, 0]
 
+    if press[pygame.K_g]:
+      self.power_up.launch_cards(random.sample(list(self.data_power_up.keys()), 3))
+      self.pause = True
+
     if press[pygame.K_SPACE] and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"] and self.data_extras["grenade"]["activate"] == True:
       if self.mouse["position"][0] > 500:
         self.player.launch_grenade(self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
@@ -130,6 +150,16 @@ class Run:
         self.player.launch_grenade(-self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
 
       self.data_extras["grenade"]["last_shot_time"] = self.mouse["current_time"]
+
+  def get_pause(self):
+    press = pygame.key.get_pressed()
+    if press[pygame.K_p]:
+      if self.pause:
+        self.pause = False
+        time.sleep(1)
+      else:
+        self.pause = True  
+        time.sleep(0.1)
   
   def change_max_xp(self, palier):
     self.index_palier_xp = palier
@@ -189,16 +219,16 @@ class Run:
     while self.running:
       self.mouse["position"] = pygame.mouse.get_pos()
       self.mouse["current_time"] = pygame.time.get_ticks()
-      self.player.save_location()
-      self.keyboard_input()
-      self.map_manager.draw()
+      if not self.pause:
+        self.keyboard_input()
+        self.player.save_location()
 
-      if random.random() <= 0.005 or self.player.number_enemies < 5:
-        for loop in range(0, 10):
-          enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
-          self.player.add_enemy(self.data_enemies, *enemy)
-          self.player.number_enemies += 1
-
+        if random.random() <= 0.005 or self.player.number_enemies < 5:
+          for loop in range(0, 10):
+            enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
+            self.player.add_enemy(self.data_enemies, *enemy)
+            self.player.number_enemies += 1
+      self.get_pause()
       self.update_class()
 
       for event in pygame.event.get():
@@ -214,9 +244,10 @@ class Run:
     pygame.quit()
 
   def update_class(self):
-    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras)
+    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause)
 
-    self.test_shooting()
+    if not self.pause:
+      self.test_shooting()
 
     if self.data_extras["drone"]["activate"] == True:
       self.drone.update_drone()
