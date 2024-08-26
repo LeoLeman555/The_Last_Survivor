@@ -35,7 +35,7 @@ class PowerUp:
         card['current_image'] = card['right_image']
         if mouse_click:
           card['data']['activate'] = True
-          print(f"Power-Up {card['data']['effect']} activé !")
+          print(f"Power-Up {card['data']['name']}")
           self.cards = []
           self.run.pause = False
       else:
