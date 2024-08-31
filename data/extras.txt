@@ -7,7 +7,7 @@ EXTRAS_PARAMS = {
     "speed": 1,
     "lifetime": 25,
     "toxic_grenade": {
-    "activate": False,
+    "activate": True,
     "name": "toxic_grenade",
     },
   },

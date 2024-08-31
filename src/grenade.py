@@ -100,31 +100,29 @@ class ToxicParticle(pygame.sprite.Sprite):
     self.zoom = zoom
     self.x = x
     self.y = y
-    self.size = random.randint(2*self.zoom, 4*self.zoom)
+    self.size_origin = random.randint(2, 4)
+    self.size = round(self.size_origin * self.zoom)
     angle = random.uniform(0, 2 * math.pi)
-    speed = random.uniform(1, 2*self.zoom)
+    speed = random.uniform(1, round(2*self.zoom))
     self.speed_x = speed * math.cos(angle)
     self.speed_y = speed * math.sin(angle)
     self.color = random.choice(PALETTE)
     self.creation_time = time.time()
-    self.life_duration = 25*self.zoom
+    self.life_duration_origin = 25
+    self.life_duration = round(self.life_duration_origin*self.zoom)
     self.alpha = 255
-
     self.rect = pygame.Rect(self.x - self.size // 2, self.y - self.size // 2, self.size, self.size)
-
     self.enemies = enemies
-
     self.damage = damage
 
   def change_zoom(self, new_zoom: int):
     """Change le zoom et ajuste les propriétés des particules toxiques."""
     self.zoom = new_zoom
-    self.size = random.randint(2 * self.zoom, 4 * self.zoom)
-    self.rect.size = (self.size, self.size)
-    self.life_duration = 25 * self.zoom
+    self.size = round(self.size_origin * self.zoom)
+    self.rect = pygame.Rect(self.x - self.size // 2, self.y - self.size // 2, self.size, self.size)
+    self.life_duration = round(self.life_duration_origin*self.zoom)
 
-  def update(self, x_var: int, y_var: int, zoom: int):
-    self.zoom = zoom
+  def update(self, x_var: int, y_var: int):
     x = (x_var / 2) * self.zoom
     y = (y_var / 2) * self.zoom
     self.x += self.speed_x + x
@@ -198,9 +196,8 @@ class Explosion(pygame.sprite.Sprite):
     image.blit(sprite_sheet, (0, 0), (x, y, width, height))
     return image
 
-  def update(self, zoom: int):
+  def update(self):
     """Update the explosion animation."""
-    self.zoom = zoom
     self.check_collision()
     now = pygame.time.get_ticks()
     if now - self.clock > 1:  # Change frame every 1ms

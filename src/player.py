@@ -45,7 +45,6 @@ class Player(pygame.sprite.Sprite):
     self.missiles = pygame.sprite.Group()
     self.objects = pygame.sprite.Group()
     self.messages = pygame.sprite.Group()
-
     self.toxic_particles = pygame.sprite.Group()
 
     self.number_enemies = 0

@@ -105,9 +105,8 @@ class Bullet(pygame.sprite.Sprite):
     """Removes the bullet from the player's bullets list."""
     self.player.bullets.remove(self)
 
-  def update(self, zoom: int):
+  def update(self):
     """Moves the bullet and handles collisions."""
-    self.zoom = zoom
     if self.delay == 0:
       self.rotate()
       self.rect.x += self.vector[0]
@@ -154,16 +153,17 @@ class FireParticle(pygame.sprite.Sprite):
     self.y = y
     self.enemies = enemies
     self.damage = damage
-    self.size = random.randint(3 * self.zoom, 5 * self.zoom)
+    self.size_origin = random.randint(3, 5)
+    self.size = round(self.size_origin * self.zoom)
     self.color = (random.randint(200, 255), random.randint(100, 150), 0)
-    self.lifetime = random.randint(10 * self.zoom, 12 * self.zoom)
+    self.lifetime_origin = random.randint(10, 12)
+    self.lifetime = round(self.lifetime_origin * self.zoom)
     self.direction = (direction[0] + random.uniform(-0.1, 0.1), direction[1] + random.uniform(-0.1, 0.1))
     self.speed = random.uniform(6 * self.zoom, 8 * self.zoom)
     self.rect = pygame.Rect(self.x - self.size // 2, self.y - self.size // 2, self.size, self.size)
 
-  def update(self, zoom: int):
+  def update(self):
     """Updates the particle's position and properties."""
-    self.zoom = zoom
     self.x += self.direction[0] * self.speed
     self.y += self.direction[1] * self.speed
     self.size -= 0.2

@@ -68,11 +68,13 @@ class Drone:
     self.image = Load.charge_image(self, self.zoom, "weapon", "drone", "png", 0.4)
     self.cible.change_zoom(self.zoom)
     
-  def update_drone(self):
+  def update(self):
     """Update the drone's position and draw it on the screen."""
-    self.screen.blit(self.image, ((478 - 21 * (self.zoom - 1)), (260 - 30 * (self.zoom - 1))))
     self.cible.update()
-    self.cible.draw(self.screen)
+
+  def draw(self, screen):
+    screen.blit(self.image, ((478 - 21 * (self.zoom - 1)), (260 - 30 * (self.zoom - 1))))
+    self.cible.draw(screen)
 
 class Laser(pygame.sprite.Sprite):
   def __init__(self, zoom: int, enemies, data):
@@ -99,9 +101,8 @@ class Laser(pygame.sprite.Sprite):
     pygame.draw.circle(screen, (255, 0, 0), (self.x, self.end_y), int(5 * self.zoom))
     pygame.draw.circle(screen, (255, 100, 100), (self.x, self.end_y), int(2.5 * self.zoom))
 
-  def update(self, zoom: int):
+  def update(self):
     """Update the laser's lifetime."""
-    self.zoom = zoom
     self.lifetime -= 1
     if self.lifetime <= 0:
       self.kill()
@@ -140,9 +141,8 @@ class Missile(pygame.sprite.Sprite):
     if self.lifetime % 2 == 0 or self.lifetime >= 40:
       screen.blit(self.cible_missile, (self.x, self.y))
 
-  def update(self, x_var: int, y_var: int, zoom: int):
+  def update(self, x_var: int, y_var: int):
     """Update the missile's position and lifetime."""
-    self.zoom = zoom
     self.lifetime -= 1
     x = (x_var / 2) * self.zoom
     y = (y_var / 2) * self.zoom

@@ -27,6 +27,8 @@ class Run:
     self.piercing = 1
     # TODO implement piercing in bullet and in ennemi => later?
     self.speed_init = 3
+    self.pause = False
+    self.mouvement = [0, 0]
 
     self.load = Load()
     self.read_data = ReadData()
@@ -73,16 +75,12 @@ class Run:
 
     self.drone = Drone(self.zoom, self.screen, self.player.enemies, self.data_extras["drone"])
 
-    self.mouvement = [0, 0]
-
     self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.power_up)
 
     self.collision_caillou = False
 
     self.current_shot = 0
     self.time = 0
-
-    self.pause = False
 
     self.change_weapon(5)
 
@@ -158,7 +156,6 @@ class Run:
         self.zoom = 1.5
       self.map_manager.change_map_size(self.zoom)
       self.update.change_zoom(self.zoom)
-      self.drone.change_zoom(self.zoom)
       time.sleep(0.1)
 
     if press[pygame.K_SPACE] and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"] and self.data_extras["grenade"]["activate"] == True:
@@ -265,13 +262,10 @@ class Run:
     pygame.quit()
 
   def update_class(self):
-    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause, self.zoom)
+    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause)
 
     if not self.pause:
       self.test_shooting()
-
-    if self.data_extras["drone"]["activate"] == True:
-      self.drone.update_drone()
 
     pygame.display.flip()
 
