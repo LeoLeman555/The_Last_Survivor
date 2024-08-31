@@ -41,7 +41,6 @@ class Run:
     self.random_enemy = EnemySelector(self.data_enemies)
 
     self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
-    self.weapon_id = random.choice(list(self.data_weapons.keys()))
     self.weapon_id = 1
 
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
@@ -142,11 +141,6 @@ class Run:
     if self.collision_caillou:
       self.mouvement = [0, 0]
 
-    if press[pygame.K_g]:
-      unlocked_power_ups = [name for name, data in self.data_power_up.items() if not data.get('locked', False)]
-      self.power_up.launch_cards(random.sample(unlocked_power_ups, 3))
-      self.pause = True
-
     if press[pygame.K_z]:
       if self.zoom != 2:
         self.zoom = 2
@@ -163,6 +157,11 @@ class Run:
         self.player.launch_grenade(-self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
 
       self.data_extras["grenade"]["last_shot_time"] = self.mouse["current_time"]
+
+  def launch_power_up(self):
+    unlocked_power_ups = [name for name, data in self.data_power_up.items() if not data.get('locked', False)]
+    self.power_up.launch_cards(random.sample(unlocked_power_ups, 3))
+    self.pause = True
 
   def get_pause(self):
     press = pygame.key.get_pressed()
