@@ -13,17 +13,19 @@ class PowerUp:
     for i, name in enumerate(power_up_names):
       if name in self.power_up_data:
         card_data = self.power_up_data[name]
-        left_image = card_data['left_image']
-        right_image = card_data['right_image']
-        position = self.positions[i]
-        rect = left_image.get_rect(topleft=position)
-        self.cards.append({
-          'left_image': left_image,
-          'right_image': right_image,
-          'current_image': left_image,
-          'rect': rect,
-          'data': card_data
-        })
+        # Vérifie si la carte est verrouillée (locked == False)
+        if not card_data.get('locked', False):  
+          left_image = card_data['left_image']
+          right_image = card_data['right_image']
+          position = self.positions[i]
+          rect = left_image.get_rect(topleft=position)
+          self.cards.append({
+            'left_image': left_image,
+            'right_image': right_image,
+            'current_image': left_image,
+            'rect': rect,
+            'data': card_data
+          })
 
   def draw(self, screen: pygame.Surface) -> None:
     for card in self.cards:

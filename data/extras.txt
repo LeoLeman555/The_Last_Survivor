@@ -12,7 +12,7 @@ EXTRAS_PARAMS = {
     },
   },
   "drone":{
-    "activate": False,
+    "activate": True,
     "damage": 10,
   },
   "missile":{

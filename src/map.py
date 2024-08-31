@@ -97,3 +97,25 @@ class MapManager:
     self.get_group().update()
     self.check_collision()
     self.check_sables()
+
+  def change_map_size(self, new_zoom: float):
+    """Change the size of the map by updating the zoom level."""
+    self.zoom = new_zoom
+    
+    # Recreate the map layer with the new zoom level
+    map_data = pyscroll.data.TiledMapData(self.get_map().tmx_data)
+    map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
+    map_layer.zoom = self.zoom
+    
+    # Update the group with the new map layer
+    group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=3)
+    group.add(self.player)
+    
+    # Update the current map's group with the new group
+    self.maps[self.current_map] = Map(
+      self.current_map,
+      self.get_walls(),
+      self.get_sables(),
+      group,
+      self.get_map().tmx_data
+    )

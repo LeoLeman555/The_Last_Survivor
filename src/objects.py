@@ -4,24 +4,33 @@ from load import *
 import items
 
 class Objects(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, icon: 'items.Icon', name: str, value: int, x: int, y: int):
+  def __init__(self, zoom: int, icon: 'items.Icon', name: str, value: int, x: int, y: int, range_obj: int, speed_obj: int=4):
     super().__init__()
     self.zoom = zoom
     self.name = name
     self.value = value
     self.image = Load.charge_image(self, self.zoom, "token", self.name, "png", 0.25)
-    self.x = x + random.randint(-10 * self.zoom, 10 * self.zoom)
-    self.y = y + random.randint(-10 * self.zoom, 10 * self.zoom)
+    self.x = x + random.randint(round(-10 * self.zoom), round(10 * self.zoom))
+    self.y = y + random.randint(round(-10 * self.zoom), round(10 * self.zoom))
 
-    self.range = 25 * self.zoom
-    self.speed = 4 * self.zoom
+    self.range_obj = range_obj
+    self.speed_obj = speed_obj
+
+    self.range = range_obj * self.zoom
+    self.speed = speed_obj * self.zoom
     self.rect = self.image.get_rect()
     self.lifetime = 1000
     self.icon = icon
+
+  def change_zoom(self, new_zoom: int):
+    self.zoom = new_zoom
+    self.image = Load.charge_image(self, self.zoom, "token", self.name, "png", 0.25)
+    self.rect = self.image.get_rect()
+    self.range = self.range_obj * self.zoom
+    self.speed = self.speed * self.zoom
   
   def draw(self, screen: pygame.Surface):
     """Draw on the screen."""
-    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     screen.blit(self.image, (self.x, self.y))
 
   def update(self, x_var: int, y_var: int, player_rect: 'pygame.Rect'):
@@ -67,24 +76,33 @@ class Objects(pygame.sprite.Sprite):
       self.kill()
 
 class GunGround(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, name: str, id: int, player, x: int, y: int):
+  def __init__(self, zoom: int, name: str, id: int, player, x: int, y: int, range_obj: int, speed_obj: int=4):
     super().__init__()
     self.zoom = zoom
     self.name = name
     self.id = id
     self.player = player
     self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.45)
-    self.x = x + random.randint(-10 * self.zoom, 10 * self.zoom)
-    self.y = y + random.randint(-10 * self.zoom, 10 * self.zoom)
+    self.x = x + random.randint(round(-10 * self.zoom), round(10 * self.zoom))
+    self.y = y + random.randint(round(-10 * self.zoom), round(10 * self.zoom))
 
-    self.range = 25 * self.zoom
-    self.speed = 4 * self.zoom
+    self.range_obj = range_obj
+    self.speed_obj = speed_obj
+
+    self.range = self.range_obj * self.zoom
+    self.speed = self.speed_obj * self.zoom
     self.rect = self.image.get_rect()
     self.lifetime = 200
+
+  def change_zoom(self, new_zoom: int):
+    self.zoom = new_zoom
+    self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.45)
+    self.rect = self.image.get_rect()
+    self.range = self.range_obj * self.zoom
+    self.speed = self.speed * self.zoom
   
   def draw(self, screen: pygame.Surface):
     """Draw on the screen."""
-    # pygame.draw.rect(screen, (0, 0, 0), self.rect)
     screen.blit(self.image, (self.x, self.y))
 
   def update(self, x_var: int, y_var: int, player_rect: 'pygame.Rect'):

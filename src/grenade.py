@@ -42,6 +42,16 @@ class Grenade(pygame.sprite.Sprite):
     self.lifetime = self.data["lifetime"] * self.zoom
     self.damage = self.data["damage"]
 
+  def change_zoom(self, new_zoom: int):
+    """Change le zoom et ajuste les propriétés de la grenade."""
+    self.zoom = new_zoom
+    self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.5)
+    self.rect = self.image.get_rect(center=self.rect.center)
+    self.speed = self.speed / self.zoom  # Ajustement de la vitesse en fonction du zoom
+    self.velocity_y = -5 * self.zoom
+    self.rebound_height = self.screen.get_height() // 2
+    self.lifetime = self.data["lifetime"] * self.zoom
+
   def explode(self):
     """Trigger an explosion."""
     explosion = Explosion(self.zoom, self.rect.center, self.damage, self.enemies)
@@ -56,7 +66,7 @@ class Grenade(pygame.sprite.Sprite):
     if self.toxic["number"] >= 100:
       self.kill()
 
-  def update(self, x_var: int =0, y_var: int =0):
+  def update(self, x_var: int, y_var: int):
     """Update the position of the grenade."""
     x = (x_var / 2) * self.zoom
     y = (y_var / 2) * self.zoom
@@ -106,7 +116,15 @@ class ToxicParticle(pygame.sprite.Sprite):
 
     self.damage = damage
 
-  def update(self, x_var: int, y_var: int):
+  def change_zoom(self, new_zoom: int):
+    """Change le zoom et ajuste les propriétés des particules toxiques."""
+    self.zoom = new_zoom
+    self.size = random.randint(2 * self.zoom, 4 * self.zoom)
+    self.rect.size = (self.size, self.size)
+    self.life_duration = 25 * self.zoom
+
+  def update(self, x_var: int, y_var: int, zoom: int):
+    self.zoom = zoom
     x = (x_var / 2) * self.zoom
     y = (y_var / 2) * self.zoom
     self.x += self.speed_x + x
@@ -155,6 +173,13 @@ class Explosion(pygame.sprite.Sprite):
 
     self.damage = damage
 
+  def change_zoom(self, new_zoom: int):
+    """Change le zoom et ajuste les propriétés de l'explosion."""
+    self.zoom = new_zoom * 2
+    self.images = self.get_images()  # Recharger les images en fonction du nouveau zoom
+    self.image = self.images[0]
+    self.rect = self.image.get_rect(center=self.rect.center)
+
   def get_images(self):
     """Load explosion images from a sprite sheet."""
     images_explosion = []
@@ -173,8 +198,9 @@ class Explosion(pygame.sprite.Sprite):
     image.blit(sprite_sheet, (0, 0), (x, y, width, height))
     return image
 
-  def update(self):
+  def update(self, zoom: int):
     """Update the explosion animation."""
+    self.zoom = zoom
     self.check_collision()
     now = pygame.time.get_ticks()
     if now - self.clock > 1:  # Change frame every 1ms

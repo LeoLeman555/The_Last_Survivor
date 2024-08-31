@@ -7,12 +7,25 @@ class HealthBar(pygame.sprite.Sprite):
     self.x = x
     self.y = y
     self.width = width
+    self.width_zoom = self.width
     self.height = self.zoom
     self.max_health = max_health
     self.health = max_health
     self.image = pygame.Surface((self.width, self.height))
     self.rect = self.image.get_rect()
     self.rect.topleft = (x, y - 10)
+    self.update(self.health)
+
+  def change_zoom(self, new_zoom: float):
+    """Update the zoom level and resize the health bar."""
+    self.zoom = new_zoom
+    if self.width != self.width_zoom:
+      self.width = self.width_zoom
+    self.width = round(self.width * self.zoom/2)
+    self.height = round(self.zoom)
+    self.image = pygame.Surface((self.width, self.height))
+    self.rect = self.image.get_rect()
+    self.rect.topleft = (self.x, self.y - 10)
     self.update(self.health)
 
   def update(self, health: int):

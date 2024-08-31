@@ -10,12 +10,24 @@ class Weapon(pygame.sprite.Sprite):
     super().__init__()
     self.zoom = zoom
     self.player = player
-    self.weapon_dict = weapon_dict
+    self.weapon_dict_origin = weapon_dict
+    self.weapon_dict = self.weapon_dict_origin
+    self.weapon_dict["position"][0] += 10 * self.zoom
+    self.weapon_dict["position"][1] += 5 * self.zoom
     self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
     self.rect = self.image.get_rect()
     self.rect.center = self.weapon_dict["position"]
     self.original_image = self.image
     self.angle = 0
+
+  def change_zoom(self, new_zoom: int):
+    self.zoom = new_zoom
+    self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
+    self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
+    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
+    self.rect = self.image.get_rect()
+    self.rect.center = self.weapon_dict["position"]
+    self.original_image = self.image
 
   def draw(self, screen: 'pygame.surface.Surface'):
     """Draws the weapon on the screen."""
@@ -93,9 +105,9 @@ class Bullet(pygame.sprite.Sprite):
     """Removes the bullet from the player's bullets list."""
     self.player.bullets.remove(self)
 
-  def update(self):
+  def update(self, zoom: int):
     """Moves the bullet and handles collisions."""
-
+    self.zoom = zoom
     if self.delay == 0:
       self.rotate()
       self.rect.x += self.vector[0]
@@ -129,7 +141,7 @@ class Bullet(pygame.sprite.Sprite):
   def explode(self):
     """Triggers an explosion if the bullet is explosive."""
     if self.explosive:
-      explosion = Explosion(self.zoom, self.rect.center)
+      explosion = Explosion(self.zoom, self.rect.center, self.damage, self.enemies)
       self.player.screen.blit(explosion.image, explosion.rect)
       self.player.explosions.add(explosion)
 
@@ -149,8 +161,9 @@ class FireParticle(pygame.sprite.Sprite):
     self.speed = random.uniform(6 * self.zoom, 8 * self.zoom)
     self.rect = pygame.Rect(self.x - self.size // 2, self.y - self.size // 2, self.size, self.size)
 
-  def update(self):
+  def update(self, zoom: int):
     """Updates the particle's position and properties."""
+    self.zoom = zoom
     self.x += self.direction[0] * self.speed
     self.y += self.direction[1] * self.speed
     self.size -= 0.2

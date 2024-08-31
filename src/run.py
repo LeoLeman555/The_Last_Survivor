@@ -11,13 +11,22 @@ from enemy_selector import *
 from power_up import *
 
 class Run:
-  def __init__(self, zoom:int):
+  def __init__(self):
     pygame.font.init()
 
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Game")
     
-    self.zoom = zoom
+    self.zoom = 2
+    self.life = 1
+    self.xp_multiplier = 1
+    self.range_obj = 25
+    self.regeneration = 0
+    # TODO self.time in Player for regeneration => sends a signal when 1 second has elapsed
+    self.hunger_resistance = 1
+    self.piercing = 1
+    # TODO implement piercing in bullet and in ennemi => later?
+    self.speed_init = 3
 
     self.load = Load()
     self.read_data = ReadData()
@@ -36,8 +45,8 @@ class Run:
     self.weapon_id = 1
 
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
-    self.weapon_dict["position"][0] += 10 * self.zoom
-    self.weapon_dict["position"][1] += 5 * self.zoom
+    self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
+    self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
 
     self.data_extras = self.read_data.read_extras_params("data/extras.txt")
 
@@ -47,10 +56,9 @@ class Run:
 
     self.icon = Icon(self, self.ressources, self.barres)
     
-    self.speed_init = 3
     self.speed = self.speed_init
 
-    self.player = Player(self.zoom, self.screen, self, self.icon, "jim")  # mettre sur tiled un objet start
+    self.player = Player(self, "jim")  # mettre sur tiled un objet start
     self.map_manager = MapManager(self, self.screen, self.player, self.zoom)
     self.weapon = Weapon(self.zoom, self.player, self.weapon_dict)
 
@@ -76,7 +84,7 @@ class Run:
 
     self.pause = False
 
-    self.change_weapon(1)
+    self.change_weapon(5)
 
   def start_run(self):
     self.ressources["ammo"] = 500
@@ -95,9 +103,8 @@ class Run:
 
   def change_weapon(self, id):
     self.weapon_dict = self.data_weapons[f"{id}"]
-    if self.weapon_dict["position"][0] == 500:
-      self.weapon_dict["position"][0] += 10 * self.zoom
-      self.weapon_dict["position"][1] += 5 * self.zoom
+    self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
+    self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
     self.weapon.change_weapon(self.zoom, self.player, self.weapon_dict)
 
   def keyboard_input(self):
@@ -140,8 +147,19 @@ class Run:
       self.mouvement = [0, 0]
 
     if press[pygame.K_g]:
-      self.power_up.launch_cards(random.sample(list(self.data_power_up.keys()), 3))
+      unlocked_power_ups = [name for name, data in self.data_power_up.items() if not data.get('locked', False)]
+      self.power_up.launch_cards(random.sample(unlocked_power_ups, 3))
       self.pause = True
+
+    if press[pygame.K_z]:
+      if self.zoom != 2:
+        self.zoom = 2
+      else:
+        self.zoom = 1.5
+      self.map_manager.change_map_size(self.zoom)
+      self.update.change_zoom(self.zoom)
+      self.drone.change_zoom(self.zoom)
+      time.sleep(0.1)
 
     if press[pygame.K_SPACE] and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"] and self.data_extras["grenade"]["activate"] == True:
       if self.mouse["position"][0] > 500:
@@ -219,6 +237,7 @@ class Run:
     while self.running:
       self.mouse["position"] = pygame.mouse.get_pos()
       self.mouse["current_time"] = pygame.time.get_ticks()
+      self.mouse["shoot_delay"] = self.weapon_dict["rate"]
       if not self.pause:
         self.keyboard_input()
         self.player.save_location()
@@ -228,6 +247,8 @@ class Run:
             enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
             self.player.add_enemy(self.data_enemies, *enemy)
             self.player.number_enemies += 1
+
+        self.use_power_up()
       self.get_pause()
       self.update_class()
 
@@ -244,7 +265,7 @@ class Run:
     pygame.quit()
 
   def update_class(self):
-    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause)
+    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause, self.zoom)
 
     if not self.pause:
       self.test_shooting()
@@ -262,3 +283,69 @@ class Run:
 
   def collision(self, bool:bool):
     self.collision_caillou = bool
+
+  def use_power_up(self):
+    if self.data_power_up["care_kit"]["activate"]:
+      self.icon.resource["health"] += self.data_power_up["care_kit"]["value"]
+      self.data_power_up["care_kit"]["activate"] = False
+
+    if self.data_power_up["survival_ration"]["activate"]:
+      self.icon.resource["food"] += self.data_power_up["survival_ration"]["value"]
+      self.data_power_up["survival_ration"]["activate"] = False
+
+    if self.data_power_up["critical_hit"]["activate"]:
+      for weapon_id, weapon_data in self.data_weapons.items():
+        if "critical" in weapon_data:
+          weapon_data["critical"] *= self.data_power_up["critical_hit"]["value"]
+      self.data_power_up["critical_hit"]["activate"] = False
+
+    if self.data_power_up["2nd_life"]["activate"]:
+      self.life = 2
+      self.data_power_up["2nd_life"]["activate"] = False
+    
+    if self.data_power_up["expert"]["activate"]:
+      self.xp_multiplier *= self.data_power_up["expert"]["value"]
+      self.data_power_up["expert"]["activate"] = False
+
+    if self.data_power_up["boost"]["activate"]:
+      self.speed_init *= self.data_power_up["boost"]["value"]
+      self.data_power_up["boost"]["activate"] = False
+
+    if self.data_power_up["agile_fingers"]["activate"]:
+      for weapon_id, weapon_data in self.data_weapons.items():
+        if "recharge_time" in weapon_data:
+          weapon_data["recharge_time"] *= self.data_power_up["agile_fingers"]["value"]
+      self.data_power_up["agile_fingers"]["activate"] = False
+
+    if self.data_power_up["extra_ammo"]["activate"]:
+      for weapon_id, weapon_data in self.data_weapons.items():
+        if "charger_capacity" in weapon_data:
+          weapon_data["charger_capacity"] += self.data_power_up["extra_ammo"]["value"]
+      self.data_power_up["extra_ammo"]["activate"] = False
+
+    if self.data_power_up["large_range"]["activate"]:
+      for weapon_id, weapon_data in self.data_weapons.items():
+        if "range" in weapon_data:
+          weapon_data["range"] *= self.data_power_up["large_range"]["value"]
+      self.data_power_up["large_range"]["activate"] = False
+
+    if self.data_power_up["magnetic"]["activate"]:
+      self.range_obj *= self.data_power_up["magnetic"]["value"]
+      self.data_power_up["magnetic"]["activate"] = False
+
+    if self.data_power_up["rapid_fire"]["activate"]:
+      for weapon_id, weapon_data in self.data_weapons.items():
+        if "rate" in weapon_data:
+          weapon_data["rate"] *= self.data_power_up["rapid_fire"]["value"]
+      self.data_power_up["rapid_fire"]["activate"] = False
+
+    if self.data_power_up["strong_stomach"]["activate"]:
+      self.hunger_resistance *= self.data_power_up["strong_stomach"]["value"]
+      self.data_power_up["strong_stomach"]["activate"] = False
+
+    if self.data_power_up["zoom"]["activate"]:
+      self.zoom = 1.5
+      self.map_manager.change_map_size(self.zoom)
+      self.update.change_zoom(self.zoom)
+      self.drone.change_zoom(self.zoom)
+      self.data_power_up["zoom"]["activate"] = False

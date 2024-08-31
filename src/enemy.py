@@ -91,7 +91,7 @@ class Enemy(pygame.sprite.Sprite):
   def die(self):
     """Handle enemy death."""
     self.is_alive = False
-    self.player.add_object("xp", self.params["reward"][1], *self.rect.center)
+    self.player.add_object("xp", self.params["reward"][1] * self.player.run.xp_multiplier, *self.rect.center)
     self.player.add_object("ammo", self.params["reward"][2], *self.rect.center)
     award = self.choice.choose(*self.params["reward"][0])
     if award == "energy" or award == "metal" or award == "food" or award == "data":
@@ -99,7 +99,9 @@ class Enemy(pygame.sprite.Sprite):
     if award == "weapon":
       award = self.choice.weapon(self.player.run.weapon_dict["id"])
       self.player.add_weapon(self.player.run.data_weapons[f"{award}"]["name"], award,*self.rect.center)
-      # self.player.add_weapon("award", *self.rect.center)
+    self.delete()
+  
+  def delete(self):
     self.player.number_enemies -= 1
     self.kill()
 
@@ -128,6 +130,14 @@ class Enemy(pygame.sprite.Sprite):
     """Check for collisions with player or bullets."""
     if self.rect.colliderect(player_rect):
       self.attack()
+
+  def change_zoom(self, new_zoom: float):
+    """Update the zoom level and resize relevant properties."""
+    self.zoom = new_zoom
+    self.speed = self.params["speed"] * self.zoom * 0.5
+    self.image = self._resize_image(self.current_animation[self.frame_index])
+    self.rect = self.image.get_rect(topleft=(self.x, self.y))
+    self.health_bar.change_zoom(new_zoom)
 
   def load_animations(self, sprite_sheet_path: str, animation_specs):
     """Load animations from a sprite sheet."""
