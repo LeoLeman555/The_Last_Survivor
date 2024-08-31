@@ -115,8 +115,14 @@ class Player(pygame.sprite.Sprite):
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
     self.run.icon.resource["food"] -= 0.04 / self.run.hunger_resistance
-    if 4 == 4:
-      self.run.icon.resource["health"] += self.run.regeneration
+
+    if not hasattr(self, 'last_regeneration_time'):
+      self.last_regeneration_time = pygame.time.get_ticks()
+    current_time = pygame.time.get_ticks()
+    time_elapsed = current_time - self.last_regeneration_time
+    if time_elapsed >= 1000 and self.run.icon.resource["health"] < 100:
+        self.run.icon.resource["health"] += self.run.regeneration
+        self.last_regeneration_time = current_time
 
   def move_back(self):
     self.position = self.old_position
@@ -124,7 +130,7 @@ class Player(pygame.sprite.Sprite):
     self.feet.midbottom = self.rect.midbottom
 
   def launch_bullet(self, goal:tuple, weapon_dict: dict, delay: int =0):
-    self.bullets.add(Bullet(self.run.zoom, self.run.screen, self, self.enemies, goal, weapon_dict, delay))
+    self.bullets.add(Bullet(self.run.zoom, self.run.screen, self, self.enemies, goal, weapon_dict, delay, self.run.piercing))
 
   def add_fire(self, weapon_dict: dict):
     x = 500 + 10 * self.run.zoom

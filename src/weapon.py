@@ -59,7 +59,7 @@ class Weapon(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player: 'player.Player', enemies, goal: tuple,
-  weapon_dict: dict, delay):
+  weapon_dict: dict, delay, piercing):
     super().__init__()
     self.zoom = zoom
     self.data = weapon_dict
@@ -68,12 +68,11 @@ class Bullet(pygame.sprite.Sprite):
     self.enemies = enemies
 
     self.critical = 0
-
     self.damage = self.data["damage"]
     if random.random() < self.data["critical"]:
       self.damage *= 2
       self.critical = 1
-    
+    self.piercing = piercing
     self.ammo_name = self.data["ammo_name"]
     self.range = self.data["range"] * self.zoom
     self.distance_weapon = self.data["distance_bullet"] * self.zoom
@@ -129,13 +128,15 @@ class Bullet(pygame.sprite.Sprite):
     """Checks for collisions with enemies."""
     hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
     if hit_enemy:
+      self.piercing -= 1
       hit_enemy.damage(self.damage)
       self.rect.x += self.vector[0]
       self.rect.y += self.vector[1]
       if self.critical == 1:
         self.player.add_message("CRITICAL!!!", (self.rect.center[0], self.rect.center[1]), (self.rect.center[0], self.rect.center[1]-50*self.zoom), (255, 0, 0), 8*self.zoom, 1000)
-      self.delete()
-      self.explode()
+      if self.piercing == 0:
+        self.delete()
+        self.explode()
 
   def explode(self):
     """Triggers an explosion if the bullet is explosive."""
@@ -143,7 +144,6 @@ class Bullet(pygame.sprite.Sprite):
       explosion = Explosion(self.zoom, self.rect.center, self.damage, self.enemies)
       self.player.screen.blit(explosion.image, explosion.rect)
       self.player.explosions.add(explosion)
-
 
 class FireParticle(pygame.sprite.Sprite):
   def __init__(self, zoom: int, enemies, x: int, y: int, direction: tuple, damage: float):

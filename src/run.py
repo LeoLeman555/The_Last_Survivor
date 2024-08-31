@@ -22,10 +22,8 @@ class Run:
     self.xp_multiplier = 1
     self.range_obj = 25
     self.regeneration = 0
-    # TODO self.time in Player for regeneration => sends a signal when 1 second has elapsed
     self.hunger_resistance = 1
     self.piercing = 1
-    # TODO implement piercing in bullet and in ennemi => later?
     self.speed_init = 3
     self.pause = False
     self.mouvement = [0, 0]
@@ -82,7 +80,7 @@ class Run:
     self.current_shot = 0
     self.time = 0
 
-    self.change_weapon(5)
+    self.change_weapon(1)
 
   def start_run(self):
     self.ressources["ammo"] = 500
@@ -343,3 +341,11 @@ class Run:
       self.update.change_zoom(self.zoom)
       self.drone.change_zoom(self.zoom)
       self.data_power_up["zoom"]["activate"] = False
+
+    if self.data_power_up["regeneration"]["activate"]:
+      self.regeneration += self.data_power_up["regeneration"]["value"]
+      self.data_power_up["regeneration"]["activate"] = False
+
+    if self.data_power_up["piercing"]["activate"]:
+      self.piercing += self.data_power_up["piercing"]["value"]
+      self.data_power_up["piercing"]["activate"] = False
