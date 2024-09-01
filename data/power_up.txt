@@ -123,7 +123,7 @@ POWER_UP_PARAMS = {
     "id": 16,
     "name": "researcher",
     "effect": "special item",
-    "value": "+10%",
+    "value": 1.10,
     "activate": False,
     "locked": True,
   },

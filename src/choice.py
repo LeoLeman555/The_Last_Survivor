@@ -23,13 +23,14 @@ class Choice:
 
       return f"{choice_B}"
     
-  def weapon(self, current_weapon):
-    outcomes = [-1, 0, 1, 2, 3]
-    probabilities = [0.10, 0.25, 0.50, 0.10, 0.05]
+  def weapon(self, current_weapon, unlocked_weapons: list):
+    unlocked_weapons = [int(weapon_id) for weapon_id in unlocked_weapons]
+    outcomes = [-1, 0, 1, 2]
+    probabilities = [0.10, 0.35, 0.50, 0.05]
     result = random.choices(outcomes, probabilities)[0]
     futur_weapon = current_weapon + result
-    if futur_weapon < 1:
-      futur_weapon = 1
-    if futur_weapon > 12:
-      futur_weapon = 12
+
+    if not futur_weapon in unlocked_weapons:
+      futur_weapon = current_weapon
+    
     return futur_weapon

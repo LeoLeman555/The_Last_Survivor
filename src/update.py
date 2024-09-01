@@ -94,6 +94,8 @@ class Update():
   def update_cards(self):
     self.power_up.update(self.mouse["position"], self.mouse["press"])
     self.power_up.draw(self.screen)
+    self.player.run.weapons_cards.update(self.mouse["position"], self.mouse["press"])
+    self.player.run.weapons_cards.draw(self.screen)
 
   def update_toxic(self):
     self.particles_list = list(self.player.toxic_particles)
