@@ -220,7 +220,7 @@ WEAPON_PARAMS = {
     "level": 1
   },
   "11": {
-    "name": "plasma",
+    "name": "plasma_gun",
     "id": 10,
     "type": "plasma gun",
     "dimension": (43, 20),

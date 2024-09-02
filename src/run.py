@@ -16,7 +16,7 @@ class Run:
 
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Game")
-    
+
     self.zoom = 2
     self.life = 1
     self.xp_multiplier = 1
@@ -40,7 +40,17 @@ class Run:
     self.data_enemies = self.read_data.read_enemy_params("data/enemies.txt")
     self.random_enemy = EnemySelector(self.data_enemies)
 
+    self.game_data = self.read_data.read_game_params("data/game_save.txt")
     self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
+
+    for weapon_name, level in self.game_data["weapon_level"].items():
+      for weapon_id, weapon_info in self.data_weapons.items():
+        if weapon_info["name"] == weapon_name:
+          weapon_info["level"] = level
+          if level == 0:
+            weapon_info["locked"] = True
+          break
+
     self.data_weapons = {key: value for key, value in self.data_weapons.items() if not value.get("locked", False)}
     self.weapon_id = 1
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
@@ -100,7 +110,6 @@ class Run:
     self.cards_positions = [(274, 200), (432, 200), (590, 200)]
 
   def new_weapon(self, name):
-    print(name)
     if not self.weapon_dict["name"] == name:
       self.pause = True
       self.weapons_cards.launch_cards([self.weapon_dict["name"], name])
@@ -149,10 +158,6 @@ class Run:
     
     if self.collision_caillou:
       self.mouvement = [0, 0]
-
-    if press[pygame.K_z]:
-      time.sleep(1)
-      self.weapons_cards.launch_cards(['pistol', 'magnum'])
 
     if press[pygame.K_SPACE] and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"] and self.data_extras["grenade"]["activate"] == True:
       if self.mouse["position"][0] > 500:

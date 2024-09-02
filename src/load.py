@@ -99,3 +99,10 @@ class ReadData:
     content = content.replace("POWER_UP_PARAMS = ", "", 1)
     enemy_params_dict = ast.literal_eval(content)
     return enemy_params_dict
+  
+  def read_game_params(self, filepath: str):
+    with open(filepath, 'r') as file:
+      content = file.read()
+    content = content.replace("POWER_UP_PARAMS = ", "", 1)
+    enemy_params_dict = ast.literal_eval(content)
+    return enemy_params_dict

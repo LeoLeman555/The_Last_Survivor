@@ -1,4 +1,4 @@
-GAME_SAVE = {
+POWER_UP_PARAMS = {
   "money": 0,
   "resource": {
     "energy": 0,
