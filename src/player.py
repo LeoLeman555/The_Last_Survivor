@@ -145,6 +145,7 @@ class Player(pygame.sprite.Sprite):
       self.particles.add(FireParticle(self.run.zoom, self.enemies, x, y, direction, damage))
 
   def launch_grenade(self, speed: int, grenade_dict: dict):
+    print("launch grenade", grenade_dict["type"])
     self.grenades.add(Grenade(self.run.zoom, self.run.screen, self.enemies, self, grenade_dict, speed))
 
   def add_enemy(self, data: dict, name: str, x: int = 0, y: int = 0):

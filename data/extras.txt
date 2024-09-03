@@ -1,29 +1,45 @@
 EXTRAS_PARAMS = {
-  "grenade":{
+  "grenade": {
     "activate": True,
+    "type": "classical",
     "last_shot_time": 0,
     "rate": 2000,
     "damage": 100,
     "speed": 1,
     "lifetime": 25,
-    "toxic_grenade": {
-    "activate": True,
-    "name": "toxic_grenade",
-    },
+    "level": 1,
+    "locked": False,
   },
-  "drone":{
-    "activate": True,
+  "toxic_grenade": {
+    "activate": False,
+    "type": "toxic",
+    "last_shot_time": 0,
+    "rate": 2500,
+    "damage": 100,
+    "speed": 1,
+    "lifetime": 25,
+    "level": 1,
+    "locked": False,
+  },
+  "drone": {
+    "activate": False,
     "damage": 10,
+    "level": 1,
+    "locked": False,
   },
-  "missile":{
-    "activate": True,
+  "missile": {
+    "activate": False,
     "rarity": 0.01,
     "damage": 100,
+    "level": 1,
+    "locked": False,
   },
-  "laser":{
-    "activate": True,
+  "laser": {
+    "activate": False,
     "rarity": 0.005,
     "damage": 150,
     "lifetime": 100,
+    "level": 1,
+    "locked": False,
   },
 }

@@ -1,4 +1,4 @@
-POWER_UP_PARAMS = {
+GAME_SAVE = {
   "money": 0,
   "resource": {
     "energy": 0,
@@ -21,8 +21,8 @@ POWER_UP_PARAMS = {
     "knife": 0,
   },
   "extras_level": {
-    "grenade": 0,
-    "toxic_grenade": 0,
+    "grenade": 1,
+    "toxic_grenade": 1,
     "drone": 0,
     "laser": 0,
     "missile": 0,

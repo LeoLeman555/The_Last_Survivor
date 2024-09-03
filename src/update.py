@@ -79,14 +79,13 @@ class Update():
       for particle in self.player.particles:
         particle.draw(self.screen)
     self.weapon.draw(self.screen)
-    if self.data_extras["grenade"]["activate"] == True:
-      self.player.grenades.draw(self.screen)
+    self.player.grenades.draw(self.screen)
     for particle in self.particles_list:
       particle.draw(self.screen)
     self.player.explosions.draw(self.screen) 
     for laser in self.player.lasers:
       laser.draw(self.screen)
-    if self.data_extras["grenade"]["activate"] == True:
+    if self.data_extras["drone"]["activate"] == True:
       self.player.run.drone.draw(self.screen)
     for message in self.player.messages:
       message.draw(self.screen)
@@ -105,8 +104,7 @@ class Update():
 
   def update_weapon(self):
     self.weapon.rotate_to_cursor(self.mouse["position"])
-    if self.data_extras["grenade"]["activate"] == True:
-      self.player.grenades.update(*self.mouvement)
+    self.player.grenades.update(*self.mouvement)
     self.player.explosions.update()
 
   def update_bullets(self):

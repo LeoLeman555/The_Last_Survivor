@@ -19,15 +19,20 @@ class Grenade(pygame.sprite.Sprite):
     self.screen = screen
     self.enemies = enemies
     self.player = player
-    self.toxic = {
-      "toxic": self.data["toxic_grenade"]["activate"],
-      "explode": False,
-      "number": 0,
-    }
-    if self.toxic["toxic"]:
+    self.type = self.data["type"]
+    if self.type == "toxic":
       self.name = "toxic_grenade"
+      self.toxic = {
+        "toxic": True,
+        "explode": False,
+        "number": 0,
+      }
     else:
       self.name = "grenade"
+      self.toxic = {
+        "toxic": False,
+      }
+    print(self.toxic["toxic"])
 
     self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.5)
     self.rect = self.image.get_rect()

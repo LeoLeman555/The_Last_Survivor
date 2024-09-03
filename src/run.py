@@ -50,14 +50,23 @@ class Run:
           if level == 0:
             weapon_info["locked"] = True
           break
-
     self.data_weapons = {key: value for key, value in self.data_weapons.items() if not value.get("locked", False)}
+    
     self.weapon_id = 1
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
     self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
 
     self.data_extras = self.read_data.read_extras_params("data/extras.txt")
+    for extra_name, level in self.game_data["extras_level"].items():
+      if extra_name in self.data_extras:
+        self.data_extras[extra_name]["level"] = level
+        if level == 0:
+          self.data_extras[extra_name]["locked"] = True
+      elif extra_name == "toxic_grenade" and "toxic_grenade" in self.data_extras["grenade"]:
+        self.data_extras["grenade"]["toxic_grenade"]["level"] = level
+        if level == 0:
+          self.data_extras["grenade"]["toxic_grenade"]["locked"] = True
 
     self.data_power_up = self.read_data.read_power_up_params("data/power_up.txt")
     self.load_power_up()
@@ -159,13 +168,20 @@ class Run:
     if self.collision_caillou:
       self.mouvement = [0, 0]
 
-    if press[pygame.K_SPACE] and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"] and self.data_extras["grenade"]["activate"] == True:
-      if self.mouse["position"][0] > 500:
-        self.player.launch_grenade(self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
-      else:
-        self.player.launch_grenade(-self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
-
-      self.data_extras["grenade"]["last_shot_time"] = self.mouse["current_time"]
+    if press[pygame.K_SPACE]:
+      if self.data_extras["toxic_grenade"]["activate"] == True and self.mouse["current_time"] - self.data_extras["toxic_grenade"]["last_shot_time"] > self.data_extras["toxic_grenade"]["rate"]:
+        if self.mouse["position"][0] > 500:
+          self.player.launch_grenade(self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
+        else:
+          self.player.launch_grenade(-self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
+        self.data_extras["toxic_grenade"]["last_shot_time"] = self.mouse["current_time"]
+        
+      elif self.data_extras["grenade"]["activate"] == True and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"]:
+        if self.mouse["position"][0] > 500:
+          self.player.launch_grenade(self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
+        else:
+          self.player.launch_grenade(-self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
+        self.data_extras["grenade"]["last_shot_time"] = self.mouse["current_time"]
 
   def launch_power_up(self):
     unlocked_power_ups = [name for name, data in self.data_power_up.items() if not data.get('locked', False)]
@@ -203,10 +219,8 @@ class Run:
   def draw_reload_bar(self):
     bar_width = 50 * self.zoom
     bar_height = 2 * self.zoom
-    
     bar_x = 500 - bar_width/2
     bar_y = 300 + bar_width/2
-    
     reload_progress = self.time / self.weapon_dict["recharge_time"]
     fill_width = int(bar_width * reload_progress)
     pygame.draw.rect(self.screen, (100, 100, 100), (bar_x, bar_y, bar_width, bar_height))
