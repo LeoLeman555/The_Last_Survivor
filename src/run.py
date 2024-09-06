@@ -41,32 +41,34 @@ class Run:
     self.random_enemy = EnemySelector(self.data_enemies)
 
     self.game_data = self.read_data.read_game_params("data/game_save.txt")
-    self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
 
+    self.data_weapons = self.read_data.read_weapon_params("data/weapons.txt")
     for weapon_name, level in self.game_data["weapon_level"].items():
       for weapon_id, weapon_info in self.data_weapons.items():
         if weapon_info["name"] == weapon_name:
           weapon_info["level"] = level
           if level == 0:
             weapon_info["locked"] = True
+          else:
+            weapon_info["locked"] = False
           break
     self.data_weapons = {key: value for key, value in self.data_weapons.items() if not value.get("locked", False)}
-    
+
     self.weapon_id = 1
     self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
     self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
 
     self.data_extras = self.read_data.read_extras_params("data/extras.txt")
-    for extra_name, level in self.game_data["extras_level"].items():
-      if extra_name in self.data_extras:
-        self.data_extras[extra_name]["level"] = level
-        if level == 0:
-          self.data_extras[extra_name]["locked"] = True
-      elif extra_name == "toxic_grenade" and "toxic_grenade" in self.data_extras["grenade"]:
-        self.data_extras["grenade"]["toxic_grenade"]["level"] = level
-        if level == 0:
-          self.data_extras["grenade"]["toxic_grenade"]["locked"] = True
+    for extras_name, level in self.game_data["extras_level"].items():
+      for extras_id, extras_info in self.data_extras.items():
+        if extras_info["name"] == extras_name:
+          extras_info["level"] = level
+          if level == 0:
+            extras_info["locked"] = True
+          else:
+            extras_info["locked"] = False
+          break
 
     self.data_power_up = self.read_data.read_power_up_params("data/power_up.txt")
     self.load_power_up()
@@ -100,8 +102,9 @@ class Run:
     self.time = 0
 
     self.weapons_cards = WeaponCard(self)
+    self.extras_cards = ExtrasCard(self)
 
-    self.change_weapon(1)
+    self.change_weapon(4)
 
   def start_run(self):
     self.ressources["ammo"] = 500
@@ -122,6 +125,14 @@ class Run:
     if not self.weapon_dict["name"] == name:
       self.pause = True
       self.weapons_cards.launch_cards([self.weapon_dict["name"], name])
+
+  def add_extras(self):
+    unlocked_extras = [name for name, data in self.data_extras.items() if not data.get('locked', False)]
+    self.pause = True
+    self.extras_cards.launch_cards(random.sample(unlocked_extras, 2))
+
+  def new_extra(self, name):
+    self.data_extras[name]["activate"] = True
 
   def change_weapon(self, id):
     self.weapon_dict = self.data_weapons[f"{id}"]
@@ -169,13 +180,13 @@ class Run:
       self.mouvement = [0, 0]
 
     if press[pygame.K_SPACE]:
-      if self.data_extras["toxic_grenade"]["activate"] == True and self.mouse["current_time"] - self.data_extras["toxic_grenade"]["last_shot_time"] > self.data_extras["toxic_grenade"]["rate"]:
-        if self.mouse["position"][0] > 500:
-          self.player.launch_grenade(self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
-        else:
-          self.player.launch_grenade(-self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
-        self.data_extras["toxic_grenade"]["last_shot_time"] = self.mouse["current_time"]
-        
+      if self.data_extras["toxic_grenade"]["activate"] == True:
+        if self.mouse["current_time"] - self.data_extras["toxic_grenade"]["last_shot_time"] > self.data_extras["toxic_grenade"]["rate"]:
+          if self.mouse["position"][0] > 500:
+            self.player.launch_grenade(self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
+          else:
+            self.player.launch_grenade(-self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
+          self.data_extras["toxic_grenade"]["last_shot_time"] = self.mouse["current_time"]
       elif self.data_extras["grenade"]["activate"] == True and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"]:
         if self.mouse["position"][0] > 500:
           self.player.launch_grenade(self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
@@ -185,6 +196,12 @@ class Run:
 
   def launch_power_up(self):
     unlocked_power_ups = [name for name, data in self.data_power_up.items() if not data.get('locked', False)]
+
+    #? maybe add a other chance to get extras
+    if len(unlocked_power_ups) < 3 or random.random() < 0.1:
+      self.add_extras()
+      return
+    
     self.pause = True
     self.power_up.launch_cards(random.sample(unlocked_power_ups, 3))
 

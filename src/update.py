@@ -55,7 +55,7 @@ class Update():
       self.update_enemies()
       self.update_weapon()
       self.update_toxic()
-      if self.data_extras["laser"]["activate"] == True:
+      if self.data_extras["laser_probe"]["activate"] == True:
         self.update_laser()
       if self.data_extras["drone"]["activate"] == True:
         self.update_drone()
@@ -95,6 +95,8 @@ class Update():
     self.power_up.draw(self.screen)
     self.player.run.weapons_cards.update(self.mouse["position"], self.mouse["press"])
     self.player.run.weapons_cards.draw(self.screen)
+    self.player.run.extras_cards.update(self.mouse["position"], self.mouse["press"])
+    self.player.run.extras_cards.draw(self.screen)
 
   def update_toxic(self):
     self.particles_list = list(self.player.toxic_particles)
@@ -136,7 +138,7 @@ class Update():
     self.icon.draw(self.screen)
 
   def update_laser(self):
-    if random.random() < self.data_extras["laser"]["rarity"]:
+    if random.random() < self.data_extras["laser_probe"]["rarity"]:
       self.player.add_laser()
     for laser in self.player.lasers:
       laser.update()

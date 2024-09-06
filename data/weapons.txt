@@ -18,8 +18,8 @@ WEAPON_PARAMS = {
     "precision": 20,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "2": {
     "name": "magnum",
@@ -40,8 +40,8 @@ WEAPON_PARAMS = {
     "precision": 10,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "3": {
     "name": "shotgun",
@@ -62,8 +62,8 @@ WEAPON_PARAMS = {
     "precision": 0,
     "delay": 0,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "4": {
     "name": "sniper",
@@ -84,8 +84,8 @@ WEAPON_PARAMS = {
     "precision": 5,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "5": {
     "name": "ak",
@@ -106,8 +106,8 @@ WEAPON_PARAMS = {
     "precision": 20,
     "delay": 2,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "6": {
     "name": "rpg",
@@ -128,8 +128,8 @@ WEAPON_PARAMS = {
     "precision": 5,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "7": {
     "name": "flamethrower",
@@ -150,8 +150,8 @@ WEAPON_PARAMS = {
     "precision": 0,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "8": {
     "name": "minigun",
@@ -172,8 +172,8 @@ WEAPON_PARAMS = {
     "precision": 20,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "9": {
     "name": "grenade_launcher",
@@ -194,8 +194,8 @@ WEAPON_PARAMS = {
     "precision": 0,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "10": {
     "name": "laser",
@@ -216,8 +216,8 @@ WEAPON_PARAMS = {
     "precision": 10,
     "delay": 1,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "11": {
     "name": "plasma_gun",
@@ -238,8 +238,8 @@ WEAPON_PARAMS = {
     "precision": 0,
     "delay": 0,
     "bullet_speed": 20,
-    "locked": False,
-    "level": 1
+    "level": 0,
+    "locked": True,
   },
   "12": {
     "name": "knife",
@@ -260,7 +260,7 @@ WEAPON_PARAMS = {
     "precision": 10,
     "delay": 1,
     "bullet_speed": 20,
+    "level": 0,
     "locked": True,
-    "level": 1
   }
 }

@@ -1,17 +1,14 @@
 import pygame
-import time
 
 class WeaponCard:
   def __init__(self, run):
     self.run = run
     self.cards = []
-
     self.positions =[(274, 200), (590, 200)]
-
     self.data_weapon_card  = {weapon["name"]: (weapon["id"], weapon["level"]) for weapon in self.run.data_weapons.values()}
 
   def get_image(self, name):
-    image_path = f"res/power_up/level_{self.data_weapon_card[name][1]}/{name}.png"
+    image_path = f"res/power_up/level_{self.data_weapon_card[name][1]}/weapons/{name}.png"
     resized_image = self.run.load.load_and_resize_image(image_path, 268, 189)
     return self.run.load.split_image(resized_image)
 
@@ -44,6 +41,52 @@ class WeaponCard:
         if mouse_click:
           print(f"New weapon : {card["name"]}, ID : {card["id"]}")
           self.run.change_weapon(card["id"])
+          self.cards = []
+          self.run.pause = False
+      else:
+        card['current_image'] = card['left_image']
+
+class ExtrasCard:
+  def __init__(self, run):
+    self.run = run
+    self.cards = []
+    self.positions =[(274, 200), (590, 200)]
+    self.data_extras_card  = {extras["name"]: (extras["id"], extras["level"]) for extras in self.run.data_extras.values()}
+
+  def get_image(self, name):
+    image_path = f"res/power_up/level_{self.data_extras_card[name][1]}/extras/{name}.png"
+    resized_image = self.run.load.load_and_resize_image(image_path, 268, 189)
+    return self.run.load.split_image(resized_image)
+
+  def launch_cards(self, extras_names: list):
+    self.cards = []
+    for i, name in enumerate(extras_names):
+      if name in self.data_extras_card:
+        card_data = self.data_extras_card[name]
+        left_image, right_image = self.get_image(name)
+        position = self.positions[i]
+        rect = left_image.get_rect(topleft=position)
+        self.cards.append({
+          'name': name,
+          'left_image': left_image,
+          'right_image': right_image,
+          'current_image': left_image,
+          'rect': rect,
+          'id': card_data[0],
+          'level': card_data[1]
+          })
+
+  def draw(self, screen: pygame.Surface):
+    for card in self.cards:
+      screen.blit(card['current_image'], card['rect'])
+
+  def update(self, mouse_pos: tuple, mouse_click: bool):
+    for card in self.cards[:]:
+      if card['rect'].collidepoint(mouse_pos):
+        card['current_image'] = card['right_image']
+        if mouse_click:
+          print(f"New extras : {card["name"]}")
+          self.run.new_extra(card["name"])
           self.cards = []
           self.run.pause = False
       else:

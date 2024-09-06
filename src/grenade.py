@@ -39,7 +39,7 @@ class Grenade(pygame.sprite.Sprite):
     # Initial position of the grenade based on the player
     self.rect.centerx = player.rect.centerx - (player.rect.x - 500)
     self.rect.centery = player.rect.centery - (player.rect.y - 300)
-    self.speed = speed* self.zoom
+    self.speed = speed * self.zoom
     self.gravity = 0.4
     self.velocity_y = -5 * self.zoom
     self.bounce_factor = 0.8
@@ -75,7 +75,7 @@ class Grenade(pygame.sprite.Sprite):
     """Update the position of the grenade."""
     x = (x_var / 2) * self.zoom
     y = (y_var / 2) * self.zoom
-    self.rect.x +=  x
+    self.rect.x += x
     self.rebound_height += y
     self.rect.y += y
 
