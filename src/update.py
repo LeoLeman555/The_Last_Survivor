@@ -2,7 +2,7 @@ import random
 from extras import *
 
 class Update():
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', map_manager, player, weapon, ressources: dict, barres: dict, icon, weapon_dict: dict, mouvement :list, mouse: dict, data_extras: dict, power_up):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', map_manager, player, weapon, ressources: dict, barres: dict, icon, current_weapon_dict: dict, mouvement :list, mouse: dict, data_extras: dict, power_up):
     self.zoom = zoom
     self.screen = screen
     self.map_manager = map_manager
@@ -13,7 +13,7 @@ class Update():
     self.icon = icon
     self.enemies = self.player.enemies
 
-    self.weapon_dict = weapon_dict
+    self.current_weapon_dict = current_weapon_dict
     self.mouvement = mouvement
     self.mouse = mouse
 
@@ -39,8 +39,8 @@ class Update():
     self.weapon.change_zoom(self.zoom)
     self.player.run.drone.change_zoom(self.zoom)
 
-  def update_all(self, weapon_dict, mouvement, mouse, data_extras, pause):
-    self.weapon_dict = weapon_dict
+  def update_all(self, current_weapon_dict, mouvement, mouse, data_extras, pause):
+    self.current_weapon_dict = current_weapon_dict
     self.mouvement = mouvement
     self.mouse = mouse
     self.data_extras = data_extras
@@ -75,7 +75,7 @@ class Update():
         bullet.draw()
     for enemy in self.player.enemies:
       enemy.draw(self.screen)
-    if self.weapon_dict["id"]==7:
+    if self.current_weapon_dict["id"]==7:
       for particle in self.player.particles:
         particle.draw(self.screen)
     self.weapon.draw(self.screen)
@@ -110,7 +110,7 @@ class Update():
     self.player.explosions.update()
 
   def update_bullets(self):
-    if self.weapon_dict["id"]==7:
+    if self.current_weapon_dict["id"]==7:
       for particle in self.player.particles:
         particle.update()
     else:

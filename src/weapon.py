@@ -10,23 +10,23 @@ class Weapon(pygame.sprite.Sprite):
     super().__init__()
     self.zoom = zoom
     self.player = player
-    self.weapon_dict_origin = weapon_dict
-    self.weapon_dict = self.weapon_dict_origin
-    self.weapon_dict["position"][0] += 10 * self.zoom
-    self.weapon_dict["position"][1] += 5 * self.zoom
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
+    self.current_weapon_dict_origin = weapon_dict
+    self.current_weapon_dict = self.current_weapon_dict_origin
+    self.current_weapon_dict["position"][0] += 10 * self.zoom
+    self.current_weapon_dict["position"][1] += 5 * self.zoom
+    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.current_weapon_dict["name"], "png", 0.85)
     self.rect = self.image.get_rect()
-    self.rect.center = self.weapon_dict["position"]
+    self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image
     self.angle = 0
 
   def change_zoom(self, new_zoom: int):
     self.zoom = new_zoom
-    self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
-    self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
+    self.current_weapon_dict["position"][0] = 500 + (10 * self.zoom)
+    self.current_weapon_dict["position"][1] = 300 + (5 * self.zoom)
+    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.current_weapon_dict["name"], "png", 0.85)
     self.rect = self.image.get_rect()
-    self.rect.center = self.weapon_dict["position"]
+    self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image
 
   def draw(self, screen: 'pygame.surface.Surface'):
@@ -46,13 +46,13 @@ class Weapon(pygame.sprite.Sprite):
     self.image = pygame.transform.rotozoom(self.image, -self.angle, 1)
     self.rect = self.image.get_rect(center=self.rect.center)
 
-  def change_weapon(self, zoom: int, player: 'player.Player', weapon_dict: dict):
+  def change_weapon(self, zoom: int, player: 'player.Player', current_weapon_dict: dict):
     self.zoom = zoom
     self.player = player
-    self.weapon_dict = weapon_dict
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
+    self.current_weapon_dict = current_weapon_dict
+    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.current_weapon_dict["name"], "png", 0.85)
     self.rect = self.image.get_rect()
-    self.rect.center = self.weapon_dict["position"]
+    self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image
     self.angle = 0
 

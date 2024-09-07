@@ -97,7 +97,7 @@ class Enemy(pygame.sprite.Sprite):
     if award == "energy" or award == "metal" or award == "food" or award == "data":
       self.player.add_object(f"{award}", 25, *self.rect.center)
     if award == "weapon":
-      award = self.choice.weapon(self.player.run.weapon_dict["id"], self.player.run.data_weapons.keys())
+      award = self.choice.weapon(self.player.run.current_weapon_dict["id"], self.player.run.data_weapons.keys())
       self.player.add_weapon(self.player.run.data_weapons[f"{award}"]["name"], award, *self.rect.center)
     self.delete()
   

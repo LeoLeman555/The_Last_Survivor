@@ -9,6 +9,7 @@ from load import *
 from enemy import *
 from enemy_selector import *
 from power_up import *
+from shooter import *
 
 class Run:
   def __init__(self):
@@ -55,9 +56,9 @@ class Run:
     self.data_weapons = {key: value for key, value in self.data_weapons.items() if not value.get("locked", False)}
 
     self.weapon_id = 1
-    self.weapon_dict = self.data_weapons[f"{self.weapon_id}"]
-    self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
-    self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
+    self.current_weapon_dict = self.data_weapons[f"{self.weapon_id}"]
+    self.current_weapon_dict["position"][0] = 500 + (10 * self.zoom)
+    self.current_weapon_dict["position"][1] = 300 + (5 * self.zoom)
 
     self.data_extras = self.read_data.read_extras_params("data/extras.txt")
     for extras_name, level in self.game_data["extras_level"].items():
@@ -81,20 +82,20 @@ class Run:
 
     self.player = Player(self, "jim")  # mettre sur tiled un objet start
     self.map_manager = MapManager(self, self.screen, self.player, self.zoom)
-    self.weapon = Weapon(self.zoom, self.player, self.weapon_dict)
+    self.weapon = Weapon(self.zoom, self.player, self.current_weapon_dict)
 
     self.mouse = {
       "press": False,
       "position": pygame.mouse.get_pos(),
       "current_time": pygame.time.get_ticks(),
-      "shoot_delay": self.weapon_dict["rate"]
+      "shoot_delay": self.current_weapon_dict["rate"]
     }
 
     self.last_shot_time = self.mouse["current_time"]
 
     self.drone = Drone(self.zoom, self.screen, self.player.enemies, self.data_extras["drone"])
 
-    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.power_up)
+    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.current_weapon_dict, self.mouvement, self.mouse, self.data_extras, self.power_up)
 
     self.collision_caillou = False
 
@@ -104,7 +105,9 @@ class Run:
     self.weapons_cards = WeaponCard(self)
     self.extras_cards = ExtrasCard(self)
 
-    self.change_weapon(4)
+    self.shooter = Shooter(self)
+
+    self.change_weapon(3)
 
   def start_run(self):
     self.ressources["ammo"] = 500
@@ -122,9 +125,9 @@ class Run:
     self.cards_positions = [(274, 200), (432, 200), (590, 200)]
 
   def new_weapon(self, name):
-    if not self.weapon_dict["name"] == name:
+    if not self.current_weapon_dict["name"] == name:
       self.pause = True
-      self.weapons_cards.launch_cards([self.weapon_dict["name"], name])
+      self.weapons_cards.launch_cards([self.current_weapon_dict["name"], name])
 
   def add_extras(self):
     unlocked_extras = [name for name, data in self.data_extras.items() if not data.get('locked', False)]
@@ -135,10 +138,10 @@ class Run:
     self.data_extras[name]["activate"] = True
 
   def change_weapon(self, id):
-    self.weapon_dict = self.data_weapons[f"{id}"]
-    self.weapon_dict["position"][0] = 500 + (10 * self.zoom)
-    self.weapon_dict["position"][1] = 300 + (5 * self.zoom)
-    self.weapon.change_weapon(self.zoom, self.player, self.weapon_dict)
+    self.current_weapon_dict = self.data_weapons[f"{id}"]
+    self.current_weapon_dict["position"][0] = 500 + (10 * self.zoom)
+    self.current_weapon_dict["position"][1] = 300 + (5 * self.zoom)
+    self.weapon.change_weapon(self.zoom, self.player, self.current_weapon_dict)
 
   def keyboard_input(self):
     """Déplacement du joueur avec les touches directionnelles"""
@@ -219,50 +222,6 @@ class Run:
     self.index_palier_xp = palier
     self.icon.change_threshold("xp", self.palier_xp[self.index_palier_xp])
 
-  def test_shooting(self):
-    if self.mouse["press"] and self.current_shot < self.weapon_dict["charger_capacity"] and self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
-      self.shoot()
-      self.current_shot += self.weapon_dict["number_shoot"]
-      self.last_shot_time = self.mouse["current_time"]
-    elif not self.current_shot < self.weapon_dict["charger_capacity"]:
-      if self.time >= self.weapon_dict["recharge_time"]:
-        self.current_shot = 0
-        self.icon.resource["ammo"] -= self.weapon_dict["charger_capacity"]
-        self.time = 0
-      else:
-        self.time += 1
-        self.draw_reload_bar()
-
-  def draw_reload_bar(self):
-    bar_width = 50 * self.zoom
-    bar_height = 2 * self.zoom
-    bar_x = 500 - bar_width/2
-    bar_y = 300 + bar_width/2
-    reload_progress = self.time / self.weapon_dict["recharge_time"]
-    fill_width = int(bar_width * reload_progress)
-    pygame.draw.rect(self.screen, (100, 100, 100), (bar_x, bar_y, bar_width, bar_height))
-    pygame.draw.rect(self.screen, (255, 255, 255), (bar_x, bar_y, fill_width, bar_height))
-
-  def shoot(self):
-    if self.weapon_dict["type"] == "flamethrower":
-      self.player.add_fire(self.weapon_dict)
-
-    elif self.mouse["current_time"] - self.last_shot_time > self.mouse["shoot_delay"]:
-      if self.weapon_dict["type"] == "grenade_launcher":
-        if self.mouse["position"][0] > 500:
-          self.player.launch_grenade(1*self.zoom, self.data_extras["grenade"])
-        else:
-          self.player.launch_grenade(-1*self.zoom, self.data_extras["grenade"])
-
-      else:
-        if self.weapon_dict["delay"] == 0:
-          for position in range(-30, 10, 3):
-            self.player.launch_bullet((list(self.mouse["position"])[0] + position, (list(self.mouse["position"])[1] + position)), self.weapon_dict)
-        else:
-          for delay in range(0, self.weapon_dict["number_shoot"], self.weapon_dict["delay"]):
-            self.player.launch_bullet(((list(self.mouse["position"])[0] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"])), (list(self.mouse["position"])[1] + random.randint(-self.weapon_dict["precision"], self.weapon_dict["precision"]))), self.weapon_dict, delay)
-      self.last_shot_time = self.mouse["current_time"]
-
   def run(self):
     clock = pygame.time.Clock()
     self.running = True
@@ -271,7 +230,7 @@ class Run:
     while self.running:
       self.mouse["position"] = pygame.mouse.get_pos()
       self.mouse["current_time"] = pygame.time.get_ticks()
-      self.mouse["shoot_delay"] = self.weapon_dict["rate"]
+      self.mouse["shoot_delay"] = self.current_weapon_dict["rate"]
       if not self.pause:
         self.keyboard_input()
         self.player.save_location()
@@ -299,10 +258,10 @@ class Run:
     pygame.quit()
 
   def update_class(self):
-    self.update.update_all(self.weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause)
+    self.update.update_all(self.current_weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause)
 
     if not self.pause:
-      self.test_shooting()
+      self.shooter.test_shooting()
 
     pygame.display.flip()
 
