@@ -9,8 +9,8 @@ class WeaponCard:
 
   def get_image(self, name):
     image_path = f"res/power_up/level_{self.data_weapon_card[name][1]}/weapons/{name}.png"
-    resized_image = self.run.load.load_and_resize_image(image_path, 268, 189)
-    return self.run.load.split_image(resized_image)
+    image = pygame.image.load(image_path)
+    return self.run.load.split_image(image)
 
   def launch_cards(self, weapons_names: list):
     self.cards = []
@@ -50,13 +50,13 @@ class ExtrasCard:
   def __init__(self, run):
     self.run = run
     self.cards = []
-    self.positions =[(274, 200), (590, 200)]
+    self.positions = [(274, 200), (590, 200)]
     self.data_extras_card  = {extras["name"]: (extras["id"], extras["level"]) for extras in self.run.data_extras.values()}
 
   def get_image(self, name):
     image_path = f"res/power_up/level_{self.data_extras_card[name][1]}/extras/{name}.png"
-    resized_image = self.run.load.load_and_resize_image(image_path, 268, 189)
-    return self.run.load.split_image(resized_image)
+    image = pygame.image.load(image_path)
+    return self.run.load.split_image(image)
 
   def launch_cards(self, extras_names: list):
     self.cards = []
@@ -93,11 +93,11 @@ class ExtrasCard:
         card['current_image'] = card['left_image']
 
 class PowerUp:
-  def __init__(self, power_up_data: dict, positions: list, run):
-    self.power_up_data = power_up_data
-    self.positions = positions
+  def __init__(self, run, power_up_data: dict):
     self.run = run
     self.cards = []
+    self.positions = [(274, 200), (432, 200), (590, 200)]
+    self.power_up_data = power_up_data
 
   def launch_cards(self, power_up_names: list):
     self.cards = []

@@ -15,11 +15,6 @@ class Load:
     """Load a TMX map from file."""
     self.map = pytmx.util_pygame.load_pygame(f"res/{path}/{name}.tmx")
     return self.map
-  
-  def load_and_resize_image(self, image_path, new_width, new_height):
-    image = pygame.image.load(image_path)
-    resized_image = pygame.transform.scale(image, (new_width, new_height))
-    return resized_image
 
   def split_image(self, image):
     original_width, original_height = image.get_size()

@@ -19,7 +19,6 @@ class Run:
 
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Game")
-
     self.zoom = 2
     self.life = 1
     self.xp_multiplier = 1
@@ -75,7 +74,7 @@ class Run:
 
     self.data_power_up = self.read_data.read_power_up_params("data/power_up.txt")
     self.load_power_up()
-    self.power_up = PowerUp(self.data_power_up, self.cards_positions, self)
+    self.power_up = PowerUp(self, self.data_power_up)
     self.use_power_up = UsePowerUp(self)
 
     self.icon = Icon(self, self.ressources, self.barres)
@@ -112,20 +111,19 @@ class Run:
 
     self.change_weapon(3)
 
+  def load_power_up(self):
+    for power_up_name, power_up_data in self.data_power_up.items():
+      image_path = f"res/power_up/{power_up_name}.png"
+      image = pygame.image.load(image_path)
+      left_image, right_image = self.load.split_image(image)
+      power_up_data["left_image"] = left_image
+      power_up_data["right_image"] = right_image
+
   def start_run(self):
     self.ressources["ammo"] = 500
     self.ressources["health"] = 100
     self.ressources["food"] = 100
     self.run()
-
-  def load_power_up(self):
-    for power_up_name, power_up_data in self.data_power_up.items():
-      image_path = f"res/power_up/{power_up_name}.png"
-      resized_image = self.load.load_and_resize_image(image_path, 268, 189)
-      left_image, right_image = self.load.split_image(resized_image)
-      power_up_data["left_image"] = left_image
-      power_up_data["right_image"] = right_image
-    self.cards_positions = [(274, 200), (432, 200), (590, 200)]
 
   def new_weapon(self, name):
     if not self.current_weapon_dict["name"] == name:
@@ -181,8 +179,8 @@ class Run:
       self.mouse["current_time"] = pygame.time.get_ticks()
       self.mouse["shoot_delay"] = self.current_weapon_dict["rate"]
       if not self.pause:
-        self.keyboard_input.check_input()
-        self.player.save_location()
+        self.player.save_location() #! Don't move this line
+        self.keyboard_input.check_input() #! With this one !!!
 
         if random.random() <= 0.005 or self.player.number_enemies < 5:
           for loop in range(0, 10):

@@ -41,6 +41,7 @@ class KeyboardInput:
     
     if self.run.collision_caillou:
       self.run.mouvement = [0, 0]
+      print(self.run.collision_caillou, self.run.mouvement)
 
     if press[pygame.K_SPACE]:
       if self.run.data_extras["toxic_grenade"]["activate"] == True:
@@ -50,9 +51,12 @@ class KeyboardInput:
           else:
             self.run.player.launch_grenade(-self.run.data_extras["toxic_grenade"]["speed"]*self.run.zoom, self.run.data_extras["toxic_grenade"])
           self.run.data_extras["toxic_grenade"]["last_shot_time"] = self.run.mouse["current_time"]
-      elif self.run.data_extras["grenade"]["activate"] == True and self.run.mouse["current_time"] - self.run.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"]:
+      elif self.run.data_extras["grenade"]["activate"] == True and self.run.mouse["current_time"] - self.run.data_extras["grenade"]["last_shot_time"] > self.run.data_extras["grenade"]["rate"]:
         if self.run.mouse["position"][0] > 500:
           self.run.player.launch_grenade(self.run.data_extras["grenade"]["speed"]*self.run.zoom, self.run.data_extras["grenade"])
         else:
           self.run.player.launch_grenade(-self.run.data_extras["grenade"]["speed"]*self.run.zoom, self.run.data_extras["grenade"])
         self.run.data_extras["grenade"]["last_shot_time"] = self.run.mouse["current_time"]
+
+    if press[pygame.K_g]:
+      self.run.launch_power_up()
