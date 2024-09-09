@@ -1,4 +1,5 @@
-import pygame, random, math
+import pygame
+import random
 from update import *
 from items import *
 from player import *
@@ -10,6 +11,7 @@ from enemy import *
 from enemy_selector import *
 from power_up import *
 from shooter import *
+from keyboard_input import *
 
 class Run:
   def __init__(self):
@@ -106,6 +108,7 @@ class Run:
     self.extras_cards = ExtrasCard(self)
 
     self.shooter = Shooter(self)
+    self.keyboard_input = KeyboardInput(self)
 
     self.change_weapon(3)
 
@@ -143,60 +146,6 @@ class Run:
     self.current_weapon_dict["position"][1] = 300 + (5 * self.zoom)
     self.weapon.change_weapon(self.zoom, self.player, self.current_weapon_dict)
 
-  def keyboard_input(self):
-    """Déplacement du joueur avec les touches directionnelles"""
-    press = pygame.key.get_pressed()
-
-    # condition de déplacement
-    if press[pygame.K_w] and press[pygame.K_a]: # pour se déplacer en diagonale
-      self.player.move_up(1.5, self.speed)
-      self.player.move_left(1.5, self.speed)
-      self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)]
-    elif press[pygame.K_w] and press[pygame.K_d]:
-      self.player.move_up(1.5, self.speed)
-      self.player.move_right(1.5, self.speed)
-      self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)]
-    elif press[pygame.K_s] and press[pygame.K_d]:
-      self.player.move_down(1.5, self.speed)
-      self.player.move_right(1.5, self.speed)
-      self.mouvement = [math.ceil(self.speed*1.33)*-1, math.ceil(self.speed*1.33)*-1]
-    elif press[pygame.K_s] and press[pygame.K_a]:
-      self.player.move_down(1.5, self.speed)
-      self.player.move_left(1.5, self.speed)
-      self.mouvement = [math.ceil(self.speed*1.33), math.ceil(self.speed*1.33)*-1]
-    elif press[pygame.K_w]:        # pour se déplacer
-      self.player.move_up(1, self.speed)
-      self.mouvement = [0, self.speed*2]
-    elif press[pygame.K_s]:
-      self.player.move_down(1, self.speed)
-      self.mouvement = [0, self.speed*-2]
-    elif press[pygame.K_a]:
-      self.player.move_left(1, self.speed)
-      self.mouvement = [self.speed*2, 0]
-    elif press[pygame.K_d]:
-      self.player.move_right(1, self.speed)
-      self.mouvement = [self.speed*-2, 0]
-    else:
-      self.mouvement = [0, 0]
-    
-    if self.collision_caillou:
-      self.mouvement = [0, 0]
-
-    if press[pygame.K_SPACE]:
-      if self.data_extras["toxic_grenade"]["activate"] == True:
-        if self.mouse["current_time"] - self.data_extras["toxic_grenade"]["last_shot_time"] > self.data_extras["toxic_grenade"]["rate"]:
-          if self.mouse["position"][0] > 500:
-            self.player.launch_grenade(self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
-          else:
-            self.player.launch_grenade(-self.data_extras["toxic_grenade"]["speed"]*self.zoom, self.data_extras["toxic_grenade"])
-          self.data_extras["toxic_grenade"]["last_shot_time"] = self.mouse["current_time"]
-      elif self.data_extras["grenade"]["activate"] == True and self.mouse["current_time"] - self.data_extras["grenade"]["last_shot_time"] > self.data_extras["grenade"]["rate"]:
-        if self.mouse["position"][0] > 500:
-          self.player.launch_grenade(self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
-        else:
-          self.player.launch_grenade(-self.data_extras["grenade"]["speed"]*self.zoom, self.data_extras["grenade"])
-        self.data_extras["grenade"]["last_shot_time"] = self.mouse["current_time"]
-
   def launch_power_up(self):
     unlocked_power_ups = [name for name, data in self.data_power_up.items() if not data.get('locked', False)]
 
@@ -232,7 +181,7 @@ class Run:
       self.mouse["current_time"] = pygame.time.get_ticks()
       self.mouse["shoot_delay"] = self.current_weapon_dict["rate"]
       if not self.pause:
-        self.keyboard_input()
+        self.keyboard_input.check_input()
         self.player.save_location()
 
         if random.random() <= 0.005 or self.player.number_enemies < 5:
