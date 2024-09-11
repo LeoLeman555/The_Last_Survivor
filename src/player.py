@@ -165,9 +165,6 @@ class Player(pygame.sprite.Sprite):
   def add_weapon(self, name: str, id: int, x: int, y: int):
     self.objects.add(GunGround(self.run.zoom, name, id, self,x, y, self.run.range_obj))
 
-  def change_weapon(self, id:int):
-    self.run.change_weapon(id)
-
   def add_message(self, text: str, start_position: tuple, end_position: tuple, color: tuple, font_size: int, duration: int):
     self.messages.add((Message(self.run.zoom, text, start_position, end_position, color, font_size, duration)))
 

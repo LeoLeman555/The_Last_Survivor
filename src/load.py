@@ -29,6 +29,14 @@ class Load:
       for key, value in animation_specs.items():
         file.write(f"{key}:{value}\n")
 
+  def load_power_up(self, data_power_up):
+    for power_up_name, power_up_data in data_power_up.items():
+      image_path = f"res/power_up/{power_up_name}.png"
+      image = pygame.image.load(image_path)
+      left_image, right_image = self.split_image(image)
+      power_up_data["left_image"] = left_image
+      power_up_data["right_image"] = right_image
+
 class ReadData:
   def get_thresholds(self, path: str):
     """Read and return thresholds from a file."""

@@ -1,5 +1,6 @@
 import pygame
 import math
+import time
 
 class KeyboardInput:
   def __init__(self, run):
@@ -41,7 +42,6 @@ class KeyboardInput:
     
     if self.run.collision_caillou:
       self.run.mouvement = [0, 0]
-      print(self.run.collision_caillou, self.run.mouvement)
 
     if press[pygame.K_SPACE]:
       if self.run.data_extras["toxic_grenade"]["activate"] == True:
@@ -59,4 +59,14 @@ class KeyboardInput:
         self.run.data_extras["grenade"]["last_shot_time"] = self.run.mouse["current_time"]
 
     if press[pygame.K_g]:
-      self.run.launch_power_up()
+      self.run.manager.launch_power_up()
+
+  def get_pause(self):
+    press = pygame.key.get_pressed()
+    if press[pygame.K_p]:
+      if self.run.pause:
+        self.run.pause = False
+        time.sleep(1)
+      else:
+        self.run.pause = True  
+        time.sleep(0.1)

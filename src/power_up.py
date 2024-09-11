@@ -40,7 +40,7 @@ class WeaponCard:
         card['current_image'] = card['right_image']
         if mouse_click:
           print(f"New weapon : {card["name"]}, ID : {card["id"]}")
-          self.run.change_weapon(card["id"])
+          self.run.manager.change_weapon(card["id"])
           self.cards = []
           self.run.pause = False
       else:
@@ -86,7 +86,7 @@ class ExtrasCard:
         card['current_image'] = card['right_image']
         if mouse_click:
           print(f"New extras : {card["name"]}")
-          self.run.new_extra(card["name"])
+          self.run.manager.new_extra(card["name"])
           self.cards = []
           self.run.pause = False
       else:

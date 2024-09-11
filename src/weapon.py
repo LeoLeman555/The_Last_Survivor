@@ -1,19 +1,16 @@
 import pygame
 import math
 import random
-from grenade import Explosion
-from load import Load
-import player
+from grenade import *
+from load import *
 
 class Weapon(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, player: 'player.Player', weapon_dict: dict):
+  def __init__(self, zoom: int, player, weapon_dict: dict):
     super().__init__()
     self.zoom = zoom
     self.player = player
     self.current_weapon_dict_origin = weapon_dict
     self.current_weapon_dict = self.current_weapon_dict_origin
-    self.current_weapon_dict["position"][0] += 10 * self.zoom
-    self.current_weapon_dict["position"][1] += 5 * self.zoom
     self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.current_weapon_dict["name"], "png", 0.85)
     self.rect = self.image.get_rect()
     self.rect.center = self.current_weapon_dict["position"]
@@ -46,7 +43,7 @@ class Weapon(pygame.sprite.Sprite):
     self.image = pygame.transform.rotozoom(self.image, -self.angle, 1)
     self.rect = self.image.get_rect(center=self.rect.center)
 
-  def change_weapon(self, zoom: int, player: 'player.Player', current_weapon_dict: dict):
+  def change_weapon(self, zoom: int, player, current_weapon_dict: dict):
     self.zoom = zoom
     self.player = player
     self.current_weapon_dict = current_weapon_dict
@@ -58,7 +55,7 @@ class Weapon(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player: 'player.Player', enemies, goal: tuple,
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player, enemies, goal: tuple,
   weapon_dict: dict, delay, piercing):
     super().__init__()
     self.zoom = zoom
