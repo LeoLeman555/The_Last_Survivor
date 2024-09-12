@@ -3,7 +3,7 @@ import pygame
 def Menu_principal():
   direction = None
   screen = pygame.display.set_mode((1000, 600))
-  pygame.display.set_caption("The Last Survivor - Menu principal")
+  pygame.display.set_caption("The Last Survivor - Main Menu")
 
   # Noms des boutons à afficher
   # buttons = ["jeu", "intro", "boutique", "elements", "options"]

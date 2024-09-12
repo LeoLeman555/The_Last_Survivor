@@ -41,3 +41,19 @@ class RunManager:
   def change_max_xp(self, palier):
     self.run.index_palier_xp = palier
     self.run.icon.change_threshold("xp", self.run.palier_xp[self.run.index_palier_xp])
+
+  def change_zoom(self):
+    self.run.map_manager.change_map_size(self.run.zoom)
+    for enemy in self.run.player.enemies:
+      enemy.change_zoom(self.run.zoom)
+    for laser in self.run.player.lasers:
+      laser.change_zoom(self.run.zoom)
+    for missile in self.run.player.missiles:
+      missile.change_zoom(self.run.zoom)
+    for grenade in self.run.player.grenades:
+      grenade.change_zoom(self.run.zoom)
+    self.run.player.change_zoom()
+    for objet in self.run.player.objects:
+      objet.change_zoom(self.run.zoom)
+    self.run.weapon.change_zoom(self.run.zoom)
+    self.run.drone.change_zoom(self.run.zoom)

@@ -144,6 +144,5 @@ class GunGround(pygame.sprite.Sprite):
   def check_collision(self, player_rect: 'pygame.Rect'):
     """Checks for collisions with enemies."""
     if self.rect.colliderect(player_rect):
-      print("new weapon :", self.name)
       self.player.run.manager.new_weapon(self.name)
       self.kill()

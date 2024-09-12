@@ -92,7 +92,7 @@ class Run:
     self.map_manager = MapManager(self, self.screen, self.player, self.zoom)
     self.weapon = Weapon(self.zoom, self.player, self.current_weapon_dict)
     self.drone = Drone(self.zoom, self.screen, self.player.enemies, self.data_extras["drone"])
-    self.update = Update(self.zoom, self.screen, self.map_manager, self.player, self.weapon, self.ressources, self.barres, self.icon, self.current_weapon_dict, self.mouvement, self.mouse, self.data_extras, self.power_up)
+    self.update = Update(self)
     self.weapons_cards = WeaponCard(self)
     self.extras_cards = ExtrasCard(self)
     self.shooter = Shooter(self)
@@ -114,12 +114,11 @@ class Run:
       self.mouse["current_time"] = pygame.time.get_ticks()
       self.mouse["shoot_delay"] = self.current_weapon_dict["rate"]
       if not self.pause:
-        self.player.save_location()
-        self.keyboard_input.check_input()
-
+        self.player.save_location() #! Don't change this line...
+        self.keyboard_input.check_input() #! ...with this one (bad collision manager)
         self.manage_enemies()
-
         self.use_power_up.use_power_up()
+
       self.keyboard_input.get_pause()
       self.update_class()
 
@@ -134,6 +133,7 @@ class Run:
     pygame.quit()
 
   def manage_enemies(self):
+    # ? maybe change the difficulty
     if random.random() <= 0.005 or self.player.number_enemies < 5:
       for loop in range(0, 10):
         enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(2.1))
@@ -141,7 +141,7 @@ class Run:
         self.player.number_enemies += 1
 
   def update_class(self):
-    self.update.update_all(self.current_weapon_dict, self.mouvement, self.mouse, self.data_extras, self.pause)
+    self.update.update_all()
     if not self.pause:
       self.shooter.test_shooting()
     pygame.display.flip()

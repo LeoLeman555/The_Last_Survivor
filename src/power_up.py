@@ -1,69 +1,24 @@
 import pygame
 
-class WeaponCard:
-  def __init__(self, run):
-    self.run = run
-    self.cards = []
-    self.positions =[(274, 200), (590, 200)]
-    self.data_weapon_card  = {weapon["name"]: (weapon["id"], weapon["level"]) for weapon in self.run.data_weapons.values()}
-
-  def get_image(self, name):
-    image_path = f"res/power_up/level_{self.data_weapon_card[name][1]}/weapons/{name}.png"
-    image = pygame.image.load(image_path)
-    return self.run.load.split_image(image)
-
-  def launch_cards(self, weapons_names: list):
-    self.cards = []
-    for i, name in enumerate(weapons_names):
-      if name in self.data_weapon_card:
-        card_data = self.data_weapon_card[name]
-        left_image, right_image = self.get_image(name)
-        position = self.positions[i]
-        rect = left_image.get_rect(topleft=position)
-        self.cards.append({
-          'name': name,
-          'left_image': left_image,
-          'right_image': right_image,
-          'current_image': left_image,
-          'rect': rect,
-          'id': card_data[0],
-          'level': card_data[1]
-          })
-
-  def draw(self, screen: pygame.Surface):
-    for card in self.cards:
-      screen.blit(card['current_image'], card['rect'])
-
-  def update(self, mouse_pos: tuple, mouse_click: bool):
-    for card in self.cards[:]:
-      if card['rect'].collidepoint(mouse_pos):
-        card['current_image'] = card['right_image']
-        if mouse_click:
-          print(f"New weapon : {card["name"]}, ID : {card["id"]}")
-          self.run.manager.change_weapon(card["id"])
-          self.cards = []
-          self.run.pause = False
-      else:
-        card['current_image'] = card['left_image']
-
-class ExtrasCard:
-  def __init__(self, run):
+class CardManager:
+  def __init__(self, run, data, image_folder):
     self.run = run
     self.cards = []
     self.positions = [(274, 200), (590, 200)]
-    self.data_extras_card  = {extras["name"]: (extras["id"], extras["level"]) for extras in self.run.data_extras.values()}
+    self.data = data
+    self.image_folder = image_folder
 
-  def get_image(self, name):
-    image_path = f"res/power_up/level_{self.data_extras_card[name][1]}/extras/{name}.png"
+  def get_image(self, name, level):
+    image_path = f"res/power_up/level_{level}/{self.image_folder}/{name}.png"
     image = pygame.image.load(image_path)
     return self.run.load.split_image(image)
 
-  def launch_cards(self, extras_names: list):
+  def launch_cards(self, names: list):
     self.cards = []
-    for i, name in enumerate(extras_names):
-      if name in self.data_extras_card:
-        card_data = self.data_extras_card[name]
-        left_image, right_image = self.get_image(name)
+    for i, name in enumerate(names):
+      if name in self.data:
+        card_data = self.data[name]
+        left_image, right_image = self.get_image(name, card_data[1])
         position = self.positions[i]
         rect = left_image.get_rect(topleft=position)
         self.cards.append({
@@ -74,7 +29,7 @@ class ExtrasCard:
           'rect': rect,
           'id': card_data[0],
           'level': card_data[1]
-          })
+        })
 
   def draw(self, screen: pygame.Surface):
     for card in self.cards:
@@ -85,54 +40,54 @@ class ExtrasCard:
       if card['rect'].collidepoint(mouse_pos):
         card['current_image'] = card['right_image']
         if mouse_click:
-          print(f"New extras : {card["name"]}")
-          self.run.manager.new_extra(card["name"])
+          self.on_card_click(card)
           self.cards = []
           self.run.pause = False
       else:
         card['current_image'] = card['left_image']
 
-class PowerUp:
-  def __init__(self, run, power_up_data: dict):
-    self.run = run
-    self.cards = []
+  def on_card_click(self, card):
+    """This method should be overridden by subclasses to handle specific actions when a card is clicked."""
+    pass
+
+class WeaponCard(CardManager):
+  def __init__(self, run):
+    super().__init__(run, {weapon["name"]: (weapon["id"], weapon["level"]) for weapon in run.data_weapons.values()}, "weapons")
+
+  def on_card_click(self, card):
+    self.run.manager.change_weapon(card["id"])
+
+class ExtrasCard(CardManager):
+  def __init__(self, run):
+    super().__init__(run, {extras["name"]: (extras["id"], extras["level"]) for extras in run.data_extras.values()}, "extras")
+
+  def on_card_click(self, card):
+    self.run.manager.new_extra(card["name"])
+
+class PowerUp(CardManager):
+  def __init__(self, run, power_up_data):
+    super().__init__(run, power_up_data, "")
     self.positions = [(274, 200), (432, 200), (590, 200)]
-    self.power_up_data = power_up_data
 
   def launch_cards(self, power_up_names: list):
     self.cards = []
     for i, name in enumerate(power_up_names):
-      if name in self.power_up_data:
-        card_data = self.power_up_data[name]
-        # Vérifie si la carte est verrouillée (locked == False)
-        if not card_data.get('locked', False):  
-          left_image = card_data['left_image']
-          right_image = card_data['right_image']
-          position = self.positions[i]
-          rect = left_image.get_rect(topleft=position)
-          self.cards.append({
-            'left_image': left_image,
-            'right_image': right_image,
-            'current_image': left_image,
-            'rect': rect,
-            'data': card_data
-          })
+      if name in self.data and not self.data[name].get('locked', False):
+        card_data = self.data[name]
+        left_image = card_data['left_image']
+        right_image = card_data['right_image']
+        position = self.positions[i]
+        rect = left_image.get_rect(topleft=position)
+        self.cards.append({
+          'left_image': left_image,
+          'right_image': right_image,
+          'current_image': left_image,
+          'rect': rect,
+          'data': card_data
+        })
 
-  def draw(self, screen: pygame.Surface):
-    for card in self.cards:
-      screen.blit(card['current_image'], card['rect'])
-
-  def update(self, mouse_pos: tuple, mouse_click: bool):
-    for card in self.cards[:]:
-      if card['rect'].collidepoint(mouse_pos):
-        card['current_image'] = card['right_image']
-        if mouse_click:
-          card['data']['activate'] = True
-          print(f"Power-Up {card['data']['name']}")
-          self.cards = []
-          self.run.pause = False
-      else:
-        card['current_image'] = card['left_image']
+  def on_card_click(self, card):
+    card['data']['activate'] = True
 
 class UsePowerUp:
   def __init__(self, run):
@@ -199,9 +154,7 @@ class UsePowerUp:
 
     if self.run.data_power_up["zoom"]["activate"]:
       self.run.zoom = 1.5
-      self.run.map_manager.change_map_size(self.run.zoom)
-      self.run.update.change_zoom(self.run.zoom)
-      self.run.drone.change_zoom(self.run.zoom)
+      self.run.manager.change_zoom()
       self.run.data_power_up["zoom"]["activate"] = False
 
     if self.run.data_power_up["regeneration"]["activate"]:
