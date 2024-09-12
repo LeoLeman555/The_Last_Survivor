@@ -1,4 +1,4 @@
-ENEMY_PARAMS = {
+ENEMIES_PARAMS = {
   "shardsoul": {
     "id": 1.1,
     "type": "humanoid",

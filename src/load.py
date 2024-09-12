@@ -75,37 +75,11 @@ class ReadData:
         animation_specs[key] = tuple(map(int, value.strip("()").split(',')))
     return animation_specs
   
-  def read_enemy_params(self, filepath: str):
+  def read_params(self, filepath: str, prefix: str):
+    """Generic method to read any parameter file by removing the specific prefix."""
     with open(filepath, 'r') as file:
       content = file.read()
-    content = content.replace("ENEMY_PARAMS = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
-
-  def read_weapon_params(self, filepath: str):
-    with open(filepath, 'r') as file:
-      content = file.read()
-    content = content.replace("WEAPON_PARAMS = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
-  
-  def read_extras_params(self, filepath: str):
-    with open(filepath, 'r') as file:
-      content = file.read()
-    content = content.replace("EXTRAS_PARAMS = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
-  
-  def read_power_up_params(self, filepath: str):
-    with open(filepath, 'r') as file:
-      content = file.read()
-    content = content.replace("POWER_UP_PARAMS = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
-  
-  def read_game_params(self, filepath: str):
-    with open(filepath, 'r') as file:
-      content = file.read()
-    content = content.replace("GAME_SAVE = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
+    real_prefix = prefix.upper()
+    content = content.replace(f"{real_prefix}_PARAMS = ", "", 1)
+    params_dict = ast.literal_eval(content)
+    return params_dict

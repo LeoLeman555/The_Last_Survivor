@@ -1,4 +1,4 @@
-WEAPON_PARAMS = {
+WEAPONS_PARAMS = {
   "1": {
     "name": "pistol",
     "id": 1,
