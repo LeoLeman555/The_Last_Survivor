@@ -1,21 +1,31 @@
 import pygame
 import math
 import random
-from grenade import Explosion
-from load import Load
-import player
+from grenade import *
+from load import *
 
 class Weapon(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, player: 'player.Player', weapon_dict: dict):
+  def __init__(self, zoom: int, player, weapon_dict: dict):
     super().__init__()
     self.zoom = zoom
     self.player = player
-    self.weapon_dict = weapon_dict
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
+    self.current_weapon_dict_origin = weapon_dict
+    self.current_weapon_dict = self.current_weapon_dict_origin
+    self.level = self.current_weapon_dict["level"]
+    self.image = Load.charge_image(self, self.zoom / 2, f"weapon/{self.current_weapon_dict["name"]}", f"level_{self.level}", "png", 0.85)
     self.rect = self.image.get_rect()
-    self.rect.center = self.weapon_dict["position"]
+    self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image
     self.angle = 0
+
+  def change_zoom(self, new_zoom: int):
+    self.zoom = new_zoom
+    self.current_weapon_dict["position"][0] = 500 + (10 * self.zoom)
+    self.current_weapon_dict["position"][1] = 300 + (5 * self.zoom)
+    self.image = Load.charge_image(self, self.zoom / 2, f"weapon/{self.current_weapon_dict["name"]}", f"level_{self.level}", "png", 0.85)
+    self.rect = self.image.get_rect()
+    self.rect.center = self.current_weapon_dict["position"]
+    self.original_image = self.image
 
   def draw(self, screen: 'pygame.surface.Surface'):
     """Draws the weapon on the screen."""
@@ -34,20 +44,21 @@ class Weapon(pygame.sprite.Sprite):
     self.image = pygame.transform.rotozoom(self.image, -self.angle, 1)
     self.rect = self.image.get_rect(center=self.rect.center)
 
-  def change_weapon(self, zoom: int, player: 'player.Player', weapon_dict: dict):
+  def change_weapon(self, zoom: int, player, current_weapon_dict: dict):
     self.zoom = zoom
     self.player = player
-    self.weapon_dict = weapon_dict
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.weapon_dict["name"], "png", 0.85)
+    self.current_weapon_dict = current_weapon_dict
+    self.level = self.current_weapon_dict["level"]
+    self.image = Load.charge_image(self, self.zoom / 2, f"weapon/{self.current_weapon_dict["name"]}", f"level_{self.level}", "png", 0.85)
     self.rect = self.image.get_rect()
-    self.rect.center = self.weapon_dict["position"]
+    self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image
     self.angle = 0
 
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player: 'player.Player', enemies, goal: tuple,
-  weapon_dict: dict, delay):
+  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player, enemies, goal: tuple,
+  weapon_dict: dict, delay, piercing):
     super().__init__()
     self.zoom = zoom
     self.data = weapon_dict
@@ -56,12 +67,11 @@ class Bullet(pygame.sprite.Sprite):
     self.enemies = enemies
 
     self.critical = 0
-
     self.damage = self.data["damage"]
     if random.random() < self.data["critical"]:
       self.damage *= 2
       self.critical = 1
-    
+    self.piercing = piercing
     self.ammo_name = self.data["ammo_name"]
     self.range = self.data["range"] * self.zoom
     self.distance_weapon = self.data["distance_bullet"] * self.zoom
@@ -95,7 +105,6 @@ class Bullet(pygame.sprite.Sprite):
 
   def update(self):
     """Moves the bullet and handles collisions."""
-
     if self.delay == 0:
       self.rotate()
       self.rect.x += self.vector[0]
@@ -107,31 +116,33 @@ class Bullet(pygame.sprite.Sprite):
         self.explode()
       else:
         self.check_collision()
-
-      if self.distance_traveled > self.distance_weapon:
-        self.screen.blit(self.image, self.rect)
     else:
       self.delay -= 1
+
+  def draw(self):
+    if self.distance_traveled > self.distance_weapon:
+        self.screen.blit(self.image, self.rect)
 
   def check_collision(self):
     """Checks for collisions with enemies."""
     hit_enemy = pygame.sprite.spritecollideany(self, self.enemies)
     if hit_enemy:
+      self.piercing -= 1
       hit_enemy.damage(self.damage)
       self.rect.x += self.vector[0]
       self.rect.y += self.vector[1]
       if self.critical == 1:
         self.player.add_message("CRITICAL!!!", (self.rect.center[0], self.rect.center[1]), (self.rect.center[0], self.rect.center[1]-50*self.zoom), (255, 0, 0), 8*self.zoom, 1000)
-      self.delete()
-      self.explode()
+      if self.piercing == 0:
+        self.delete()
+        self.explode()
 
   def explode(self):
     """Triggers an explosion if the bullet is explosive."""
     if self.explosive:
-      explosion = Explosion(self.zoom, self.rect.center)
+      explosion = Explosion(self.zoom, self.rect.center, self.damage, self.enemies)
       self.player.screen.blit(explosion.image, explosion.rect)
       self.player.explosions.add(explosion)
-
 
 class FireParticle(pygame.sprite.Sprite):
   def __init__(self, zoom: int, enemies, x: int, y: int, direction: tuple, damage: float):
@@ -141,9 +152,11 @@ class FireParticle(pygame.sprite.Sprite):
     self.y = y
     self.enemies = enemies
     self.damage = damage
-    self.size = random.randint(3 * self.zoom, 5 * self.zoom)
+    self.size_origin = random.randint(3, 5)
+    self.size = round(self.size_origin * self.zoom)
     self.color = (random.randint(200, 255), random.randint(100, 150), 0)
-    self.lifetime = random.randint(10 * self.zoom, 12 * self.zoom)
+    self.lifetime_origin = random.randint(10, 12)
+    self.lifetime = round(self.lifetime_origin * self.zoom)
     self.direction = (direction[0] + random.uniform(-0.1, 0.1), direction[1] + random.uniform(-0.1, 0.1))
     self.speed = random.uniform(6 * self.zoom, 8 * self.zoom)
     self.rect = pygame.Rect(self.x - self.size // 2, self.y - self.size // 2, self.size, self.size)

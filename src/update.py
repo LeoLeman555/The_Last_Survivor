@@ -2,103 +2,112 @@ import random
 from extras import *
 
 class Update():
-  def __init__(self, zoom: int, screen: 'pygame.surface.Surface', map_manager, player, weapon, ressources: dict, barres: dict, icon, weapon_dict: dict, mouvement :list, mouse: dict, data_extras: dict):
-    self.zoom = zoom
-    self.screen = screen
-    self.map_manager = map_manager
-    self.player = player
-    self.weapon = weapon
-    self.ressources = ressources
-    self.barres = barres
-    self.icon = icon
-    self.enemies = self.player.enemies
+  def __init__(self, run):
+    self.run = run
 
-    self.weapon_dict = weapon_dict
-    self.mouvement = mouvement
-    self.mouse = mouse
-
-    self.data_extras = data_extras
-
-  def update_all(self, weapon_dict, mouvement, mouse, data_extras):
-    self.weapon_dict = weapon_dict
-    self.mouvement = mouvement
-    self.mouse = mouse
-    self.data_extras = data_extras
-
-    self.update_map()
-    self.update_objects()
-    if self.data_extras["missile"]["activate"] == True:
-      self.update_missile()
-    self.update_bullets()
-    self.update_enemies()
-    self.update_weapon()
-    self.update_toxic()
-    self.update_messages()
-    if self.data_extras["laser"]["activate"] == True:
-      self.update_laser()
+  def update_all(self):
+    if not self.run.pause:
+      self.update_map()
+      self.update_objects()
+      if self.run.data_extras["missile"]["activate"] == True:
+        self.update_missile()
+      self.update_bullets()
+      self.update_enemies()
+      self.update_weapon()
+      self.update_toxic()
+      if self.run.data_extras["laser_probe"]["activate"] == True:
+        self.update_laser()
+      if self.run.data_extras["drone"]["activate"] == True:
+        self.update_drone()
+      self.update_messages()
+      
+    self.draw()
     self.update_icon()
+    self.update_cards()
+
+  def draw(self):
+    self.run.map_manager.draw()
+    for objet in self.run.player.objects:
+      objet.draw(self.run.screen)
+    for missile in self.run.player.missiles:
+      missile.draw(self.run.screen)
+    for bullet in self.run.player.bullets:
+        bullet.draw()
+    for enemy in self.run.player.enemies:
+      enemy.draw(self.run.screen)
+    if self.run.current_weapon_dict["id"]==7:
+      for particle in self.run.player.particles:
+        particle.draw(self.run.screen)
+    self.run.weapon.draw(self.run.screen)
+    self.run.player.grenades.draw(self.run.screen)
+    for particle in self.particles_list:
+      particle.draw(self.run.screen)
+    self.run.player.explosions.draw(self.run.screen) 
+    for laser in self.run.player.lasers:
+      laser.draw(self.run.screen)
+    if self.run.data_extras["drone"]["activate"] == True:
+      self.run.drone.draw(self.run.screen)
+    for message in self.run.player.messages:
+      message.draw(self.run.screen)
+
+  def update_cards(self):
+    self.run.power_up.update(self.run.mouse["position"], self.run.mouse["press"])
+    self.run.power_up.draw(self.run.screen)
+    self.run.weapons_cards.update(self.run.mouse["position"], self.run.mouse["press"])
+    self.run.weapons_cards.draw(self.run.screen)
+    self.run.extras_cards.update(self.run.mouse["position"], self.run.mouse["press"])
+    self.run.extras_cards.draw(self.run.screen)
 
   def update_toxic(self):
-    particles_list = list(self.player.toxic_particles)
-    particles_list.sort(key=lambda p: p.creation_time, reverse=True)
-
-    for particle in particles_list:
-      particle.update(*self.mouvement)
-      particle.draw(self.screen)
+    self.particles_list = list(self.run.player.toxic_particles)
+    self.particles_list.sort(key=lambda p: p.creation_time, reverse=True)
+    for particle in self.particles_list:
+      particle.update(*self.run.mouvement)
 
   def update_weapon(self):
-    self.weapon.rotate_to_cursor(self.mouse["position"])
-    self.weapon.draw(self.screen)
-
-    if self.data_extras["grenade"]["activate"] == True:
-      self.player.grenades.update(*self.mouvement)
-      self.player.grenades.draw(self.screen)
-    
-    self.player.explosions.update()
-    self.player.explosions.draw(self.screen) 
+    self.run.weapon.rotate_to_cursor(self.run.mouse["position"])
+    self.run.player.grenades.update(*self.run.mouvement)
+    self.run.player.explosions.update()
 
   def update_bullets(self):
-    if self.weapon_dict["id"]==7:
-      for particle in self.player.particles:
+    if self.run.current_weapon_dict["id"]==7:
+      for particle in self.run.player.particles:
         particle.update()
-        particle.draw(self.screen)
     else:
-      for bullet in self.player.bullets:
+      for bullet in self.run.player.bullets:
         bullet.update()
 
   def update_enemies(self):
-    for enemy in self.player.enemies:
+    for enemy in self.run.player.enemies:
       enemy.follow(475, 281)
-      enemy.update(0.05, *self.mouvement, self.player.rect_collision)
-      enemy.draw(self.screen)
+      enemy.update(0.05, *self.run.mouvement, self.run.player.rect_collision)
 
   def update_objects(self):
-    for objet in self.player.objects:
-      objet.update(*self.mouvement, self.player.rect_collision)
-      objet.draw(self.screen)
+    for objet in self.run.player.objects:
+      objet.update(*self.run.mouvement, self.run.player.rect_collision)
 
   def update_messages(self):
-    for message in self.player.messages:
+    for message in self.run.player.messages:
       message.update()
-      message.draw(self.screen)
 
   def update_map(self):
-    self.map_manager.update()
+    self.run.map_manager.update()
 
   def update_icon(self):
-    self.icon.update()
-    self.icon.draw(self.screen)
+    self.run.icon.update()
+    self.run.icon.draw(self.run.screen)
 
   def update_laser(self):
-    if random.random() < self.data_extras["laser"]["rarity"]:
-      self.player.add_laser()
-    for laser in self.player.lasers:
-      laser.draw(self.screen)
+    if random.random() < self.run.data_extras["laser_probe"]["rarity"]:
+      self.run.player.add_laser()
+    for laser in self.run.player.lasers:
       laser.update()
 
   def update_missile(self):
-    if random.random() < self.data_extras["missile"]["rarity"]:
-      self.player.add_missile()
-    for missile in self.player.missiles:
-      missile.draw(self.screen)
-      missile.update(*self.mouvement)
+    if random.random() < self.run.data_extras["missile"]["rarity"]:
+      self.run.player.add_missile()
+    for missile in self.run.player.missiles:
+      missile.update(*self.run.mouvement)
+
+  def update_drone(self):
+    self.run.drone.update()

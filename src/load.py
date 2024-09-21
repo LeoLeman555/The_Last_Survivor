@@ -16,12 +16,26 @@ class Load:
     self.map = pytmx.util_pygame.load_pygame(f"res/{path}/{name}.tmx")
     return self.map
 
+  def split_image(self, image):
+    original_width, original_height = image.get_size()
+    left_half = image.subsurface((0, 0, original_width // 2, original_height))
+    right_half = image.subsurface((original_width // 2, 0, original_width // 2, original_height))
+    return left_half, right_half
+
   @staticmethod
   def save_animation_specs_to_file(filename: str, animation_specs):
     """Save animation specifications to a file."""
     with open(filename, 'w') as file:
       for key, value in animation_specs.items():
         file.write(f"{key}:{value}\n")
+
+  def load_power_up(self, data_power_up):
+    for power_up_name, power_up_data in data_power_up.items():
+      image_path = f"res/power_up/power_up/{power_up_name}.png"
+      image = pygame.image.load(image_path)
+      left_image, right_image = self.split_image(image)
+      power_up_data["left_image"] = left_image
+      power_up_data["right_image"] = right_image
 
 class ReadData:
   def get_thresholds(self, path: str):
@@ -61,23 +75,11 @@ class ReadData:
         animation_specs[key] = tuple(map(int, value.strip("()").split(',')))
     return animation_specs
   
-  def read_enemy_params(self, filepath: str):
+  def read_params(self, filepath: str, prefix: str):
+    """Generic method to read any parameter file by removing the specific prefix."""
     with open(filepath, 'r') as file:
       content = file.read()
-    content = content.replace("ENEMY_PARAMS = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
-
-  def read_weapon_params(self, filepath: str):
-    with open(filepath, 'r') as file:
-      content = file.read()
-    content = content.replace("WEAPON_PARAMS = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
-  
-  def read_extras_params(self, filepath: str):
-    with open(filepath, 'r') as file:
-      content = file.read()
-    content = content.replace("EXTRAS_PARAMS = ", "", 1)
-    enemy_params_dict = ast.literal_eval(content)
-    return enemy_params_dict
+    real_prefix = prefix.upper()
+    content = content.replace(f"{real_prefix}_PARAMS = ", "", 1)
+    params_dict = ast.literal_eval(content)
+    return params_dict

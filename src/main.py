@@ -10,11 +10,13 @@ running = True
 
 while running == True:
   if Menu_principal() == "jeu":
-    run = Run(2)
-    run.start_run()
+
+    run = Run()
+    run.manager.start_run()
   else:
     running = False
 
-# run.run()
+# run = Run()
+# run.manager.start_run()
 
 print("------------------------- END -------------------------")

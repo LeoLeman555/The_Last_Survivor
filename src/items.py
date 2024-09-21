@@ -20,8 +20,8 @@ class Icon:
 
     if self.resource["xp"] > self.bars["xp_max"]:
       self.resource["xp"] = 0
-      self.run.change_max_xp(self.run.index_palier_xp + 1)
-      print("+1 level XP")
+      self.run.manager.change_max_xp(self.run.index_palier_xp + 1)
+      self.run.manager.launch_power_up()
 
   def draw(self, screen):
     def calculate_bar_length(current, maximum):

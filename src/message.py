@@ -1,17 +1,18 @@
 import pygame
 
 class Message(pygame.sprite.Sprite):
-  def __init__(self, zoom: int, text: str, start_position: list, end_position: list, color: tuple, font_size: int, duration: int):
+  def __init__(self, zoom: int, text: str, start_position: list, end_position: list, color: tuple, 
+              font_size: int, duration: int):
     super().__init__()
     self.zoom = zoom
     self.text = text
     self.start_position = start_position
     self.end_position = end_position
     self.color = color
-    self.font_size = font_size * self.zoom
-    self.duration = duration * self.zoom
+    self.font_size = round(font_size)
+    self.duration = int(duration * self.zoom)
     self.start_time = pygame.time.get_ticks()
-    self.font = pygame.font.Font(None, font_size)
+    self.font = pygame.font.Font(None, self.font_size)
     self.image = self.font.render(text, True, color)
     self.rect = self.image.get_rect(center=start_position)
   

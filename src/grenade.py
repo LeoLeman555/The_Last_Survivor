@@ -19,28 +19,42 @@ class Grenade(pygame.sprite.Sprite):
     self.screen = screen
     self.enemies = enemies
     self.player = player
-    self.toxic = {
-      "toxic": self.data["toxic_grenade"]["activate"],
-      "explode": False,
-      "number": 0,
-    }
-    if self.toxic["toxic"]:
+    self.type = self.data["type"]
+    if self.type == "toxic":
       self.name = "toxic_grenade"
+      self.toxic = {
+        "toxic": True,
+        "explode": False,
+        "number": 0,
+      }
     else:
       self.name = "grenade"
+      self.toxic = {
+        "toxic": False,
+      }
 
     self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.5)
     self.rect = self.image.get_rect()
     # Initial position of the grenade based on the player
     self.rect.centerx = player.rect.centerx - (player.rect.x - 500)
     self.rect.centery = player.rect.centery - (player.rect.y - 300)
-    self.speed = speed* self.zoom
+    self.speed = speed * self.zoom
     self.gravity = 0.4
     self.velocity_y = -5 * self.zoom
     self.bounce_factor = 0.8
     self.rebound_height = self.screen.get_height() // 2
     self.lifetime = self.data["lifetime"] * self.zoom
     self.damage = self.data["damage"]
+
+  def change_zoom(self, new_zoom: int):
+    """Change le zoom et ajuste les propriétés de la grenade."""
+    self.zoom = new_zoom
+    self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.5)
+    self.rect = self.image.get_rect(center=self.rect.center)
+    self.speed = self.speed / self.zoom  # Ajustement de la vitesse en fonction du zoom
+    self.velocity_y = -5 * self.zoom
+    self.rebound_height = self.screen.get_height() // 2
+    self.lifetime = self.data["lifetime"] * self.zoom
 
   def explode(self):
     """Trigger an explosion."""
@@ -56,11 +70,11 @@ class Grenade(pygame.sprite.Sprite):
     if self.toxic["number"] >= 100:
       self.kill()
 
-  def update(self, x_var: int =0, y_var: int =0):
+  def update(self, x_var: int, y_var: int):
     """Update the position of the grenade."""
     x = (x_var / 2) * self.zoom
     y = (y_var / 2) * self.zoom
-    self.rect.x +=  x
+    self.rect.x += x
     self.rebound_height += y
     self.rect.y += y
 
@@ -90,21 +104,27 @@ class ToxicParticle(pygame.sprite.Sprite):
     self.zoom = zoom
     self.x = x
     self.y = y
-    self.size = random.randint(2*self.zoom, 4*self.zoom)
+    self.size_origin = random.randint(2, 4)
+    self.size = round(self.size_origin * self.zoom)
     angle = random.uniform(0, 2 * math.pi)
-    speed = random.uniform(1, 2*self.zoom)
+    speed = random.uniform(1, round(2*self.zoom))
     self.speed_x = speed * math.cos(angle)
     self.speed_y = speed * math.sin(angle)
     self.color = random.choice(PALETTE)
     self.creation_time = time.time()
-    self.life_duration = 25*self.zoom
+    self.life_duration_origin = 25
+    self.life_duration = round(self.life_duration_origin*self.zoom)
     self.alpha = 255
-
     self.rect = pygame.Rect(self.x - self.size // 2, self.y - self.size // 2, self.size, self.size)
-
     self.enemies = enemies
-
     self.damage = damage
+
+  def change_zoom(self, new_zoom: int):
+    """Change le zoom et ajuste les propriétés des particules toxiques."""
+    self.zoom = new_zoom
+    self.size = round(self.size_origin * self.zoom)
+    self.rect = pygame.Rect(self.x - self.size // 2, self.y - self.size // 2, self.size, self.size)
+    self.life_duration = round(self.life_duration_origin*self.zoom)
 
   def update(self, x_var: int, y_var: int):
     x = (x_var / 2) * self.zoom
@@ -154,6 +174,13 @@ class Explosion(pygame.sprite.Sprite):
     self.clock = pygame.time.get_ticks()
 
     self.damage = damage
+
+  def change_zoom(self, new_zoom: int):
+    """Change le zoom et ajuste les propriétés de l'explosion."""
+    self.zoom = new_zoom * 2
+    self.images = self.get_images()  # Recharger les images en fonction du nouveau zoom
+    self.image = self.images[0]
+    self.rect = self.image.get_rect(center=self.rect.center)
 
   def get_images(self):
     """Load explosion images from a sprite sheet."""
