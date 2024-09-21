@@ -168,8 +168,6 @@ class Run:
         self.player.add_enemy(self.data_enemies, *enemy)
         self.player.number_enemies += 1
 
-    pygame.quit()
-
   def update_class(self):
     self.update.update_all()
     if not self.pause:
