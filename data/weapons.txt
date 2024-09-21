@@ -83,7 +83,7 @@ WEAPONS_PARAMS = {
     "rate": 1000,
     "precision": 5,
     "delay": 1,
-    "bullet_speed": 20,
+    "bullet_speed": 30,
     "level": 0,
     "locked": True,
   },

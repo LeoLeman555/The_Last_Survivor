@@ -9,7 +9,7 @@ class CardManager:
     self.image_folder = image_folder
 
   def get_image(self, name, level):
-    image_path = f"res/power_up/level_{level}/{self.image_folder}/{name}.png"
+    image_path = f"res/power_up/{self.image_folder}/{name}_{level}.png"
     image = pygame.image.load(image_path)
     return self.run.load.split_image(image)
 
@@ -66,7 +66,7 @@ class ExtrasCard(CardManager):
 
 class PowerUp(CardManager):
   def __init__(self, run, power_up_data):
-    super().__init__(run, power_up_data, "")
+    super().__init__(run, power_up_data, "power_up")
     self.positions = [(274, 200), (432, 200), (590, 200)]
 
   def launch_cards(self, power_up_names: list):

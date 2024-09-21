@@ -11,7 +11,8 @@ class Weapon(pygame.sprite.Sprite):
     self.player = player
     self.current_weapon_dict_origin = weapon_dict
     self.current_weapon_dict = self.current_weapon_dict_origin
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.current_weapon_dict["name"], "png", 0.85)
+    self.level = self.current_weapon_dict["level"]
+    self.image = Load.charge_image(self, self.zoom / 2, f"weapon/{self.current_weapon_dict["name"]}", f"level_{self.level}", "png", 0.85)
     self.rect = self.image.get_rect()
     self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image
@@ -21,7 +22,7 @@ class Weapon(pygame.sprite.Sprite):
     self.zoom = new_zoom
     self.current_weapon_dict["position"][0] = 500 + (10 * self.zoom)
     self.current_weapon_dict["position"][1] = 300 + (5 * self.zoom)
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.current_weapon_dict["name"], "png", 0.85)
+    self.image = Load.charge_image(self, self.zoom / 2, f"weapon/{self.current_weapon_dict["name"]}", f"level_{self.level}", "png", 0.85)
     self.rect = self.image.get_rect()
     self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image
@@ -47,7 +48,8 @@ class Weapon(pygame.sprite.Sprite):
     self.zoom = zoom
     self.player = player
     self.current_weapon_dict = current_weapon_dict
-    self.image = Load.charge_image(self, self.zoom / 2, "weapon", self.current_weapon_dict["name"], "png", 0.85)
+    self.level = self.current_weapon_dict["level"]
+    self.image = Load.charge_image(self, self.zoom / 2, f"weapon/{self.current_weapon_dict["name"]}", f"level_{self.level}", "png", 0.85)
     self.rect = self.image.get_rect()
     self.rect.center = self.current_weapon_dict["position"]
     self.original_image = self.image

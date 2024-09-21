@@ -32,7 +32,6 @@ class Grenade(pygame.sprite.Sprite):
       self.toxic = {
         "toxic": False,
       }
-    print(self.toxic["toxic"])
 
     self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.5)
     self.rect = self.image.get_rect()

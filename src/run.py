@@ -25,8 +25,11 @@ class Run:
     self.initialize_data()
     self.initialize_game_variables()
     self.initialize_weapons_and_extras()
+    self.update_weapons_with_levels()
+    self.update_extras_with_levels()
     self.initialize_components()
 
+    self.manager.change_weapon(1)
     self.manager.change_max_xp(1)
 
   def initialize_game_variables(self):
@@ -53,9 +56,34 @@ class Run:
     self.ressources = self.read_data.read_resources_data("data/ressources.txt")
     self.data_enemies = self.read_data.read_params("data/enemies.txt", "enemies")
     self.data_weapons = self.read_data.read_params("data/weapons.txt", "weapons")
+    self.data_weapons_levels = self.read_data.read_params("data/weapons_level.txt", "weapons_level")
+    self.data_extras_levels = self.read_data.read_params("data/extras_level.txt", "extras_level")
     self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
     self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
     self.data_extras = self.read_data.read_params("data/extras.txt", "extras")
+
+  def update_extras_with_levels(self):
+    for extra_id, extra_data in self.data_extras.items():
+      extra_name = extra_data["name"]
+      extra_level = extra_data["level"]
+      if extra_level > 0:
+        level_upgrades = self.data_extras_levels.get(extra_name, {})
+        for stat, upgrade_value in level_upgrades.items():
+          if stat in extra_data:
+            extra_data[stat] += upgrade_value * (extra_level - 1)
+
+  def update_weapons_with_levels(self):
+    for weapon_id, weapon_data in self.data_weapons.items():
+      weapon_name = weapon_data["name"]
+      weapon_level = weapon_data["level"]
+      if weapon_level > 0:
+        level_upgrades = self.data_weapons_levels.get(weapon_name, {})
+        for stat, upgrade_value in level_upgrades.items():
+          if stat in weapon_data:
+            if stat == "critical":
+              weapon_data[stat] += upgrade_value * (weapon_level - 1)
+            else:
+              weapon_data[stat] += int(upgrade_value * (weapon_level - 1))
 
   def initialize_weapons_and_extras(self):
     self.data_weapons = self.load_and_process_data("weapon_level", self.data_weapons)
@@ -136,7 +164,7 @@ class Run:
     # ? maybe change the difficulty
     if random.random() <= 0.005 or self.player.number_enemies < 5:
       for loop in range(0, 10):
-        enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(2.1))
+        enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
         self.player.add_enemy(self.data_enemies, *enemy)
         self.player.number_enemies += 1
 

@@ -1,6 +1,6 @@
 EXTRAS_PARAMS = {
   "grenade": {
-    "name" : "grenade",
+    "name": "grenade",
     "id": 1,
     "activate": False,
     "type": "classical",
@@ -13,7 +13,7 @@ EXTRAS_PARAMS = {
     "locked": True,
   },
   "toxic_grenade": {
-    "name" : "toxic_grenade",
+    "name": "toxic_grenade",
     "id": 2,
     "activate": False,
     "type": "toxic",
@@ -26,7 +26,7 @@ EXTRAS_PARAMS = {
     "locked": True,
   },
   "drone": {
-    "name" : "drone",
+    "name": "drone",
     "id": 3,
     "activate": False,
     "damage": 10,
@@ -34,7 +34,7 @@ EXTRAS_PARAMS = {
     "locked": True,
   },
   "missile": {
-    "name" : "missile",
+    "name": "missile",
     "id": 4,
     "activate": False,
     "rarity": 0.015,
@@ -43,7 +43,7 @@ EXTRAS_PARAMS = {
     "locked": True,
   },
   "laser_probe": {
-    "name" : "laser_probe",
+    "name": "laser_probe",
     "id": 5,
     "activate": False,
     "rarity": 0.005,

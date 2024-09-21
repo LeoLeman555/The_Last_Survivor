@@ -82,7 +82,8 @@ class GunGround(pygame.sprite.Sprite):
     self.name = name
     self.id = id
     self.player = player
-    self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.45)
+    self.level = self.player.run.current_weapon_dict["level"]
+    self.image = Load.charge_image(self, self.zoom, f"weapon/{self.name}", f"level_{self.level}", "png", 0.45)
     self.x = x + random.randint(round(-10 * self.zoom), round(10 * self.zoom))
     self.y = y + random.randint(round(-10 * self.zoom), round(10 * self.zoom))
 
@@ -96,7 +97,8 @@ class GunGround(pygame.sprite.Sprite):
 
   def change_zoom(self, new_zoom: int):
     self.zoom = new_zoom
-    self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.45)
+    self.level = self.player.run.current_weapon_dict["level"]
+    self.image = Load.charge_image(self, self.zoom, f"weapon/{self.name}", f"level_{self.level}", "png", 0.45)
     self.rect = self.image.get_rect()
     self.range = self.range_obj * self.zoom
     self.speed = self.speed * self.zoom
