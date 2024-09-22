@@ -97,7 +97,9 @@ class GunGround(pygame.sprite.Sprite):
 
   def change_zoom(self, new_zoom: int):
     self.zoom = new_zoom
-    self.level = self.player.run.current_weapon_dict["level"]
+    for weapon in self.player.run.data_weapons.values():
+      if weapon["name"] == self.name:
+        self.level =  weapon["level"]
     self.image = Load.charge_image(self, self.zoom, f"weapon/{self.name}", f"level_{self.level}", "png", 0.45)
     self.rect = self.image.get_rect()
     self.range = self.range_obj * self.zoom
