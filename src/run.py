@@ -71,6 +71,7 @@ class Run:
         for stat, upgrade_value in level_upgrades.items():
           if stat in extra_data:
             extra_data[stat] += upgrade_value * (extra_level - 1)
+    # print(self.data_extras)
 
   def update_weapons_with_levels(self):
     for weapon_id, weapon_data in self.data_weapons.items():
@@ -101,7 +102,7 @@ class Run:
           item_info["level"] = level
           item_info["locked"] = (level == 0)
           break
-    return {key: value for key, value in data.items() if not value.get("locked", False)}
+    return {key: value for key, value in data.items()}
 
   def position_weapon(self):
     self.current_weapon_dict["position"][0] = 500 + (10 * self.zoom)

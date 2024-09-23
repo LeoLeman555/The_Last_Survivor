@@ -1,5 +1,7 @@
 import pygame
 import ast
+import time
+from reset import *
 
 class MenuPrincipal:
   def __init__(self):
@@ -68,6 +70,11 @@ class MenuPrincipal:
     while self.running:
       self.afficher_menu()
 
+      press = pygame.key.get_pressed()
+      if press[pygame.K_BACKSPACE]:
+        self.delete_data()
+        return
+
       # Gestion des événements
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -82,3 +89,12 @@ class MenuPrincipal:
 
     pygame.quit()
     return self.direction
+  
+  def delete_data(self):
+    self.running = False
+    pygame.quit()
+    question = input("Are you sure you want to delete your progress? (Yes / No) -- ").upper()
+    if question == "YES":
+      reset_game_save(self.game_data)
+      time.sleep(0.5)
+      print("-------- Your progress has been reinitialized ---------")
