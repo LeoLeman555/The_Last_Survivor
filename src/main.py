@@ -9,7 +9,6 @@ while running == True:
   menu = MenuPrincipal()
   direction = menu.run()
   if direction == "jeu":
-
     run = Run()
     run.manager.start_run()
   else:

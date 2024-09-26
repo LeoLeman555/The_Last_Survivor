@@ -73,7 +73,6 @@ class MenuPrincipal:
       press = pygame.key.get_pressed()
       if press[pygame.K_BACKSPACE]:
         self.delete_data()
-        return
 
       # Gestion des événements
       for event in pygame.event.get():
@@ -87,7 +86,6 @@ class MenuPrincipal:
               self.running = False
               break
 
-    pygame.quit()
     return self.direction
   
   def delete_data(self):
@@ -95,6 +93,13 @@ class MenuPrincipal:
     pygame.quit()
     question = input("Are you sure you want to delete your progress? (Yes / No) -- ").upper()
     if question == "YES":
-      reset_game_save(self.game_data)
+      reset_game_save(self.game_data)  # Reset les données
       time.sleep(0.5)
       print("-------- Your progress has been reinitialized ---------")
+
+    self.game_data = self.read_params("data/game_save.txt", "game_save")  # Recharger les nouvelles données
+    self.icon_numbers = [self.game_data["resource"]["energy"], self.game_data["resource"]["metal"], self.game_data["resource"]["data"]]
+      
+    self.running = True
+    self.__init__()
+    self.run()

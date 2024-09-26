@@ -12,12 +12,15 @@ from power_up import *
 from shooter import *
 from keyboard_input import *
 from run_manager import *
+from end_screen import *
 
 class Run:
   def __init__(self):
     pygame.font.init()
 
-    self.screen = pygame.display.set_mode((1000, 600))
+    self.WIDTH_SCREEN = 1000
+    self.HEIGHT_SCREEN = 600
+    self.screen = pygame.display.set_mode((self.WIDTH_SCREEN, self.HEIGHT_SCREEN))
     pygame.display.set_caption("The Last Survivor - Game")
     self.load = Load()
     self.read_data = ReadData()
@@ -159,7 +162,21 @@ class Run:
         elif event.type == pygame.MOUSEBUTTONUP:
           self.mouse["press"] = False
       clock.tick(60)
+
     pygame.quit()
+    
+    self.end_game()
+
+  def end_game(self):
+    rewards = {
+    "resource": {
+      "energy": self.icon.resource["energy"],
+      "metal": self.icon.resource["metal"],
+      "data": self.icon.resource["data"]
+      }
+    }
+    game_over_screen = GameOverScreen(self.WIDTH_SCREEN, self.HEIGHT_SCREEN, rewards)
+    game_over_screen.run()
 
   def manage_enemies(self):
     # ? maybe change the difficulty
