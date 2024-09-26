@@ -82,7 +82,9 @@ class GunGround(pygame.sprite.Sprite):
     self.name = name
     self.id = id
     self.player = player
-    self.level = self.player.run.current_weapon_dict["level"]
+    for weapon in self.player.run.data_weapons.values():
+      if weapon["name"] == self.name:
+        self.level =  weapon["level"]
     self.image = Load.charge_image(self, self.zoom, f"weapon/{self.name}", f"level_{self.level}", "png", 0.45)
     self.x = x + random.randint(round(-10 * self.zoom), round(10 * self.zoom))
     self.y = y + random.randint(round(-10 * self.zoom), round(10 * self.zoom))

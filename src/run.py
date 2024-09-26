@@ -32,7 +32,7 @@ class Run:
     self.update_extras_with_levels()
     self.initialize_components()
 
-    self.manager.change_weapon(1)
+    self.manager.change_weapon(2)
     self.manager.change_max_xp(1)
 
   def initialize_game_variables(self):
