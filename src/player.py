@@ -108,9 +108,10 @@ class Player(pygame.sprite.Sprite):
           enemy.delete()
         self.run.icon.resource["health"] = 100
         self.run.icon.resource["food"] = 100
+        
     if self.run.life == 0:
-      print("DEATH")
       self.die()
+
     self.rect.topleft = self.position
     self.feet.midbottom = self.rect.midbottom
     self.run.icon.resource["food"] -= 0.04 / self.run.hunger_resistance

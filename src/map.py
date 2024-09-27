@@ -27,17 +27,17 @@ class MapManager:
     for sprite in self.get_group().sprites():
       if sprite.feet.collidelist(self.get_walls()) > -1:
         sprite.move_back()
-        self.run.collision(True)
+        self.run.manager.collision(True)
       else:
-        self.run.collision(False)
+        self.run.manager.collision(False)
 
   def check_sables(self):
     """Check if player is in quicksand and reduce speed."""
     for sprite in self.get_group().sprites():
       if sprite.feet.collidelist(self.get_sables()) > -1:
-        self.run.collision_sables(True)
+        self.run.manager.collision_sables(True)
       else:
-        self.run.collision_sables(False)
+        self.run.manager.collision_sables(False)
 
   def teleport(self, name: str):
     """Teleport the player to specified coordinates."""

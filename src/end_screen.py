@@ -3,11 +3,12 @@ import sys
 from add_awards import *
 
 class GameOverScreen:
-  def __init__(self, width, height, rewards):
+  def __init__(self, width, height, rewards, victory):
     # Initialize Pygame and window attributes
     pygame.init()
     self.width = width
     self.height = height
+    self.victory = victory
     self.window = pygame.display.set_mode((self.width, self.height))
     pygame.display.set_caption("The Last Survivor - Game Over")
 
@@ -16,11 +17,11 @@ class GameOverScreen:
     self.color = (255, 255, 255)
     self.shadow_color = (64, 64, 64)
 
-    self.background_image = self.load_image("res/end/blood_screen.png", (self.width, self.height))
+    self.background_image = self.load_image(f"res/end/screen_{self.victory}.png", (self.width, self.height))
 
     # Load the "GAME OVER" image instead of rendering text
-    self.game_over_image = self.load_image("res/end/text_game_over.png", (600, 100))  # Assuming 600x100 is the base size
-    self.game_over_rect = self.game_over_image.get_rect(center=(self.width // 2, 150))
+    self.game_over_image = self.load_image(f"res/end/text_{self.victory}.png", (461, 164))
+    self.game_over_rect = self.game_over_image.get_rect(center=(self.width // 2, 125))
 
     self.rewards_font = pygame.font.Font("res/texte/dialog_font.ttf", 30)
 

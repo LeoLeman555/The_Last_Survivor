@@ -65,8 +65,8 @@ class KeyboardInput:
     press = pygame.key.get_pressed()
     if press[pygame.K_p]:
       if self.run.pause:
-        self.run.pause = False
         time.sleep(1)
+        self.run.pause = False
       else:
         self.run.pause = True  
         time.sleep(0.1)

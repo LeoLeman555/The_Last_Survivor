@@ -22,10 +22,10 @@ GAME_SAVE_PARAMS = {
   },
   "extras_level": {
     "grenade": 1,
-    "toxic_grenade": 3,
-    "drone": 5,
-    "missile": 7,
-    "laser_probe": 9,
+    "toxic_grenade": 1,
+    "drone": 1,
+    "missile": 1,
+    "laser_probe": 1,
   },
   "power_up_level": {
     "care_kit": 0,
@@ -44,5 +44,5 @@ GAME_SAVE_PARAMS = {
     "zoom": 0,
     "strong_stomach": 0,
     "researcher": 0,
-  },
+  }
 }

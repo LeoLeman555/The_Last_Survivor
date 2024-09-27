@@ -13,6 +13,7 @@ from shooter import *
 from keyboard_input import *
 from run_manager import *
 from end_screen import *
+from countdown import *
 
 class Run:
   def __init__(self):
@@ -52,6 +53,8 @@ class Run:
     self.time = 0
     self.index_palier_xp = 1
     self.weapon_id = 1
+    self.win = False
+    self.time_left = 60
 
   def initialize_data(self):
     self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
@@ -115,6 +118,7 @@ class Run:
     self.mouse = self.initialize_mouse()
     self.last_shot_time = self.mouse["current_time"]
 
+    self.countdown = CountDown(self, self.time_left)
     self.random_enemy = EnemySelector(self.data_enemies)
     self.manager = RunManager(self)
     self.power_up = PowerUp(self, self.data_power_up)
@@ -148,7 +152,7 @@ class Run:
       if not self.pause:
         self.player.save_location() #! Don't change this line...
         self.keyboard_input.check_input() #! ...with this one (bad collision manager)
-        self.manage_enemies()
+        self.manager.manage_enemies()
         self.use_power_up.use_power_up()
 
       self.keyboard_input.get_pause()
@@ -164,36 +168,10 @@ class Run:
       clock.tick(60)
 
     pygame.quit()
-    
-    self.end_game()
-
-  def end_game(self):
-    rewards = {
-    "resource": {
-      "energy": self.icon.resource["energy"],
-      "metal": self.icon.resource["metal"],
-      "data": self.icon.resource["data"]
-      }
-    }
-    game_over_screen = GameOverScreen(self.WIDTH_SCREEN, self.HEIGHT_SCREEN, rewards)
-    game_over_screen.run()
-
-  def manage_enemies(self):
-    # ? maybe change the difficulty
-    if random.random() <= 0.005 or self.player.number_enemies < 5:
-      for loop in range(0, 10):
-        enemy = self.random_enemy.random_enemy(self.random_enemy.filter_by_exact_id(1.1))
-        self.player.add_enemy(self.data_enemies, *enemy)
-        self.player.number_enemies += 1
+    self.manager.end_game()
 
   def update_class(self):
     self.update.update_all()
     if not self.pause:
-      self.shooter.test_shooting()
+      self.shooter.test_shooting() #! Don't move this line (otherwise reloading does not work)
     pygame.display.flip()
-
-  def collision_sables(self, bool: bool):
-    self.speed = self.speed_init / 2 if bool else self.speed_init
-
-  def collision(self, bool: bool):
-    self.collision_caillou = bool

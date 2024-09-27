@@ -1,4 +1,6 @@
 import random
+import pygame
+from end_screen import *
 
 class RunManager:
   def __init__(self, run):
@@ -57,3 +59,30 @@ class RunManager:
       objet.change_zoom(self.run.zoom)
     self.run.weapon.change_zoom(self.run.zoom)
     self.run.drone.change_zoom(self.run.zoom)
+
+  def end_game(self):
+    rewards = {
+    "resource": {
+      "energy": self.run.icon.resource["energy"],
+      "metal": self.run.icon.resource["metal"],
+      "data": self.run.icon.resource["data"]
+      }
+    }
+
+    win = "victory" if self.run.win else "defeat"
+    game_over_screen = GameOverScreen(self.run.WIDTH_SCREEN, self.run.HEIGHT_SCREEN, rewards, win)
+    game_over_screen.run()
+
+  def manage_enemies(self):
+    # ? maybe change the difficulty
+    if random.random() <= 0.005 or self.run.player.number_enemies < 5:
+      for loop in range(0, 10):
+        enemy = self.run.random_enemy.random_enemy(self.run.random_enemy.filter_by_exact_id(1.1))
+        self.run.player.add_enemy(self.run.data_enemies, *enemy)
+        self.run.player.number_enemies += 1
+
+  def collision_sables(self, bool: bool):
+    self.run.speed = self.run.speed_init / 2 if bool else self.run.speed_init
+
+  def collision(self, bool: bool):
+    self.run.collision_caillou = bool

@@ -22,6 +22,7 @@ class Update():
       self.update_messages()
       
     self.draw()
+    self.update_countdown()
     self.update_icon()
     self.update_cards()
 
@@ -49,6 +50,7 @@ class Update():
       self.run.drone.draw(self.run.screen)
     for message in self.run.player.messages:
       message.draw(self.run.screen)
+    self.run.countdown.draw()
 
   def update_cards(self):
     self.run.power_up.update(self.run.mouse["position"], self.run.mouse["press"])
@@ -85,6 +87,9 @@ class Update():
   def update_objects(self):
     for objet in self.run.player.objects:
       objet.update(*self.run.mouvement, self.run.player.rect_collision)
+
+  def update_countdown(self):
+    self.run.countdown.update(self.run.pause)
 
   def update_messages(self):
     for message in self.run.player.messages:
