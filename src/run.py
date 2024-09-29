@@ -33,7 +33,7 @@ class Run:
     self.update_extras_with_levels()
     self.initialize_components()
 
-    self.manager.change_weapon(2)
+    self.manager.change_weapon(1)
     self.manager.change_max_xp(1)
 
   def initialize_game_variables(self):
@@ -77,7 +77,6 @@ class Run:
         for stat, upgrade_value in level_upgrades.items():
           if stat in extra_data:
             extra_data[stat] += upgrade_value * (extra_level - 1)
-    # print(self.data_extras)
 
   def update_weapons_with_levels(self):
     for weapon_id, weapon_data in self.data_weapons.items():
@@ -133,6 +132,8 @@ class Run:
     self.extras_cards = ExtrasCard(self)
     self.shooter = Shooter(self)
     self.keyboard_input = KeyboardInput(self)
+
+    self.filtered_weapons = {key: weapon for key, weapon in self.data_weapons.items() if weapon.get('level', 0) > 0}
 
   def initialize_mouse(self):
     return {

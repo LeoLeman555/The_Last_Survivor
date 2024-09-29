@@ -23,8 +23,8 @@ class Choice:
 
       return f"{choice_B}"
     
-  def weapon(self, current_weapon, unlocked_weapons: list):
-    unlocked_weapons = [int(weapon_id) for weapon_id in unlocked_weapons]
+  def weapon(self, current_weapon, unlock_weapons: list):
+    unlocked_weapons = [int(weapon_id) for weapon_id in unlock_weapons]
     outcomes = [-1, 0, 1, 2]
     probabilities = [0.10, 0.35, 0.50, 0.05]
     result = random.choices(outcomes, probabilities)[0]

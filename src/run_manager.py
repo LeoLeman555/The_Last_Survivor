@@ -77,7 +77,7 @@ class RunManager:
     # ? maybe change the difficulty
     if random.random() <= 0.005 or self.run.player.number_enemies < 5:
       for loop in range(0, 10):
-        enemy = self.run.random_enemy.random_enemy(self.run.random_enemy.filter_by_exact_id(1.1))
+        enemy = self.run.random_enemy.random_enemy(self.run.random_enemy.filter_by_exact_id(2.1))
         self.run.player.add_enemy(self.run.data_enemies, *enemy)
         self.run.player.number_enemies += 1
 
