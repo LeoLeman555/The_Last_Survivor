@@ -19,6 +19,7 @@ class Update():
         self.update_laser()
       if self.run.data_extras["drone"]["activate"] == True:
         self.update_drone()
+      self.update_rescue()
       self.update_messages()
       
     self.draw()
@@ -48,6 +49,7 @@ class Update():
       laser.draw(self.run.screen)
     if self.run.data_extras["drone"]["activate"] == True:
       self.run.drone.draw(self.run.screen)
+    self.run.rescue_ship.draw(self.run.screen)
     for message in self.run.player.messages:
       message.draw(self.run.screen)
     self.run.countdown.draw()
@@ -59,6 +61,9 @@ class Update():
     self.run.weapons_cards.draw(self.run.screen)
     self.run.extras_cards.update(self.run.mouse["position"], self.run.mouse["press"])
     self.run.extras_cards.draw(self.run.screen)
+
+  def update_rescue(self):
+    self.run.rescue_ship.update(*self.run.mouvement, self.run.player.rect_collision)
 
   def update_toxic(self):
     self.particles_list = list(self.run.player.toxic_particles)

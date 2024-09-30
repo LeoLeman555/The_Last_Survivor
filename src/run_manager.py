@@ -59,6 +59,7 @@ class RunManager:
       objet.change_zoom(self.run.zoom)
     self.run.weapon.change_zoom(self.run.zoom)
     self.run.drone.change_zoom(self.run.zoom)
+    self.run.rescue_ship.change_zoom()
 
   def end_game(self):
     rewards = {

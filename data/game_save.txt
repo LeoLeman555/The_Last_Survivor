@@ -9,7 +9,7 @@ GAME_SAVE_PARAMS = {
   "weapon_level": {
     "pistol": 10,
     "magnum": 10,
-    "shotgun": 9,
+    "shotgun": 10,
     "sniper": 8,
     "ak": 7,
     "rpg": 6,

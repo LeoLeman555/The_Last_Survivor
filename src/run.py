@@ -14,6 +14,7 @@ from keyboard_input import *
 from run_manager import *
 from end_screen import *
 from countdown import *
+from rescue import *
 
 class Run:
   def __init__(self):
@@ -132,6 +133,7 @@ class Run:
     self.extras_cards = ExtrasCard(self)
     self.shooter = Shooter(self)
     self.keyboard_input = KeyboardInput(self)
+    self.rescue_ship = RescueShip(self)
 
     self.filtered_weapons = {key: weapon for key, weapon in self.data_weapons.items() if weapon.get('level', 0) > 0}
 
