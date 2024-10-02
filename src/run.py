@@ -55,7 +55,7 @@ class Run:
     self.index_palier_xp = 1
     self.weapon_id = 1
     self.win = False
-    self.time_left = 60
+    self.time_left = 10
 
   def initialize_data(self):
     self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
@@ -134,6 +134,7 @@ class Run:
     self.shooter = Shooter(self)
     self.keyboard_input = KeyboardInput(self)
     self.rescue_ship = RescueShip(self)
+    self.arrow_indicator = ArrowIndicator(self, self.rescue_ship)
 
     self.filtered_weapons = {key: weapon for key, weapon in self.data_weapons.items() if weapon.get('level', 0) > 0}
 

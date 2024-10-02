@@ -5,7 +5,7 @@ class CountDown:
     self.run = run
     self.duration = duration
     self.remaining_time = duration
-    self.start_time = pygame.time.get_ticks()  # Record the start time
+    self.start_time = pygame.time.get_ticks()
 
   def update(self, pause):
     if not self.is_finished():
@@ -19,8 +19,7 @@ class CountDown:
       else:
         self.start_time = pygame.time.get_ticks()
     else:
-      self.run.win = True
-      self.run.player.die()
+      self.run.rescue_ship.launch_rescue()
 
   def get_time(self):
     minutes, seconds = divmod(self.remaining_time, 60)

@@ -53,6 +53,7 @@ class Update():
     for message in self.run.player.messages:
       message.draw(self.run.screen)
     self.run.countdown.draw()
+    self.run.arrow_indicator.draw(self.run.screen)
 
   def update_cards(self):
     self.run.power_up.update(self.run.mouse["position"], self.run.mouse["press"])
@@ -106,6 +107,8 @@ class Update():
   def update_icon(self):
     self.run.icon.update()
     self.run.icon.draw(self.run.screen)
+
+    self.run.arrow_indicator.update()
 
   def update_laser(self):
     if random.random() < self.run.data_extras["laser_probe"]["rarity"]:
