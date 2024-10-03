@@ -35,6 +35,8 @@ class RescueShip:
 
     self.facing_right = True
     self.moving_right = True
+
+    self.arrive = False
   
   def random_position(self, interval):
     x_ranges = {
@@ -88,6 +90,9 @@ class RescueShip:
 
     if self.position == self.target_position:
       self.move = False
+      if not self.arrive:
+        self.arrive = True
+        self.run.player.add_message("RESCUE SHIP ARRIVED", (500, 200), (500, 50), (0, 0, 0), 50, 1000)
   
   def update(self, x_var: int, y_var: int, player_rect: 'pygame.Rect'):
     x = (x_var / 2) * self.run.zoom
@@ -121,6 +126,8 @@ class RescueShip:
         self.image = self.original_image
       else:
         self.image = pygame.transform.flip(self.original_image, True, False)
+
+    self.rect.center = self.position
 
     # Handle direction
     if not self.moving_right and self.facing_right:

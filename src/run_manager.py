@@ -32,13 +32,15 @@ class RunManager:
     self.run.weapon.change_weapon(self.run.zoom, self.run.player, self.run.current_weapon_dict)
 
   def launch_power_up(self):
-    unlocked_power_ups = [name for name, data in self.run.data_power_up.items() if not data.get('locked', False)]
+    self.unlocked_power_ups = [name for name, data in self.run.data_power_up.items() if not data.get('locked', False)]
+    self.unlocked_extras = [name for name, data in self.run.data_extras.items() if not data.get('locked', False)]
     #? Maybe add a other chance to get extras
-    if len(unlocked_power_ups) < 3 or random.random() < 0.15:
-      self.add_extras()
+    if len(self.unlocked_power_ups) < 3 or random.random() < 0.15:
+      if len(self.unlocked_extras) >= 2:
+        self.add_extras()
       return
     self.run.pause = True
-    self.run.power_up.launch_cards(random.sample(unlocked_power_ups, 3))
+    self.run.power_up.launch_cards(random.sample(self.unlocked_power_ups, 3))
 
   def change_max_xp(self, palier):
     self.run.index_palier_xp = palier

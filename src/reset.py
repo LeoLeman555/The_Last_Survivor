@@ -10,7 +10,10 @@ def reset_game_save(save_params, filename="data/game_save.txt"):
   for extra in save_params['extras_level']:
     save_params['extras_level'][extra] = 0
   for power_up in save_params['power_up_level']:
-    save_params['power_up_level'][power_up] = 0
+    if power_up == "care_kit" or power_up == "survival_ration" or power_up == "2nd_life":
+      save_params['power_up_level'][power_up] = 1
+    else:
+      save_params['power_up_level'][power_up] = 0
 
   with open(filename, 'w') as file:
     file.write("GAME_SAVE_PARAMS = {\n")
