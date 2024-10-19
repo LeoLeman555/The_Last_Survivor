@@ -93,24 +93,14 @@ class Run:
               weapon_data[stat] += int(upgrade_value * (weapon_level - 1))
 
   def initialize_weapons_extras_power_up(self):
-    self.data_weapons = self.load_and_process_data("weapon_level", self.data_weapons)
+    self.data_weapons = self.load.process_data(self.game_data, "weapon_level", self.data_weapons)
     self.current_weapon_dict = self.data_weapons[f"{self.weapon_id}"]
     self.position_weapon()
 
-    self.data_extras = self.load_and_process_data("extras_level", self.data_extras)
+    self.data_extras = self.load.process_data(self.game_data, "extras_level", self.data_extras)
     
-    self.data_power_up = self.load_and_process_data("power_up_level", self.data_power_up)
+    self.data_power_up = self.load.process_data(self.game_data, "power_up_level", self.data_power_up)
     self.load.load_power_up(self.data_power_up)
-
-
-  def load_and_process_data(self, level_key, data):
-    for name, level in self.game_data[level_key].items():
-      for item_id, item_info in data.items():
-        if item_info["name"] == name:
-          item_info["level"] = level
-          item_info["locked"] = (level == 0)
-          break
-    return {key: value for key, value in data.items()}
 
   def position_weapon(self):
     self.current_weapon_dict["position"][0] = 500 + (10 * self.zoom)

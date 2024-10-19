@@ -37,6 +37,15 @@ class Load:
       power_up_data["left_image"] = left_image
       power_up_data["right_image"] = right_image
 
+  def process_data(self, game_data: dict, level_key: str, data: dict) -> dict:
+    for name, level in game_data[level_key].items():
+      for item_id, item_info in data.items():
+        if item_info["name"] == name:
+          item_info["level"] = level
+          item_info["locked"] = (level == 0)
+          break
+    return {key: value for key, value in data.items()}
+
 class ReadData:
   def get_thresholds(self, path: str):
     """Read and return thresholds from a file."""

@@ -1,5 +1,4 @@
 import random
-import pygame
 from end_screen import *
 
 class RunManager:

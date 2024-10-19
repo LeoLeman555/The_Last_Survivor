@@ -2,6 +2,7 @@ import pygame
 import ast
 import time
 from reset import *
+from load import *
 
 class MenuPrincipal:
   def __init__(self):
@@ -9,8 +10,10 @@ class MenuPrincipal:
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Main Menu")
     self.direction = None
+
+    self.read_data = ReadData()
     # ["jeu", "intro", "boutique", "elements", "options"]
-    self.buttons = ["jeu"]
+    self.buttons = ["game", "shop"]
     self.icon_names = ["energy", "metal", "data"]
     self.running = True
 
@@ -24,7 +27,7 @@ class MenuPrincipal:
       self.rects[name].centery = self.screen.get_height() // 2 + i * (self.rects[name].height + 20) - 2 * self.rects[name].height
 
     # Charger les données du jeu et les icônes
-    self.game_data = self.read_params("data/game_save.txt", "game_save")
+    self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
     self.icon_numbers = [self.game_data["resource"]["energy"], self.game_data["resource"]["metal"], self.game_data["resource"]["data"]]
     self.icons = {name: pygame.image.load(f"res/sprite/{name}_icon.png") for name in self.icon_names}
     self.icon_rects = {name: self.icons[name].get_rect() for name in self.icon_names}
@@ -41,17 +44,9 @@ class MenuPrincipal:
     image = pygame.image.load(f"res/menu/{name}.png")
     return pygame.transform.scale(image, (image.get_width() + 20, image.get_height()))
 
-  def read_params(self, filepath: str, prefix: str):
-    """Méthode générique pour lire tout fichier de paramètres."""
-    with open(filepath, 'r') as file:
-      content = file.read()
-    real_prefix = prefix.upper()
-    content = content.replace(f"{real_prefix}_PARAMS = ", "", 1)
-    return ast.literal_eval(content)
-
   def afficher_menu(self):
     # Afficher l'arrière-plan
-    self.screen.blit(pygame.image.load("res/menu/background.jpg"), (0, 0))
+    self.screen.blit(pygame.image.load("res/menu/background_menu.jpg"), (0, 0))
 
     # Afficher les boutons
     for name in self.buttons:
@@ -97,7 +92,7 @@ class MenuPrincipal:
       time.sleep(0.5)
       print("-------- Your progress has been reinitialized ---------")
 
-    self.game_data = self.read_params("data/game_save.txt", "game_save")  # Recharger les nouvelles données
+    self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")  # Recharger les nouvelles données
     self.icon_numbers = [self.game_data["resource"]["energy"], self.game_data["resource"]["metal"], self.game_data["resource"]["data"]]
       
     self.running = True

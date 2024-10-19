@@ -171,6 +171,5 @@ class GameOverScreen:
 
     pygame.quit()
 
-
   def save_awards(self):
     self.add_awards.change_params(self.add_awards.reward, self.add_awards.game_save_data)
