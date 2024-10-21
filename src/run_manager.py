@@ -63,7 +63,10 @@ class RunManager:
     self.run.rescue_ship.change_zoom()
 
   def end_game(self):
+    win = "victory" if self.run.win else "defeat"
+    extras_rewards = 6 if self.run.win else 3
     rewards = {
+    "money": extras_rewards * (self.run.icon.resource["energy"] + self.run.icon.resource["metal"] + self.run.icon.resource["data"]),
     "resource": {
       "energy": self.run.icon.resource["energy"],
       "metal": self.run.icon.resource["metal"],
@@ -71,7 +74,6 @@ class RunManager:
       }
     }
 
-    win = "victory" if self.run.win else "defeat"
     game_over_screen = GameOverScreen(self.run.WIDTH_SCREEN, self.run.HEIGHT_SCREEN, rewards, win)
     game_over_screen.run()
 

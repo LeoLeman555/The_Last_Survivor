@@ -1,7 +1,7 @@
 import pygame
 import time
 from load import *
-from add_awards import AddAwards
+from change_game_data import ChangeGameData
 
 class Shop:
   def __init__(self):
@@ -19,6 +19,11 @@ class Shop:
     self.data_weapons_levels = self.read_data.read_params("data/weapons_level.txt", "weapons_level")
     self.data_weapons = self.load.process_data(self.game_data, "weapon_level", self.data_weapons)
     self.update_weapons_with_levels()
+
+    # money icon
+    self.icon_money = pygame.image.load("res/shop/icon_money.png")
+    self.icon_money_rect = self.icon_money.get_rect()
+    self.icon_money_rect.center = (80, 30)
 
     # return button
     self.button_return = pygame.image.load("res/shop/button_return.png").convert_alpha()
@@ -131,6 +136,13 @@ class Shop:
       self.screen.blit(self.steps["step_1"]["cards"][0]['current_image'], self.steps["step_1"]["cards"][0]['rect'])
     
     if self.step_shop_menu == 2:
+      self.screen.blit(self.icon_money, self.icon_money_rect)
+      number_text = self.font.render(f"{self.game_data["money"]}", True, (255, 255, 255))
+      text_rect = number_text.get_rect()
+      text_rect.topleft = (self.icon_money_rect.centerx + 25, self.icon_money_rect.topleft[1])
+      self.screen.blit(number_text, text_rect)
+
+
       index_name = 0
       for line in range(2):
         for row in range(6):
@@ -214,7 +226,7 @@ class Shop:
       if card['rect'].collidepoint(mouse_pos):
         card['current_image'] = card['right_image']
         if self.press_mouse:
-          print(card["name"])
+          # print(card["name"])
           self.step_shop_menu = 2
       else:
         card['current_image'] = card['left_image']
@@ -245,11 +257,14 @@ class Shop:
 
   def change_level_data(self, id):
     name = self.data_weapons[f"{id}"]["name"]
-    if self.game_data["weapon_level"][name] < 10:
-      rewards = {"weapon_level": {f"{name}": 1,}}
-      add_awards = AddAwards(rewards)
-      add_awards.change_params(add_awards.reward, add_awards.game_save_data)
-      self.update_data()
+    level = self.data_weapons[f"{id}"]["level"] + 1
+    if level <= 10:
+      price = self.price_data[name][f"level_{level}"]
+      if self.game_data["weapon_level"][name] < 10 and self.game_data["money"] >= price:
+        rewards = {"money": -price, "weapon_level": {f"{name}": 1,}}
+        change_game_data = ChangeGameData(rewards)
+        change_game_data.change_params(change_game_data.reward, change_game_data.game_save_data)
+        self.update_data()
 
   def run(self):
     clock = pygame.time.Clock()

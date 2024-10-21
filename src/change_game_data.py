@@ -1,6 +1,6 @@
 import ast
 
-class AddAwards:
+class ChangeGameData:
   def __init__(self, reward):
     self.reward = reward
     self.game_save_data = self._read_params()

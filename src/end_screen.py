@@ -1,6 +1,5 @@
 import pygame
-import sys
-from add_awards import *
+from change_game_data import ChangeGameData
 
 class GameOverScreen:
   def __init__(self, width, height, rewards, victory):
@@ -27,13 +26,15 @@ class GameOverScreen:
 
     # Rewards (passed as a dictionary)
     self.rewards = rewards
-    self.add_awards = AddAwards(self.rewards)
+    self.change_game_data = ChangeGameData(self.rewards)
     self.rewards = self.rewards["resource"]
+    self.rewards["money"] = rewards["money"]
 
     # Load reward icons
     self.energy_icon = self.load_image("res/sprite/energy_icon.png", (44, 40))
     self.metal_icon = self.load_image("res/sprite/metal_icon.png", (44, 40))
     self.data_icon = self.load_image("res/sprite/data_icon.png", (44, 32))
+    self.money_icon = self.load_image("res/shop/icon_money.png", (38, 26))
 
     # Animation variables
     self.scale = 1.0
@@ -87,7 +88,7 @@ class GameOverScreen:
   def animate_current_reward(self, frame):
     """Anime la récompense actuelle en réduisant la vitesse d'incrémentation progressivement."""
     # Ordre des récompenses à afficher
-    reward_order = ["energy", "metal", "data"]
+    reward_order = ["energy", "metal", "data", "money"]
 
     current_index = reward_order.index(self.current_reward)
     next_reward = reward_order[current_index + 1] if current_index + 1 < len(reward_order) else None
@@ -126,7 +127,8 @@ class GameOverScreen:
     rewards = [
       (self.energy_icon, f"{int(self.temp_rewards['energy'])}"),
       (self.metal_icon, f"{int(self.temp_rewards['metal'])}"),
-      (self.data_icon, f"{int(self.temp_rewards['data'])}")
+      (self.data_icon, f"{int(self.temp_rewards['data'])}"),
+      (self.money_icon, f"{int(self.temp_rewards['money'])}")
     ]
 
     for i, (icon, text) in enumerate(rewards):
@@ -172,4 +174,4 @@ class GameOverScreen:
     pygame.quit()
 
   def save_awards(self):
-    self.add_awards.change_params(self.add_awards.reward, self.add_awards.game_save_data)
+    self.change_game_data.change_params(self.change_game_data.reward, self.change_game_data.game_save_data)

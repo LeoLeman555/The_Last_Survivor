@@ -1,5 +1,5 @@
 def reset_game_save(save_params, filename="data/game_save.txt"):
-  save_params['money'] = 0
+  save_params['money'] = 500
   for resource in save_params['resource']:
     save_params['resource'][resource] = 0
   for weapon in save_params['weapon_level']:
