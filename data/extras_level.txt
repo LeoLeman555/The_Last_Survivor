@@ -11,7 +11,7 @@ EXTRAS_LEVEL_PARAMS = {
   "missile": {
     "damage": 17,
   },
-  "laser": {
+  "laser_probe": {
     "damage": 20,
   },
 }
