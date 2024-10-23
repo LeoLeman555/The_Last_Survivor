@@ -2,6 +2,7 @@ import pygame
 import time
 from load import *
 from change_game_data import ChangeGameData
+from button import ReturnButton
 
 class Shop:
   def __init__(self):
@@ -32,12 +33,12 @@ class Shop:
     self.icon_money_rect.center = (80, 30)
 
     # return button
-    self.button_return = pygame.image.load("res/shop/button_return.png").convert_alpha()
-    self.button_return_click = pygame.image.load("res/shop/button_return_click.png").convert_alpha()
-    self.button_return_rect = self.button_return.get_rect()
-    self.button_return_rect.center = (975, 25)
-    self.button_return_original_pos = self.button_return_rect.topleft
-    #? maybe create a class for buttons
+    self.button_return = ReturnButton(
+      image_path="res/shop/button_return.png",
+      click_image_path="res/shop/button_return_click.png",
+      position=(975, 25)
+    )
+
     # buy button
     self.button_buy = pygame.image.load("res/shop/button_buy.png").convert_alpha()
     self.button_buy_click = pygame.image.load("res/shop/button_buy_click.png").convert_alpha()
@@ -183,6 +184,8 @@ class Shop:
             extra_data[stat] += upgrade_value * (extra_level - 1)
   
   def draw(self, mouse_pos):
+    self.button_return.draw(self.screen, mouse_pos)
+
     if self.step_shop_menu == 1:
       self.screen.blit(self.steps["step_1"]["cards"][0]['current_image'], self.steps["step_1"]["cards"][0]['rect'])
     
@@ -320,18 +323,18 @@ class Shop:
             rect.center = (self.back_weapon_rect.x + self.back_weapon_rect.width // 2, self.back_weapon_rect.y + self.back_weapon_rect.height // 2)
             self.screen.blit(self.weapon_images[weapon_name_screen][0], rect)
 
-    # Vérifier si la souris survole le bouton retour
-    if self.button_return_rect.collidepoint(mouse_pos):
-      # Afficher l'image survolée et déplacer le bouton légèrement
-      self.screen.blit(self.button_return_click, self.button_return_rect)
-      self.button_return_rect.topleft = (self.button_return_original_pos[0] + 1, self.button_return_original_pos[1] + 1)
-    else:
-      # Revenir à l'image normale et à la position originale
-      self.screen.blit(self.button_return, self.button_return_rect)
-      self.button_return_rect.topleft = self.button_return_original_pos
-
   def update(self, mouse_pos: tuple):
-    self.step_return(mouse_pos)
+    # Vérifier si le bouton retour est pressé
+    if self.button_return.is_pressed(mouse_pos, self.press_mouse):
+      current_time = time.time()
+      return_button_index = len(self.all_button_buy)
+      if current_time - self.last_click_times[return_button_index] > self.cooldown:
+        if self.step_shop_menu == 3:
+          self.step_shop_menu = 1
+        else:
+          self.step_shop_menu -= 1
+        self.last_click_times[return_button_index] = current_time
+
     self.right_arrow(mouse_pos)
     self.left_arrow(mouse_pos)
     if self.step_shop_menu == 1:
