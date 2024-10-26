@@ -21,9 +21,11 @@ class Shop:
     self.data_weapons = self.read_data.read_params("data/weapons.txt", "weapons")
     self.data_weapons_levels = self.read_data.read_params("data/weapons_level.txt", "weapons_level")
     self.data_weapons_price = self.read_data.read_params("data/weapons_price.txt", "price")
+    self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
 
     self.data_weapons = self.load.process_data(self.game_data, "weapon_level", self.data_weapons)
     self.data_extras = self.load.process_data(self.game_data, "extras_level", self.data_extras)
+    self.data_power_up = self.load.process_data(self.game_data, "power_up_level", self.data_power_up)
     self.update_weapons_with_levels()
     self.update_extras_with_levels()
 
@@ -75,10 +77,13 @@ class Shop:
     self.create_weapon_images()
 
     self.extras_names = ["Grenade", "Toxic G.", "Drone", "Missile", "Laser Probe"]
-    self.shop_table_extras = self.create_table(self.data_extras, extras=True)
+    self.shop_table_extras = self.create_table(self.data_extras, str_key=True)
     self.extras_images = {}
-    # todo create_extras_images()
     self.create_extras_images()
+
+    self.power_up_names = ["Care kit", "Survival ration", "2nd life", "Critical hit", "Expert", "Boost", "Agile fingers", "Extra ammo", "Large range", "Magnetic", "Piercing", "Rapid fire", "Regeneration", "Zoom", "Strong stomach"]
+    self.shop_tables_power_up = self.create_table(self.data_power_up, 3, 5, str_key=True)
+    self.power_up_images = {}
 
     self.step_shop_menu = 1
 
@@ -148,9 +153,9 @@ class Shop:
       rect = image.get_rect()
       self.extras_images[extras_name] = [image, rect]
 
-  def create_table(self, weapons_params, rows=2, cols=6, extras=False):
+  def create_table(self, weapons_params, rows=2, cols=6, str_key=False):
     shop_table_weapon = []
-    if extras: 
+    if str_key: 
       weapon_levels = [weapons_params[weapon_id]["level"] for weapon_id in weapons_params.keys()]
     else: 
       weapon_levels = [weapons_params[weapon_id]["level"] for weapon_id in sorted(weapons_params.keys(), key=int)]
@@ -185,143 +190,104 @@ class Shop:
   
   def draw(self, mouse_pos):
     self.button_return.draw(self.screen, mouse_pos)
+    self.screen.blit(self.icon_money, self.icon_money_rect)
+    number_text = self.font.render(f"{self.game_data["money"]}", True, (255, 255, 255))
+    text_rect = number_text.get_rect()
+    text_rect.topleft = (self.icon_money_rect.centerx + 25, self.icon_money_rect.topleft[1])
+    self.screen.blit(number_text, text_rect)
 
     if self.step_shop_menu == 1:
       self.screen.blit(self.steps["step_1"]["cards"][0]['current_image'], self.steps["step_1"]["cards"][0]['rect'])
     
-    if self.step_shop_menu == 2 or self.step_shop_menu == 3:
-      self.screen.blit(self.icon_money, self.icon_money_rect)
-      number_text = self.font.render(f"{self.game_data["money"]}", True, (255, 255, 255))
-      text_rect = number_text.get_rect()
-      text_rect.topleft = (self.icon_money_rect.centerx + 25, self.icon_money_rect.topleft[1])
-      self.screen.blit(number_text, text_rect)
+    else:
+      self.draw_step_2_3()
+  
+  def draw_elements(self, data: dict, data_price: dict, stats: dict, images: dict, shop_table: list[int], position: list[int], fake_names: list[str], data_names: list, number_line: int, number_row: int):
+    x_start, x_interval, y_start, y_interval = position
+    index_id = 0
+    for line in range(number_line):
+      for row in range(number_row):
+        if shop_table[line][row] != 0:
+          draw_name = fake_names[index_id]
+        else: 
+          draw_name = "LOCK"
+        try:
+          index_name = data_names[index_id]
+          dict_element = data[index_name]
+          if index_name == "12":
+            index_name = None
+        except:
+          index_name = None
+        index_id += 1
+        # draw the background
+        x = x_start + row * x_interval
+        y = line
+        self.back_weapon_rect.x = x
+        self.back_weapon_rect.y = y_start + y * y_interval
+        # todo change name of self.back_weapon
+        self.screen.blit(self.back_weapon, self.back_weapon_rect)
 
-      if self.step_shop_menu == 3:
-        self.screen.blit(self.button_left_arrow, self.button_left_arrow_rect)
-        index_name = 0
-        for line in range(2):
-          for row in range(6):
-            if self.shop_table_extras[line][row] != 0:
-              name = self.extras_names[index_name]
-            else:
-              name = "LOCK"
-            try:
-              name_extra = list(self.data_extras.keys())[index_name]
-              dict_extra = self.data_extras[name_extra]
-            except IndexError:
-              name_extra = None
-            index_name += 1
+        # draw the name
+        text = self.font.render(draw_name, True, (255, 255, 255))
+        text_rect = text.get_rect()
+        text_rect.center = (self.back_weapon_rect.x + self.back_weapon_rect.width // 2, 
+                            self.back_weapon_rect.y + 25 + self.back_weapon_rect.height // 2)
+        self.screen.blit(text, text_rect)
 
-            x = 40 + row * 160
-            y = line
-            self.back_weapon_rect.x = x
-            self.back_weapon_rect.y = 60 + y * 260
-            self.screen.blit(self.back_weapon, self.back_weapon_rect)
+        # draw stats
+        if draw_name != "LOCK":
+          for name_text in stats.keys():
+            text = self.font.render(name_text + str(dict_element[stats[name_text][0]]), True, stats[name_text][1])
+            text_rect = text.get_rect()
+            text_rect.topleft = (self.back_weapon_rect.x, self.back_weapon_rect.y + stats[name_text][2])
+            self.screen.blit(text, text_rect)
 
-            number_text = self.font.render(name, True, (255, 255, 255))
-            text_rect = number_text.get_rect()
-            text_rect.center = (self.back_weapon_rect.x + self.back_weapon_rect.width // 2, 
-                                self.back_weapon_rect.y + 25 + self.back_weapon_rect.height // 2)
-            self.screen.blit(number_text, text_rect)
+        # draw price
+        if index_name != None:
+          if dict_element["level"] < 10:
+            price = str(data_price[f"{dict_element["name"]}"][f"level_{dict_element["level"]+1}"]) + "$"
+          else: 
+            price = "-- MAX --"
+          text = self.font.render("PRICE", True, (255, 255, 255))
+          text_rect = text.get_rect()
+          text_rect.topleft = (self.back_weapon_rect.x, self.back_weapon_rect.y + 180)
+          self.screen.blit(text, text_rect)
+          text = self.font.render(price, True, (255, 255, 255))
+          text_rect = text.get_rect()
+          text_rect.center = (self.back_weapon_rect.x + 35, self.back_weapon_rect.y + 210)
+          self.screen.blit(text, text_rect)
 
-            if name != "LOCK":
-              texts = {"DPS : ": ["damage", (254, 27, 0), 100], "LEVEL : ": ["level", (121, 248, 248), 80]}
-              for name_text in texts.keys():
-                text = self.font.render(name_text + str(dict_extra[texts[name_text][0]]), True, texts[name_text][1])
-                text_rect = text.get_rect()
-                text_rect.topleft = (self.back_weapon_rect.x, 
-                                    self.back_weapon_rect.y + texts[name_text][2])
-                self.screen.blit(text, text_rect)
+          # draw buy button
+          if self.all_button_buy[f"buy_{index_id}"][0] == False:
+            self.screen.blit(self.all_button_buy[f"buy_{index_id}"][1][0], self.all_button_buy[f"buy_{index_id}"][1][1])
+          else:
+            topleft = self.all_button_buy[f"buy_{index_id}"][1][3]
+            topleft = (topleft[0] + 2, topleft[1] + 2)
+            self.screen.blit(self.all_button_buy[f"buy_{index_id}"][1][2], topleft)
 
-            if name_extra != None:
-              if dict_extra["level"] < 10:
-                price = str(self.data_extras_price[f"{dict_extra["name"]}"][f"level_{dict_extra["level"]+1}"]) + "$"
-              else: 
-                price = "-- MAX --"
-              text = self.font.render("PRICE", True, (255, 255, 255))
-              text_rect = text.get_rect()
-              text_rect.topleft = (self.back_weapon_rect.x, 
-                                  self.back_weapon_rect.y + 180)
-              self.screen.blit(text, text_rect)
-              text = self.font.render(price, True, (255, 255, 255))
-              text_rect = text.get_rect()
-              text_rect.center = (self.back_weapon_rect.x + 35, 
-                                  self.back_weapon_rect.y + 210)
-              self.screen.blit(text, text_rect)
+        # draw the image
+        rect = images[draw_name][1]
+        rect.center = (self.back_weapon_rect.x + self.back_weapon_rect.width // 2, self.back_weapon_rect.y + self.back_weapon_rect.height // 2)
+        self.screen.blit(images[draw_name][0], rect)
 
-              if self.all_button_buy[f"buy_{index_name}"][0] == False:
-                self.screen.blit(self.all_button_buy[f"buy_{index_name}"][1][0], self.all_button_buy[f"buy_{index_name}"][1][1])
-              else:
-                topleft = self.all_button_buy[f"buy_{index_name}"][1][3]
-                topleft = (topleft[0] + 2, topleft[1] + 2)
-                self.screen.blit(self.all_button_buy[f"buy_{index_name}"][1][2], topleft)
+  
+  def draw_step_2_3(self):
+    if self.step_shop_menu == 2:
+      self.screen.blit(self.button_right_arrow, self.button_right_arrow_rect)
+      stats = {"DPS : ": ["damage", (254, 27, 0), 100], "RANGE : ": ["range", (1, 215, 88), 120], "LEVEL : ": ["level", (121, 248, 248), 80]}
+      position = [40, 160, 60, 260]
+      data_names = []
+      for item in self.data_weapons:
+        data_names.append(item)
+      self.draw_elements(self.data_weapons, self.data_weapons_price, stats, self.weapon_images, self.shop_table_weapon, position, self.weapon_names, data_names, 2, 6)
+      
+    if self.step_shop_menu == 3:
+      self.screen.blit(self.button_left_arrow, self.button_left_arrow_rect)
+      stats = {"DPS : ": ["damage", (254, 27, 0), 100], "LEVEL : ": ["level", (121, 248, 248), 80]}
+      position = [40, 160, 60, 260]
+      data_names = list(self.data_extras.keys())
+      self.draw_elements(self.data_extras, self.data_extras_price, stats, self.extras_images, self.shop_table_extras, position, self.extras_names, data_names, 2, 6)
 
-            rect = self.extras_images[name][1]
-            rect.center = (self.back_weapon_rect.x + self.back_weapon_rect.width // 2, self.back_weapon_rect.y + self.back_weapon_rect.height // 2)
-            self.screen.blit(self.extras_images[name][0], rect)
-
-      if self.step_shop_menu == 2:
-        self.screen.blit(self.button_right_arrow, self.button_right_arrow_rect)
-        weapon_id = 0
-        for line in range(2):
-          for row in range(6):
-            if self.shop_table_weapon[line][row] != 0:
-              weapon_name_screen = self.weapon_names[weapon_id]
-            else:
-              weapon_name_screen = "LOCK"
-            weapon_id += 1
-            weapon_dict = self.data_weapons[f"{weapon_id}"]
-
-            # Draw background
-            x = 40 + row * 160
-            y = line
-            self.back_weapon_rect.x = x
-            self.back_weapon_rect.y = 60 + y * 260
-            self.screen.blit(self.back_weapon, self.back_weapon_rect)
-            
-            # Draw texts
-            number_text = self.font.render(weapon_name_screen, True, (255, 255, 255))
-            text_rect = number_text.get_rect()
-            text_rect.center = (self.back_weapon_rect.x + self.back_weapon_rect.width // 2, 
-                                self.back_weapon_rect.y + 25 + self.back_weapon_rect.height // 2)
-            self.screen.blit(number_text, text_rect)
-
-            if weapon_name_screen != "LOCK":
-              texts = {"DPS : ": ["damage", (254, 27, 0), 100], "RANGE : ": ["range", (1, 215, 88), 120], "LEVEL : ": ["level", (121, 248, 248), 80]}
-              for name_text in texts.keys():
-                text = self.font.render(name_text + str(weapon_dict[texts[name_text][0]]), True, texts[name_text][1])
-                text_rect = text.get_rect()
-                text_rect.topleft = (self.back_weapon_rect.x, 
-                                    self.back_weapon_rect.y + texts[name_text][2])
-                self.screen.blit(text, text_rect)
-
-            if weapon_dict["name"] != "knife":
-              if weapon_dict["level"] < 10:
-                price = str(self.data_weapons_price[f"{weapon_dict["name"]}"][f"level_{weapon_dict["level"]+1}"]) + "$"
-              else: 
-                price = "-- MAX --"
-              text = self.font.render("PRICE", True, (255, 255, 255))
-              text_rect = text.get_rect()
-              text_rect.topleft = (self.back_weapon_rect.x, 
-                                  self.back_weapon_rect.y + 180)
-              self.screen.blit(text, text_rect)
-              text = self.font.render(price, True, (255, 255, 255))
-              text_rect = text.get_rect()
-              text_rect.center = (self.back_weapon_rect.x + 35, 
-                                  self.back_weapon_rect.y + 210)
-              self.screen.blit(text, text_rect)
-
-              if self.all_button_buy[f"buy_{weapon_id}"][0] == False:
-                self.screen.blit(self.all_button_buy[f"buy_{weapon_id}"][1][0], self.all_button_buy[f"buy_{weapon_id}"][1][1])
-              else:
-                topleft = self.all_button_buy[f"buy_{weapon_id}"][1][3]
-                topleft = (topleft[0] + 2, topleft[1] + 2)
-                self.screen.blit(self.all_button_buy[f"buy_{weapon_id}"][1][2], topleft)
-
-            # Draw weapon
-            rect = self.weapon_images[weapon_name_screen][1]
-            rect.center = (self.back_weapon_rect.x + self.back_weapon_rect.width // 2, self.back_weapon_rect.y + self.back_weapon_rect.height // 2)
-            self.screen.blit(self.weapon_images[weapon_name_screen][0], rect)
 
   def update(self, mouse_pos: tuple):
     # Vérifier si le bouton retour est pressé
@@ -456,6 +422,6 @@ class Shop:
     self.weapon_images = {}
     self.create_weapon_images()
 
-    self.shop_table_extras = self.create_table(self.data_extras, extras=True)
+    self.shop_table_extras = self.create_table(self.data_extras, str_key=True)
     self.extras_images = {}
     self.create_extras_images()

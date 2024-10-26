@@ -3,12 +3,12 @@ from change_game_data import ChangeGameData
 
 class GameOverScreen:
   def __init__(self, width, height, rewards, victory):
-    # Initialize Pygame and window attributes
+    # Initialize Pygame and screen attributes
     pygame.init()
     self.width = width
     self.height = height
     self.victory = victory
-    self.window = pygame.display.set_mode((self.width, self.height))
+    self.screen = pygame.display.set_mode((self.width, self.height))
     pygame.display.set_caption("The Last Survivor - Game Over")
 
     # Define colors
@@ -141,10 +141,9 @@ class GameOverScreen:
         reward_text = self.rewards_font.render(text, True, self.color)
         reward_text_rect = reward_text.get_rect(topleft=(170, 250 + i * 60 - 3))
 
-        # Blitter l'icône, puis l'ombre et enfin le texte
-        self.window.blit(icon, (100, 250 + i * 60))
-        self.window.blit(shadow_text, shadow_text_rect)  # Afficher l'ombre
-        self.window.blit(reward_text, reward_text_rect)  # Afficher le texte principal
+        self.screen.blit(icon, (100, 250 + i * 60))
+        self.screen.blit(shadow_text, shadow_text_rect)  # Afficher l'ombre
+        self.screen.blit(reward_text, reward_text_rect)  # Afficher le texte principal
 
   def run(self):
     running = True
@@ -155,13 +154,13 @@ class GameOverScreen:
           self.save_awards()
           running = False
 
-      self.window.fill(self.black)
+      self.screen.fill(self.black)
       if self.background_image:
-        self.window.blit(self.background_image, (0, 0))
+        self.screen.blit(self.background_image, (0, 0))
 
       # Animate and draw the scaled "GAME OVER" image
       scaled_image, scaled_rect = self.animate_game_over_image()
-      self.window.blit(scaled_image, scaled_rect)
+      self.screen.blit(scaled_image, scaled_rect)
 
       # Animate the current reward
       frame = self.animate_current_reward(frame)

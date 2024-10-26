@@ -1,9 +1,9 @@
 GAME_SAVE_PARAMS = {
-  "money": 1750,
+  "money": 4250,
   "resource": {
-    "energy": 0,
-    "metal": 50,
-    "data": 100,
+    "energy": 425,
+    "metal": 475,
+    "data": 600,
     "ammo": 0,
   },
   "weapon_level": {
@@ -11,7 +11,7 @@ GAME_SAVE_PARAMS = {
     "magnum": 3,
     "shotgun": 8,
     "sniper": 7,
-    "ak": 4,
+    "ak": 5,
     "rpg": 0,
     "flamethrower": 0,
     "minigun": 0,
@@ -22,10 +22,10 @@ GAME_SAVE_PARAMS = {
   },
   "extras_level": {
     "grenade": 6,
-    "toxic_grenade": 0,
+    "toxic_grenade": 1,
     "drone": 6,
-    "missile": 0,
-    "laser_probe": 0,
+    "missile": 1,
+    "laser_probe": 1,
   },
   "power_up_level": {
     "care_kit": 1,
