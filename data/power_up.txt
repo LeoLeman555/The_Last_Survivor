@@ -2,7 +2,7 @@ POWER_UP_PARAMS = {
   "care_kit": {
     "id": 1,
     "name": "care_kit",
-    "effect": "health",
+    "effect": "+50 HP",
     "value": 50,
     "activate": False,
     "locked": False,
@@ -10,7 +10,7 @@ POWER_UP_PARAMS = {
   "survival_ration": {
     "id": 2,
     "name": "survival_ration",
-    "effect": "food",
+    "effect": "+50 FOOD",
     "value": 50,
     "activate": False,
     "locked": False,
@@ -18,15 +18,15 @@ POWER_UP_PARAMS = {
   "2nd_life": {
     "id": 3,
     "name": "2nd_life",
-    "effect": "life",
+    "effect": "+1 LIFE",
     "value": 1,
     "activate": False,
     "locked": False,
   },
-    "critical_hit": {
+  "critical_hit": {
     "id": 4,
     "name": "critical_hit",
-    "effect": "2x damage",
+    "effect": "+10% DPS",
     "value": 1.10,
     "activate": False,
     "locked": False,
@@ -34,7 +34,7 @@ POWER_UP_PARAMS = {
   "expert": {
     "id": 5,
     "name": "expert",
-    "effect": "xp",
+    "effect": "+20% XP",
     "value": 1.20,
     "activate": False,
     "locked": False,
@@ -42,7 +42,7 @@ POWER_UP_PARAMS = {
   "boost": {
     "id": 6,
     "name": "boost",
-    "effect": "speed",
+    "effect": "+10% SPEED",
     "value": 1.10,
     "activate": False,
     "locked": False,
@@ -50,7 +50,7 @@ POWER_UP_PARAMS = {
   "agile_fingers": {
     "id": 7,
     "name": "agile_fingers",
-    "effect": "reloading time",
+    "effect": "-25% RELOAD",
     "value": 0.75,
     "activate": False,
     "locked": False,
@@ -58,7 +58,7 @@ POWER_UP_PARAMS = {
   "extra_ammo": {
     "id": 8,
     "name": "extra_ammo",
-    "effect": "ammo",
+    "effect": "+2 AMMO",
     "value": 2,
     "activate": False,
     "locked": False,
@@ -66,7 +66,7 @@ POWER_UP_PARAMS = {
   "large_range": {
     "id": 9,
     "name": "large_range",
-    "effect": "shooting range",
+    "effect": "+20% RANGE",
     "value": 1.20,
     "activate": False,
     "locked": False,
@@ -74,7 +74,7 @@ POWER_UP_PARAMS = {
   "magnetic": {
     "id": 10,
     "name": "magnetic",
-    "effect": "recovery range",
+    "effect": "x2 RECOVERY",
     "value": 2,
     "activate": False,
     "locked": False,
@@ -82,7 +82,7 @@ POWER_UP_PARAMS = {
   "piercing": {
     "id": 11,
     "name": "piercing",
-    "effect": "enemy pierced",
+    "effect": "+1 PIERCED",
     "value": 1,
     "activate": False,
     "locked": False,
@@ -90,7 +90,7 @@ POWER_UP_PARAMS = {
   "rapid_fire": {
     "id": 12,
     "name": "rapid_fire",
-    "effect": "shoot time",
+    "effect": "-25% TIME",
     "value": 0.75,
     "activate": False,
     "locked": False,
@@ -98,7 +98,7 @@ POWER_UP_PARAMS = {
   "regeneration": {
     "id": 13,
     "name": "regeneration",
-    "effect": "hp",
+    "effect": "+2 HP/sec",
     "value": 2,
     "activate": False,
     "locked": False,
@@ -106,7 +106,7 @@ POWER_UP_PARAMS = {
   "zoom": {
     "id": 14,
     "name": "zoom",
-    "effect": "zoom",
+    "effect": "+1 ZOOM",
     "value": 1,
     "activate": False,
     "locked": False,
@@ -114,17 +114,9 @@ POWER_UP_PARAMS = {
   "strong_stomach": {
     "id": 15,
     "name": "strong_stomach",
-    "effect": "food",
+    "effect": "x2 RESISTANCE",
     "value": 2,
     "activate": False,
     "locked": False,
-  },
-  "researcher": {
-    "id": 16,
-    "name": "researcher",
-    "effect": "special item",
-    "value": 1.10,
-    "activate": False,
-    "locked": True,
   },
 }

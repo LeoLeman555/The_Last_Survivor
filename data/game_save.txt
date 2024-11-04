@@ -1,5 +1,5 @@
 GAME_SAVE_PARAMS = {
-  "money": 4250,
+  "money": 750,
   "resource": {
     "energy": 425,
     "metal": 475,
@@ -31,8 +31,8 @@ GAME_SAVE_PARAMS = {
     "care_kit": 1,
     "survival_ration": 1,
     "2nd_life": 1,
-    "critical_hit": 0,
-    "expert": 0,
+    "critical_hit": 1,
+    "expert": 1,
     "boost": 0,
     "agile_fingers": 0,
     "extra_ammo": 0,
@@ -41,8 +41,7 @@ GAME_SAVE_PARAMS = {
     "piercing": 0,
     "rapid_fire": 0,
     "regeneration": 0,
-    "zoom": 0,
-    "strong_stomach": 0,
-    "researcher": 0,
+    "zoom": 1,
+    "strong_stomach": 1,
   }
 }
