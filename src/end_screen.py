@@ -1,5 +1,7 @@
 import pygame
+import time
 from change_game_data import ChangeGameData
+from button import *
 
 class GameOverScreen:
   def __init__(self, width, height, rewards, victory):
@@ -11,6 +13,17 @@ class GameOverScreen:
     self.screen = pygame.display.set_mode((self.width, self.height))
     pygame.display.set_caption("The Last Survivor - Game Over")
 
+    self.button_return = ReturnButton(
+      image_path = "res/shop/button_return.png",
+      click_image_path = "res/shop/button_return_click.png",
+      position = (975, 25)
+    )
+
+    self.end_screen_step = 1
+    self.mouse_pos = 0
+    self.mouse_press = False
+    self.last_click_times = [0] * 1
+    self.cooldown = 0.5
     # Define colors
     self.black = (0, 0, 0)
     self.color = (255, 255, 255)
@@ -118,12 +131,10 @@ class GameOverScreen:
       else:
         # Incrémenter le compteur de délai (pour créer la pause de 1 seconde)
         self.delay_counter += 1
-
     return frame  # Continuer avec la récompense actuelle
+  
   def display_rewards(self):
-    """Display rewards with icons and animated values."""
-    # Définir la couleur de l'ombre rouge
-
+    self.button_return.draw(self.screen, self.mouse_pos)
     rewards = [
       (self.energy_icon, f"{int(self.temp_rewards['energy'])}"),
       (self.metal_icon, f"{int(self.temp_rewards['metal'])}"),
@@ -136,29 +147,46 @@ class GameOverScreen:
         # Créer l'ombre (en rouge) avec un léger décalage
         shadow_text = self.rewards_font.render(text, True, self.shadow_color)
         shadow_text_rect = shadow_text.get_rect(topleft=(170 + 2, 250 + i * 60 + 2 - 3))  # Décalé de 2px à droite et en bas
-
         # Créer le texte principal (en blanc)
         reward_text = self.rewards_font.render(text, True, self.color)
         reward_text_rect = reward_text.get_rect(topleft=(170, 250 + i * 60 - 3))
-
         self.screen.blit(icon, (100, 250 + i * 60))
         self.screen.blit(shadow_text, shadow_text_rect)  # Afficher l'ombre
         self.screen.blit(reward_text, reward_text_rect)  # Afficher le texte principal
+
+  def update(self):
+    self.press_buttons()
+
+  def press_buttons(self):
+    current_time = time.time()
+    # Check return button
+    return_button_index = 0
+    if self.button_return.is_pressed(self.mouse_pos, self.mouse_press):
+      if current_time - self.last_click_times[return_button_index] > self.cooldown:
+        if self.end_screen_step == 1:
+          self.end_screen_step = 0
+        else:
+          self.end_screen_step = 1
+        self.last_click_times[return_button_index] = current_time
 
   def run(self):
     running = True
     frame = 0  # Keep track of the frame count for animation
     while running:
+      self.mouse_pos = pygame.mouse.get_pos()
       for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or self.end_screen_step <= 0:
           self.save_awards()
           running = False
-
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+          self.mouse_press = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+          self.mouse_press = False
+      self.update()
       self.screen.fill(self.black)
       if self.background_image:
         self.screen.blit(self.background_image, (0, 0))
 
-      # Animate and draw the scaled "GAME OVER" image
       scaled_image, scaled_rect = self.animate_game_over_image()
       self.screen.blit(scaled_image, scaled_rect)
 

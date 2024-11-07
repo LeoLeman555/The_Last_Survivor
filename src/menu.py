@@ -13,7 +13,7 @@ class MenuPrincipal:
 
     self.read_data = ReadData()
     # ["jeu", "intro", "boutique", "elements", "options"]
-    self.buttons = ["game", "shop"]
+    self.buttons = ["game", "shop", "options"]
     self.icon_names = ["energy", "metal", "data"]
     self.running = True
 

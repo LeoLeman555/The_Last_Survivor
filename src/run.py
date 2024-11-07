@@ -66,8 +66,25 @@ class Run:
     self.data_weapons_levels = self.read_data.read_params("data/weapons_level.txt", "weapons_level")
     self.data_extras_levels = self.read_data.read_params("data/extras_level.txt", "extras_level")
     self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+    self.commands = self.game_data["options"]
+    self.mouse_mappings = self._map_mouse_buttons()
     self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
     self.data_extras = self.read_data.read_params("data/extras.txt", "extras")
+
+  def _map_mouse_buttons(self):
+    mouse_map = {}
+    for action, button in self.commands.items():
+      if button == "MOUSE1":
+        mouse_map[action] = 1
+      elif button == "MOUSE2":
+        mouse_map[action] = 3
+      elif button == "MOUSE3":
+        mouse_map[action] = 2
+      elif button == "MOUSE4":
+        mouse_map[action] = 4
+      elif button == "MOUSE5":
+        mouse_map[action] = 5
+    return mouse_map
 
   def update_extras_with_levels(self):
     for extra_id, extra_data in self.data_extras.items():
@@ -158,9 +175,12 @@ class Run:
         if event.type == pygame.QUIT:
           self.running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-          self.mouse["press"] = True
+          if event.button == self.mouse_mappings.get("shoot"):
+            self.mouse["press"] = True
         elif event.type == pygame.MOUSEBUTTONUP:
-          self.mouse["press"] = False
+          if event.button == self.mouse_mappings.get("shoot"):
+            self.mouse["press"] = False
+
       clock.tick(60)
 
     pygame.quit()

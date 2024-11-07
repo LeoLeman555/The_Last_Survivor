@@ -1,8 +1,9 @@
 import ast
 
 class ChangeGameData:
-  def __init__(self, reward):
+  def __init__(self, reward, str=False):
     self.reward = reward
+    self.str = str
     self.game_save_data = self._read_params()
 
   def _read_params(self):
@@ -18,7 +19,10 @@ class ChangeGameData:
         if isinstance(value, dict) and isinstance(dict2[key], dict):
           self.change_params(value, dict2[key])
         else:
-          dict2[key] += value
+          if self.str:
+            dict2[key] = str(value)
+          else:
+            dict2[key] += value
     self.write_params(self.game_save_data)
 
   def write_params(self, save_params):
@@ -40,5 +44,9 @@ class ChangeGameData:
       file.write('  "power_up_level": {\n')
       for power_up, value in save_params['power_up_level'].items():
         file.write(f'    "{power_up}": {value},\n')
-      file.write('  }\n')
+      file.write('  },\n')
+      file.write('  "options": {\n')
+      for option, value in save_params['options'].items():
+        file.write(f'    "{option}": "{value}",\n')
+      file.write('  },\n')
       file.write('}\n')

@@ -1,8 +1,9 @@
 print("------------------------- GO -------------------------")
 
-from run import Run
 from menu import *
+from run import Run
 from shop import Shop
+from options import Options
 
 running = True
 
@@ -15,6 +16,9 @@ while running == True:
   elif direction == "shop":
     shop = Shop()
     shop.run()
+  elif direction == "options":
+    options = Options()
+    options.run()
   else:
     running = False
 

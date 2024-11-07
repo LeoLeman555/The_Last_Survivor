@@ -15,6 +15,22 @@ def reset_game_save(save_params, filename="data/game_save.txt"):
     else:
       save_params['power_up_level'][power_up] = 0
 
+  for option in save_params['options']:
+    if option == "up":
+      save_params['options'][option] = "W"
+    if option == "left":
+      save_params['options'][option] = "A"
+    if option == "down":
+      save_params['options'][option] = "S"
+    if option == "right":
+      save_params['options'][option] = "D"
+    if option == "shoot":
+      save_params['options'][option] = "MOUSE1"
+    if option == "launch":
+      save_params['options'][option] = "SPACE"
+    if option == "pause":
+      save_params['options'][option] = "P"
+
   with open(filename, 'w') as file:
     file.write("GAME_SAVE_PARAMS = {\n")
     file.write(f'  "money": {save_params["money"]},\n')
@@ -33,6 +49,10 @@ def reset_game_save(save_params, filename="data/game_save.txt"):
     file.write('  "power_up_level": {\n')
     for power_up, value in save_params['power_up_level'].items():
       file.write(f'    "{power_up}": {value},\n')
+    file.write('  },\n')
+    file.write('  "options": {\n')
+    for option, value in save_params['options'].items():
+      file.write(f'    "{option}": "{value}",\n')
     file.write('  }\n')
     file.write('}\n')
   return save_params

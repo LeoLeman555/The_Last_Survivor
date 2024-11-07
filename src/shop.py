@@ -110,7 +110,7 @@ class Shop:
     text_rect.topleft = (self.icon_money_rect.centerx + 25, self.icon_money_rect.topleft[1])
     self.screen.blit(number_text, text_rect)
 
-    if self.shop_step == 1:
+    if self.shop_step <= 1:
       self.screen.blit(self.steps["step_1"]["cards"][0]['current_image'], self.steps["step_1"]["cards"][0]['rect'])
       self.screen.blit(self.steps["step_1"]["cards"][1]['current_image'], self.steps["step_1"]["cards"][1]['rect'])
     else:
@@ -138,14 +138,16 @@ class Shop:
         y = line
         self.back_object_rect.x = x
         self.back_object_rect.y = y_start + y * y_interval
-        self.screen.blit(self.back_object, self.back_object_rect)
+        if index_name != None:
+          self.screen.blit(self.back_object, self.back_object_rect)
 
         # draw the name
-        text = self.font.render(draw_name, True, (255, 255, 255))
-        text_rect = text.get_rect()
-        text_rect.center = (self.back_object_rect.x + self.back_object_rect.width // 2, 
-                            self.back_object_rect.y + 25 + self.back_object_rect.height // 2)
-        self.screen.blit(text, text_rect)
+        if index_name != None:
+          text = self.font.render(draw_name, True, (255, 255, 255))
+          text_rect = text.get_rect()
+          text_rect.center = (self.back_object_rect.x + self.back_object_rect.width // 2, 
+                              self.back_object_rect.y + 25 + self.back_object_rect.height // 2)
+          self.screen.blit(text, text_rect)
 
         # draw stats
         if draw_name != "LOCK":
@@ -179,9 +181,10 @@ class Shop:
             self.screen.blit(self.all_button_buy[f"buy_{index_id}"][1][2], topleft)
 
         # draw the image
-        rect = images[draw_name][1]
-        rect.center = (self.back_object_rect.x + self.back_object_rect.width // 2, self.back_object_rect.y + self.back_object_rect.height // 2)
-        self.screen.blit(images[draw_name][0], rect)
+        if index_name != None:
+          rect = images[draw_name][1]
+          rect.center = (self.back_object_rect.x + self.back_object_rect.width // 2, self.back_object_rect.y + self.back_object_rect.height // 2)
+          self.screen.blit(images[draw_name][0], rect)
 
   def draw_steps(self):
     mouse_pos = pygame.mouse.get_pos()
