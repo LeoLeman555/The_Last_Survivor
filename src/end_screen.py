@@ -1,5 +1,6 @@
 import pygame
 import time
+from load import *
 from change_game_data import ChangeGameData
 from button import *
 
@@ -12,6 +13,10 @@ class GameOverScreen:
     self.victory = victory
     self.screen = pygame.display.set_mode((self.width, self.height))
     pygame.display.set_caption("The Last Survivor - Game Over")
+
+    self.read_data = ReadData()
+    self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+    self.FPS = int(self.game_data["options"]["fps"])
 
     self.button_return = ReturnButton(
       image_path = "res/shop/button_return.png",
@@ -196,7 +201,7 @@ class GameOverScreen:
       self.display_rewards()
 
       pygame.display.flip()
-      self.clock.tick(60)
+      self.clock.tick(self.FPS)
 
     pygame.quit()
 

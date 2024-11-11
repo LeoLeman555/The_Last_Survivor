@@ -31,6 +31,8 @@ class Shop:
     self.update_with_levels(self.data_weapons, self.data_weapons_levels)
     self.update_with_levels(self.data_extras, self.data_extras_levels)
 
+    self.FPS = int(self.game_data["options"]["fps"])
+
     # money icon
     self.icon_money = pygame.image.load("res/shop/icon_money.png")
     self.icon_money_rect = self.icon_money.get_rect()
@@ -353,7 +355,7 @@ class Shop:
       pygame.display.flip()
       if self.shop_step <= 0:
         self.running = False
-      clock.tick(60)
+      clock.tick(self.FPS)
     pygame.quit()
 
   def create_cards(self, dict_cards: dict):

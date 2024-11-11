@@ -30,6 +30,16 @@ def reset_game_save(save_params, filename="data/game_save.txt"):
       save_params['options'][option] = "SPACE"
     if option == "pause":
       save_params['options'][option] = "P"
+    if option == "sound":
+      save_params['options'][option] = "off"
+    if option == "music":
+      save_params['options'][option] = "off"
+    if option == "language":
+      save_params['options'][option] = "english"
+    if option == "fps":
+      save_params['options'][option] = "60"
+    if option == "screen size":
+      save_params['options'][option] = "1000x600"
 
   with open(filename, 'w') as file:
     file.write("GAME_SAVE_PARAMS = {\n")

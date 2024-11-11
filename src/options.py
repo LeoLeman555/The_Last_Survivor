@@ -1,5 +1,6 @@
 import pygame
 import time
+from itertools import islice
 from change_game_data import ChangeGameData
 from load import *
 from button import *
@@ -16,8 +17,18 @@ class Options:
     self.load = Load()
     self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
     self.rewards = {"options": self.game_data["options"].copy()}
+    self.data_options = self.rewards["options"].copy()
+    self.dict_arrows = dict(islice(self.data_options.items(), 7))
+    self.dict_options = dict(islice(self.data_options.items(), 7, None))
 
-    self.dict_arrows = self.rewards["options"].copy()
+    self.FPS = int(self.game_data["options"]["fps"])
+
+    #? maybe add new language
+    self.possibilities_language = ["english"]
+    self.possibilities_fps = ["30", "40", "50", "60"]
+    #? maybe implement different screen size => "1024x768", "1280x720", "1920x1080", "2560x1440", "3840x2160"
+    self.possibilities_size_screen = ["1000x600"]
+
     # Boutons d'interface
     self.button_return = ReturnButton(
       image_path="res/shop/button_return.png",
@@ -27,6 +38,12 @@ class Options:
     self.button_arrow = pygame.image.load("res/options/button.png")
     self.button_arrow_click = pygame.image.load("res/options/button_click.png")
 
+    self.button_arrow_red = pygame.image.load("res/options/button_red.png")
+    self.button_arrow_red_click = pygame.image.load("res/options/button_red_click.png")
+
+    self.button_arrow_green = pygame.image.load("res/options/button_green.png")
+    self.button_arrow_green_click = pygame.image.load("res/options/button_green_click.png")
+
     # Variables de gestion des entrées
     self.mouse_pos = (0, 0)
     self.mouse_press = False
@@ -34,24 +51,28 @@ class Options:
     self.last_click_times = [0] * 1
     self.cooldown = 0.5
     self.key_waiting_for_input = None  # Pour détecter quand une commande doit être modifiée
+    self.option_waiting_for_input = None
 
     self.error_message = ""
     self.error_message_start_time = 0
     self.error_display_duration = 3  # Durée d'affichage en secondes
 
   def display_error_message(self, message):
-    """Affiche un message d'erreur en rouge pendant une durée limitée."""
     self.error_message = message
     self.error_message_start_time = time.time()
 
   def change_key(self, command_name, new_key):
-    """Met à jour la touche pour une commande et sauvegarde le changement."""    
     self.rewards["options"][command_name] = new_key
     change_game_data = ChangeGameData(self.rewards, True)
     change_game_data.change_params(self.rewards, change_game_data.game_save_data)
+    self.update_data()
+
+  def change_option(self):
+    change_game_data = ChangeGameData(self.rewards, True)
+    change_game_data.change_params(self.rewards, change_game_data.game_save_data)
+    self.update_data()
 
   def handle_key_event(self, event):
-    """Gestion du changement de touche clavier."""
     if self.key_waiting_for_input:
       if self.key_waiting_for_input != "shoot":
         new_key = pygame.key.name(event.key).upper()
@@ -59,11 +80,9 @@ class Options:
         self.change_key(self.key_waiting_for_input, new_key)
       else:
         self.display_error_message("MUST BE ASSIGNED TO A MOUSE BUTTON")
-      
-      self.key_waiting_for_input = None  
+      self.key_waiting_for_input = None
 
   def handle_mouse_event(self, event):
-    """Gestion du changement de bouton de souris."""
     if self.key_waiting_for_input:
       if self.key_waiting_for_input == "shoot":
         if event.button == 1:
@@ -82,6 +101,35 @@ class Options:
         self.display_error_message("CAN'T BE ASSIGNED TO A MOUSE BUTTON")
         self.key_waiting_for_input = None
 
+  def change_options(self):
+    if self.option_waiting_for_input:    
+      if self.option_waiting_for_input == "sound" or self.option_waiting_for_input == "music":
+        if self.dict_options[self.option_waiting_for_input] == "off":
+          new_key = "on"
+        else:
+          new_key = "off"
+
+      elif self.option_waiting_for_input == "fps":
+        current_fps = self.dict_options[self.option_waiting_for_input]
+        current_index = self.possibilities_fps.index(current_fps)
+        next_index = (current_index + 1) % len(self.possibilities_fps)
+        new_key = self.possibilities_fps[next_index]
+
+      elif self.option_waiting_for_input == "language":
+        current_language = self.dict_options[self.option_waiting_for_input]
+        current_index = self.possibilities_language.index(current_language)
+        next_index = (current_index + 1) % len(self.possibilities_language)
+        new_key = self.possibilities_language[next_index]
+
+      elif self.option_waiting_for_input == "screen size":
+        current_size_screen = self.dict_options[self.option_waiting_for_input]
+        current_index = self.possibilities_size_screen.index(current_size_screen)
+        next_index = (current_index + 1) % len(self.possibilities_size_screen)
+        new_key = self.possibilities_size_screen[next_index]
+      
+      self.change_key(self.option_waiting_for_input, new_key)
+      self.option_waiting_for_input = None
+
   def update(self):
     self.press_buttons()
 
@@ -94,37 +142,10 @@ class Options:
         self.last_click_times[return_button_index] = current_time
 
   def draw(self):
-    # Dessine les boutons et commandes
     self.button_return.draw(self.screen, self.mouse_pos)
 
-    # Affiche les commandes
-    rect_width = 100
-    rect_height = 30
-    x_offset = 50
-
-    for i, name in enumerate(self.dict_arrows.keys(), start=0):
-      element = self.dict_arrows[name]
-      
-      name_text = self.font.render(name.capitalize() + " :", True, (255, 255, 255))
-      name_text_rect = name_text.get_rect()
-      name_text_rect.topright = (200, 50 * i + 100)
-      self.screen.blit(name_text, name_text_rect)
-
-      key_display_text = "" if self.key_waiting_for_input == name else str(element)
-      text = self.font.render(key_display_text, True, (255, 255, 255))
-      text_rect = text.get_rect()
-      
-      button_rect = pygame.Rect(name_text_rect.right + x_offset, name_text_rect.top, rect_width, rect_height)
-      text_rect.center = button_rect.center
-
-      button_image = self.button_arrow_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow
-      button_arrow = pygame.transform.scale(button_image, (rect_width, rect_height))
-      
-      self.screen.blit(button_arrow, button_rect)
-      self.screen.blit(text, text_rect)
-
-      if button_rect.collidepoint(self.mouse_pos) and self.mouse_press:
-        self.key_waiting_for_input = name
+    self.draw_arrow_command()
+    self.draw_options()
 
     # Affiche le message d'erreur si nécessaire
     if self.error_message:
@@ -136,6 +157,78 @@ class Options:
       else:
         self.error_message = ""  # Réinitialise le message après la durée d'affichage
 
+  def draw_options(self):
+    rect_width = 130
+    rect_height = 30
+    x_offset = 10
+
+    text = self.font.render("OPTIONS", True, (255, 255, 255))
+    text_rect = text.get_rect()
+    text_rect.center = (700, 100)
+    self.screen.blit(text, text_rect)
+    pygame.draw.line(self.screen, (255, 255, 255), (665, 110), (750, 110))
+
+    for i, name in enumerate(self.dict_options.keys(), start=0):
+      element = self.dict_options[name]
+      name_text = self.font.render(name.upper() + " :", True, (255, 255, 255))
+      name_text_rect = name_text.get_rect()
+      name_text_rect.topright = (670, 50 * i + 150)
+      self.screen.blit(name_text, name_text_rect)
+
+      key_display_text = "" if self.option_waiting_for_input == name else str(element)
+      text = self.font.render(key_display_text.upper(), True, (255, 255, 255))
+      text_rect = text.get_rect()
+      button_rect = pygame.Rect(name_text_rect.right + x_offset, name_text_rect.top - 2, rect_width, rect_height)
+      text_rect.center = button_rect.center
+
+      if name == "music" or name == "sound":
+        if element == "on":
+          button_image = self.button_arrow_green_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow_green
+        elif element == "off":
+          button_image = self.button_arrow_red_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow_red
+      else:
+        button_image = self.button_arrow_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow
+
+
+      button_arrow = pygame.transform.scale(button_image, (rect_width, rect_height))
+      self.screen.blit(button_arrow, button_rect)
+      self.screen.blit(text, text_rect)
+      
+      current_time = time.time()
+      if current_time - self.last_click_times[0] > self.cooldown:
+        if button_rect.collidepoint(self.mouse_pos) and self.mouse_press:
+          self.option_waiting_for_input = name
+          self.last_click_times[0] = current_time
+
+  def draw_arrow_command(self):
+    rect_width = 130
+    rect_height = 30
+    x_offset = 10
+
+    text = self.font.render("CONTROLS", True, (255, 255, 255))
+    text_rect = text.get_rect()
+    text_rect.center = (300, 100)
+    self.screen.blit(text, text_rect)
+    pygame.draw.line(self.screen, (255, 255, 255), (265, 110), (355, 110))
+
+    for i, name in enumerate(self.dict_arrows.keys(), start=0):
+      element = self.dict_arrows[name]
+      name_text = self.font.render(name.upper() + " :", True, (255, 255, 255))
+      name_text_rect = name_text.get_rect()
+      name_text_rect.topright = (250, 50 * i + 150)
+      self.screen.blit(name_text, name_text_rect)
+
+      key_display_text = "" if self.key_waiting_for_input == name else str(element)
+      text = self.font.render(key_display_text, True, (255, 255, 255))
+      text_rect = text.get_rect()
+      button_rect = pygame.Rect(name_text_rect.right + x_offset, name_text_rect.top - 2, rect_width, rect_height)
+      text_rect.center = button_rect.center
+      button_image = self.button_arrow_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow
+      button_arrow = pygame.transform.scale(button_image, (rect_width, rect_height))
+      self.screen.blit(button_arrow, button_rect)
+      self.screen.blit(text, text_rect)
+      if button_rect.collidepoint(self.mouse_pos) and self.mouse_press:
+        self.key_waiting_for_input = name
 
   def run(self):
     clock = pygame.time.Clock()
@@ -147,18 +240,33 @@ class Options:
           running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
           self.mouse_press = True
-          self.handle_mouse_event(event)  # Appel pour changement de bouton de souris
+          if self.key_waiting_for_input:
+            self.handle_mouse_event(event)  # Appel pour changement de bouton de souris
         elif event.type == pygame.MOUSEBUTTONUP:
           self.mouse_press = False
         elif event.type == pygame.KEYDOWN:
-          self.handle_key_event(event)  # Appel pour changement de touche clavier
+          if self.key_waiting_for_input:
+            self.handle_key_event(event)
+
 
       self.update()
+
+      self.change_options()
+      
       self.screen.fill((0, 0, 0))
       self.draw()
       pygame.display.flip()
       if self.option_step <= 0:
         running = False
-      clock.tick(60)
+      clock.tick(self.FPS)
 
     pygame.quit()
+
+  def update_data(self):
+    self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+    self.rewards = {"options": self.game_data["options"].copy()}
+    self.data_options = self.rewards["options"].copy()
+    self.dict_arrows = dict(islice(self.data_options.items(), 7))
+    self.dict_options = dict(islice(self.data_options.items(), 7, None))
+
+    self.FPS = int(self.game_data["options"]["fps"])

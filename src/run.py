@@ -67,6 +67,7 @@ class Run:
     self.data_extras_levels = self.read_data.read_params("data/extras_level.txt", "extras_level")
     self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
     self.commands = self.game_data["options"]
+    self.FPS = int(self.game_data["options"]["fps"])
     self.mouse_mappings = self._map_mouse_buttons()
     self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
     self.data_extras = self.read_data.read_params("data/extras.txt", "extras")
@@ -181,7 +182,7 @@ class Run:
           if event.button == self.mouse_mappings.get("shoot"):
             self.mouse["press"] = False
 
-      clock.tick(60)
+      clock.tick(self.FPS)
 
     pygame.quit()
     self.manager.end_game()

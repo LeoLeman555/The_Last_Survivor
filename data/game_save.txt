@@ -1,9 +1,9 @@
 GAME_SAVE_PARAMS = {
-  "money": 36275,
+  "money": 36650,
   "resource": {
-    "energy": 2725,
-    "metal": 2625,
-    "data": 2800,
+    "energy": 2750,
+    "metal": 2650,
+    "data": 2875,
     "ammo": 0,
   },
   "weapon_level": {
@@ -52,5 +52,10 @@ GAME_SAVE_PARAMS = {
     "shoot": "MOUSE1",
     "launch": "SPACE",
     "pause": "P",
+    "sound": "off",
+    "music": "off",
+    "language": "english",
+    "fps": "60",
+    "screen size": "1000x600",
   },
 }

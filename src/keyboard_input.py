@@ -1,15 +1,15 @@
 import pygame
 import math
 import time
+from itertools import islice
 
 class KeyboardInput:
   def __init__(self, run):
     self.run = run
-    self.commands = self.run.game_data["options"]
+    self.commands = dict(islice(self.run.game_data["options"].items(), 7))
     self.key_mappings = self._map_keys()
 
   def _map_keys(self):
-    # todo faire pour tirer du mouse1, 2, 3 ou 4, ou 5
     key_map = {}
     for action, key in self.commands.items():
       if not key.startswith("MOUSE"):  # Exclure les commandes de souris ici
