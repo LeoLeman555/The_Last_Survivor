@@ -11,6 +11,7 @@ class Options:
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Options")
     self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
+    self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)
 
     # Initialisation des données du jeu et des commandes par défaut
     self.read_data = ReadData()
@@ -144,6 +145,12 @@ class Options:
   def draw(self):
     self.button_return.draw(self.screen, self.mouse_pos)
 
+    title_text = self.title_font.render("SETTINGS", True, (255, 255, 255))
+    title_text_rect = title_text.get_rect()
+    title_text_rect.center = (500, 30)
+    self.screen.blit(title_text, title_text_rect)
+    pygame.draw.line(self.screen, (255, 255, 255), (450, 45), (575, 45))
+
     self.draw_arrow_command()
     self.draw_options()
 
@@ -184,6 +191,12 @@ class Options:
       if name == "music" or name == "sound":
         if element == "on":
           button_image = self.button_arrow_green_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow_green
+          
+          text_error = self.font.render("SOUND AND MUSIC NOT YET IMPLEMENTED", True, (0, 255, 0))
+          text_error_rect = text_error.get_rect()
+          text_error_rect.center = (500, 550)
+          self.screen.blit(text_error, text_error_rect)
+
         elif element == "off":
           button_image = self.button_arrow_red_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow_red
       else:

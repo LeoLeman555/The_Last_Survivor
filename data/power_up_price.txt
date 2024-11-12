@@ -30,18 +30,18 @@ PRICE_PARAMS = {
     "level_1": 1800,
   },
   "piercing": {
-    "level_1": 2000,
+    "level_1": 2200,
   },
   "rapid_fire": {
     "level_1": 2000,
   },
   "regeneration": {
-    "level_1": 2000,
+    "level_1": 2500,
   },
   "zoom": {
-    "level_1": 2000,
+    "level_1": 2900,
   },
   "strong_stomach": {
-    "level_1": 2000,
+    "level_1": 1800,
   },
 }

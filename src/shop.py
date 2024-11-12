@@ -11,6 +11,7 @@ class Shop:
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Shop")
     self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
+    self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)
 
     # load all the data
     self.read_data = ReadData()
@@ -204,6 +205,12 @@ class Shop:
         self.screen.blit(self.button_left_arrow, self.button_left_arrow_rect)
 
     if self.shop_step == 2:
+      title_text = self.title_font.render("WEAPONS SHOP", True, (255, 255, 255))
+      title_text_rect = title_text.get_rect()
+      title_text_rect.center = (500, 30)
+      self.screen.blit(title_text, title_text_rect)
+      pygame.draw.line(self.screen, (255, 255, 255), (450, 45), (590, 45))
+
       stats = {"DPS : ": ["damage", (254, 27, 0), 100], "RANGE : ": ["range", (1, 215, 88), 120], "LEVEL : ": ["level", (121, 248, 248), 80]}
       position = [40, 160, 60, 260]
       data_names = []
@@ -212,12 +219,24 @@ class Shop:
       self.draw_elements(self.data_weapons, self.data_weapons_price, stats, self.weapon_images, self.shop_table_weapon, position, self.weapon_names, data_names, 2, 6, 10)
       
     elif self.shop_step == 3:
+      title_text = self.title_font.render("EXTRAS SHOP", True, (255, 255, 255))
+      title_text_rect = title_text.get_rect()
+      title_text_rect.center = (500, 30)
+      self.screen.blit(title_text, title_text_rect)
+      pygame.draw.line(self.screen, (255, 255, 255), (450, 45), (590, 45))
+
       stats = {"DPS : ": ["damage", (254, 27, 0), 100], "LEVEL : ": ["level", (121, 248, 248), 80]}
       position = [40, 160, 60, 260]
       data_names = list(self.data_extras.keys())
       self.draw_elements(self.data_extras, self.data_extras_price, stats, self.extras_images, self.shop_table_extras, position, self.extras_names, data_names, 2, 6, 10)
 
     elif self.shop_step == 4:
+      title_text = self.title_font.render("POWER-UP SHOP", True, (255, 255, 255))
+      title_text_rect = title_text.get_rect()
+      title_text_rect.center = (500, 30)
+      self.screen.blit(title_text, title_text_rect)
+      pygame.draw.line(self.screen, (255, 255, 255), (450, 45), (600, 45))
+
       stats = {"LEVEL : ": ["level", (121, 248, 248), 80], "": ["effect", (254, 27, 0), 100]}
       position = [40, 160, 60, 260]
       data = dict(islice(self.data_power_up.items(), 12))
@@ -228,6 +247,12 @@ class Shop:
       self.draw_elements(data, prices, stats, images, self.shop_tables_power_up[0], position, fake_names, data_names, 2, 6, 1)
     
     elif self.shop_step == 5:
+      title_text = self.title_font.render("POWER-UP SHOP", True, (255, 255, 255))
+      title_text_rect = title_text.get_rect()
+      title_text_rect.center = (500, 30)
+      self.screen.blit(title_text, title_text_rect)
+      pygame.draw.line(self.screen, (255, 255, 255), (450, 45), (600, 45))
+
       stats = {"LEVEL : ": ["level", (121, 248, 248), 80], "": ["effect", (254, 27, 0), 100]}
       position = [40, 160, 60, 260]
       data = dict(islice(self.data_power_up.items(), 12, None))
