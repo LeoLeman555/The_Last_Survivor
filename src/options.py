@@ -4,6 +4,7 @@ from itertools import islice
 from change_game_data import ChangeGameData
 from load import *
 from button import *
+from reset import *
 
 class Options:
   def __init__(self):
@@ -142,6 +143,85 @@ class Options:
         self.option_step = 0 if self.option_step == 1 else 1
         self.last_click_times[return_button_index] = current_time
 
+  def reset_button(self):
+    rect_width = 175
+    rect_height = 35
+
+    button1_image = self.button_arrow_red_click if self.get_button_rect((875, 450), rect_width, rect_height).collidepoint(self.mouse_pos) else self.button_arrow_red
+    button1 = pygame.transform.scale(button1_image, (rect_width, rect_height))
+    button1_rect = button1.get_rect(center=(875, 450))
+    self.screen.blit(button1, button1_rect)
+
+    text1 = self.font.render("RESET GAME", True, (255, 255, 255))
+    text1_rect = text1.get_rect(center=(875, 450))
+    self.screen.blit(text1, text1_rect)
+
+    current_time = time.time()
+    if self.mouse_press and button1_rect.collidepoint(self.mouse_pos):
+      if current_time - self.last_click_times[0] > self.cooldown:
+        self.last_click_times[0] = current_time
+        self.delete_data()
+
+  def delete_data(self):
+    # Variables pour gérer l'état de confirmation
+    confirmation_visible = True
+
+    while confirmation_visible:
+      self.mouse_pos = pygame.mouse.get_pos()
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+          confirmation_visible = False  # Fermer la fenêtre
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+          self.mouse_press = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+          self.mouse_press = False
+
+      # Dessiner l'écran de confirmation
+      self.screen.fill((0, 0, 0))  # Fond noir
+
+      message_text = self.font.render("Are you sure you want to reset your progress?", True, (255, 255, 255))
+      message_rect = message_text.get_rect(center=(500, 250))
+      self.screen.blit(message_text, message_rect)
+
+      yes_rect = self.get_button_rect((400, 350), 150, 50)
+      yes_image = self.button_arrow_green_click if yes_rect.collidepoint(self.mouse_pos) else self.button_arrow_green
+      yes_button = pygame.transform.scale(yes_image, (150, 50))
+      self.screen.blit(yes_button, yes_rect)
+      yes_text = self.font.render("YES", True, (255, 255, 255))
+      yes_text_rect = yes_text.get_rect(center=yes_rect.center)
+      self.screen.blit(yes_text, yes_text_rect)
+
+      no_rect = self.get_button_rect((600, 350), 150, 50)
+      no_image = self.button_arrow_red_click if no_rect.collidepoint(self.mouse_pos) else self.button_arrow_red
+      no_button = pygame.transform.scale(no_image, (150, 50))
+      self.screen.blit(no_button, no_rect)
+      no_text = self.font.render("NO", True, (255, 255, 255))
+      no_text_rect = no_text.get_rect(center=no_rect.center)
+      self.screen.blit(no_text, no_text_rect)
+
+      if self.mouse_press:
+        if yes_rect.collidepoint(self.mouse_pos):
+          # Supprimer les données
+          reset_game_save(self.game_data)  # Reset les données
+          time.sleep(0.5)
+          self.update_data()
+          print("-------- Your progress has been reinitialized ---------")
+          confirmation_visible = False
+        elif no_rect.collidepoint(self.mouse_pos):
+          # Annuler la confirmation
+          print("Action cancelled.")
+          confirmation_visible = False
+
+      pygame.display.flip()
+      pygame.time.Clock().tick(self.FPS)
+
+
+
+  def get_button_rect(self, center, width, height):
+    button_rect = pygame.Rect(0, 0, width, height)
+    button_rect.center = center
+    return button_rect
+
   def draw(self):
     self.button_return.draw(self.screen, self.mouse_pos)
 
@@ -268,9 +348,12 @@ class Options:
       
       self.screen.fill((0, 0, 0))
       self.draw()
+      self.reset_button()
       pygame.display.flip()
+
       if self.option_step <= 0:
         running = False
+
       clock.tick(self.FPS)
 
     pygame.quit()
