@@ -1,8 +1,8 @@
 GAME_SAVE_PARAMS = {
-  "money": 43100,
+  "money": 43250,
   "resource": {
-    "energy": 3375,
-    "metal": 3375,
+    "energy": 3400,
+    "metal": 3400,
     "data": 3425,
     "ammo": 0,
   },

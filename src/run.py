@@ -55,7 +55,7 @@ class Run:
     self.index_palier_xp = 1
     self.weapon_id = 1
     self.win = False
-    self.time_left = 10
+    self.time_left = 180
 
   def initialize_data(self):
     self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
