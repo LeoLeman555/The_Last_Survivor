@@ -53,6 +53,8 @@ class MapManager:
     map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
     map_layer.zoom = self.zoom
     
+    #* no trees => more post-apocalyptic
+
     walls = []
     sables = []
 
