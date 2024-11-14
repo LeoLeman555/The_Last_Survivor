@@ -40,7 +40,7 @@ class Icon:
 
     draw_resource_icon("energy_icon", 130, 100, 25, -3, 22, 20, self.resource["energy"])
     draw_resource_icon("metal_icon", 20, 100, 25, -3, 22, 20, self.resource["metal"])
-    draw_resource_icon("ammo_icon", 134, 125, 21, 1, 15, 29, self.resource["ammo"])
+    # draw_resource_icon("ammo_icon", 134, 125, 21, 1, 15, 29, self.resource["ammo"])
     draw_resource_icon("data_icon", 20, 127, 30, -1, 30, 21, self.resource["data"])
 
   def add_resource(self, name: str, value: int):
