@@ -1,4 +1,5 @@
 import pygame
+import time
 
 class CardManager:
   def __init__(self, run, data, image_folder):
@@ -7,6 +8,9 @@ class CardManager:
     self.positions = [(274, 200), (590, 200)]
     self.data = data
     self.image_folder = image_folder
+
+    self.last_click_times = 0
+    self.cooldown = 0.5
 
   def get_image(self, name, level):
     image_path = f"res/power_up/{self.image_folder}/{name}_{level}.png"
@@ -39,10 +43,14 @@ class CardManager:
     for card in self.cards[:]:
       if card['rect'].collidepoint(mouse_pos):
         card['current_image'] = card['right_image']
+        
+        current_time = time.time()
         if mouse_click:
-          self.on_card_click(card)
-          self.cards = []
-          self.run.pause = False
+          if current_time - self.last_click_times > self.cooldown:
+            self.last_click_times = current_time
+            self.on_card_click(card)
+            self.cards = []
+            self.run.pause = False
       else:
         card['current_image'] = card['left_image']
 
