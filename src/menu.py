@@ -11,14 +11,13 @@ class MenuPrincipal:
     self.direction = None
 
     self.read_data = ReadData()
-    # ["jeu", "intro", "boutique", "elements", "options"]
-    self.buttons = ["game", "shop", "options"]
+    self.buttons = ["play", "shop", "options"]
     self.icon_names = ["energy", "metal", "data"]
     self.running = True
 
     # Charger les images des boutons et obtenir leurs rectangles
-    self.images = {name: self.load_button_image(name) for name in self.buttons}
-    self.rects = {name: self.images[name].get_rect() for name in self.buttons}
+    self.images = [{name: self.load_button_image(name) for name in self.buttons}, {name: self.load_button_image(f"{name}_click") for name in self.buttons}]
+    self.rects = {name: self.images[0][name].get_rect() for name in self.buttons}
 
     # Positionner les images des boutons
     for i, name in enumerate(self.buttons):
@@ -45,11 +44,15 @@ class MenuPrincipal:
 
   def afficher_menu(self):
     # Afficher l'arrière-plan
-    self.screen.blit(pygame.image.load("res/menu/background_menu.jpg"), (0, 0))
+    self.screen.blit(pygame.image.load("res/menu/background.jpg"), (0, 0))
 
+    mouse_pos = pygame.mouse.get_pos()
     # Afficher les boutons
-    for name in self.buttons:
-      self.screen.blit(self.images[name], self.rects[name])
+    for i, name in enumerate(self.buttons, start=0):
+      if self.rects[name].collidepoint(mouse_pos):
+        self.screen.blit(self.images[1][name], self.rects[name])
+      else:  
+        self.screen.blit(self.images[0][name], self.rects[name])
 
     # Afficher les icônes avec les nombres à côté
     for i, name in enumerate(self.icon_names):

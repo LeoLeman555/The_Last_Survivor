@@ -10,7 +10,7 @@ running = True
 while running == True:
   menu = MenuPrincipal()
   direction = menu.run()
-  if direction == "game":
+  if direction == "play":
     run = Run()
     run.manager.start_run()
   elif direction == "shop":
