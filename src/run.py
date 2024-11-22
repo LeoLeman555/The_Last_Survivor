@@ -38,6 +38,7 @@ class Run:
     self.manager.change_max_xp(1)
 
   def initialize_game_variables(self):
+    self.difficulty = 1
     self.zoom = 2
     self.life = 1
     self.xp_multiplier = 1
@@ -158,15 +159,19 @@ class Run:
 
   def run(self):
     clock = pygame.time.Clock()
+    last_enemy_update = 0
     self.running = True
     while self.running:
+      current_time = pygame.time.get_ticks()
       self.mouse["position"] = pygame.mouse.get_pos()
       self.mouse["current_time"] = pygame.time.get_ticks()
       self.mouse["shoot_delay"] = self.current_weapon_dict["rate"]
       if not self.pause:
         self.player.save_location() #! Don't change this line...
         self.keyboard_input.check_input() #! ...with this one (bad collision manager)
-        self.manager.manage_enemies()
+        if current_time - last_enemy_update >= 1000:  # 1000 ms = 1 seconde
+            self.manager.manage_enemies()
+            last_enemy_update = current_time  # Update last call
         self.use_power_up.use_power_up()
 
       self.keyboard_input.get_pause()

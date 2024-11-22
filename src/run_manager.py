@@ -1,15 +1,51 @@
 import random
 from end_screen import *
+from enemy_events import *
 
 class RunManager:
   def __init__(self, run):
     self.run = run
+    self.enemy_events = []  # list of generated events
+    self.current_event_index = 0  # index to track events
+    self.current_time = 0  # elapsed time
+
+    self.enemies = {
+      "shardsoul": {"id": 1.1, "max_health": 150, "speed": 2},
+      "champo": {"id": 2.1, "max_health": 75, "speed": 3},
+      "sprout": {"id": 3.1, "max_health": 40, "speed": 6},
+      "flying_junk": {"id": 5.1, "max_health": 50, "speed": 4},
+      "robot": {"id": 6.1, "max_health": 500, "speed": 1},
+    }
 
   def start_run(self):
     self.run.ressources["ammo"] = 500
     self.run.ressources["health"] = 100
     self.run.ressources["food"] = 100
+    # generate enemy events for the game
+    generator = EnemyEvent(self.enemies)
+    self.enemy_events = generator.generate_enemy_events(self.run.difficulty)
     self.run.run()
+
+  def manage_enemies(self):
+    # update current time
+    self.current_time += 1 # assume this method is called once a second
+
+    # check if there are any events left to process
+    if self.current_event_index < len(self.enemy_events):
+      event = self.enemy_events[self.current_event_index]
+      enemy_name, nbre_ennemis, spawn_time = event
+
+      # if the event time has arrived, trigger it
+      if self.current_time >= spawn_time:
+        for _ in range(nbre_ennemis):
+          # add each enemy in play
+          enemy = self.run.random_enemy.random_enemy(
+            self.run.random_enemy.filter_by_exact_id(self.run.data_enemies[enemy_name]["id"])
+          )
+          self.run.player.add_enemy(self.run.data_enemies, *enemy)
+          self.run.player.number_enemies += 1
+
+        self.current_event_index += 1
 
   def new_weapon(self, name):
     if not self.run.current_weapon_dict["name"] == name:
@@ -76,14 +112,6 @@ class RunManager:
 
     game_over_screen = GameOverScreen(self.run.WIDTH_SCREEN, self.run.HEIGHT_SCREEN, rewards, win)
     game_over_screen.run()
-
-  def manage_enemies(self):
-    # ? maybe change the difficulty
-    if random.random() <= 0.005 or self.run.player.number_enemies < 5:
-      for loop in range(0, 10):
-        enemy = self.run.random_enemy.random_enemy(self.run.random_enemy.filter_by_exact_id(2.1))
-        self.run.player.add_enemy(self.run.data_enemies, *enemy)
-        self.run.player.number_enemies += 1
 
   def collision_sables(self, bool: bool):
     self.run.speed = self.run.speed_init / 2 if bool else self.run.speed_init
