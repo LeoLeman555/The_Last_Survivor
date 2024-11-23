@@ -40,6 +40,8 @@ def reset_game_save(save_params, filename="data/game_save.txt"):
       save_params['options'][option] = "60"
     if option == "screen size":
       save_params['options'][option] = "1000x600"
+    if option == "difficulty":
+      save_params['options'][option] = "1"
 
   with open(filename, 'w') as file:
     file.write("GAME_SAVE_PARAMS = {\n")

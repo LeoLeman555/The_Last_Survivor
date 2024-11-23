@@ -57,5 +57,6 @@ GAME_SAVE_PARAMS = {
     "language": "english",
     "fps": "60",
     "screen size": "1000x600",
-  }
+    "difficulty": "1",
+  },
 }

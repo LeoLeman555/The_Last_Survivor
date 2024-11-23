@@ -38,7 +38,6 @@ class Run:
     self.manager.change_max_xp(1)
 
   def initialize_game_variables(self):
-    self.difficulty = 1
     self.zoom = 2
     self.life = 1
     self.xp_multiplier = 1
@@ -67,11 +66,12 @@ class Run:
     self.data_weapons_levels = self.read_data.read_params("data/weapons_level.txt", "weapons_level")
     self.data_extras_levels = self.read_data.read_params("data/extras_level.txt", "extras_level")
     self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
-    self.commands = self.game_data["options"]
-    self.FPS = int(self.game_data["options"]["fps"])
-    self.mouse_mappings = self._map_mouse_buttons()
     self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
     self.data_extras = self.read_data.read_params("data/extras.txt", "extras")
+    self.commands = self.game_data["options"]
+    self.FPS = int(self.game_data["options"]["fps"])
+    self.difficulty = int(self.game_data["options"]["difficulty"])
+    self.mouse_mappings = self._map_mouse_buttons()
 
   def _map_mouse_buttons(self):
     mouse_map = {}

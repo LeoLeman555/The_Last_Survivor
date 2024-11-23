@@ -5,6 +5,7 @@ from change_game_data import ChangeGameData
 from load import *
 from button import *
 from reset import *
+from slider import *
 
 class Options:
   def __init__(self):
@@ -30,6 +31,9 @@ class Options:
     self.possibilities_fps = ["30", "40", "50", "60"]
     #? maybe implement different screen size => "1024x768", "1280x720", "1920x1080", "2560x1440", "3840x2160"
     self.possibilities_size_screen = ["1000x600"]
+
+    # Slider
+    self.slider = Slider(680, 405, 150, 1, 100, int(self.game_data["options"]["difficulty"]))
 
     # Boutons d'interface
     self.button_return = ReturnButton(
@@ -132,6 +136,13 @@ class Options:
       self.change_key(self.option_waiting_for_input, new_key)
       self.option_waiting_for_input = None
 
+    # Mise à jour de la difficulté en fonction du slider
+    new_difficulty = self.slider.get_value()  # Récupère la nouvelle valeur
+    if str(self.dict_options["difficulty"]) != str(new_difficulty):
+        self.dict_options["difficulty"] = str(new_difficulty)  # Met à jour localement
+        self.rewards["options"]["difficulty"] = str(new_difficulty)  # Met à jour les données sauvegardées
+        self.change_key("difficulty", str(new_difficulty))  # Sauvegarde la modification
+
   def update(self):
     self.press_buttons()
 
@@ -147,13 +158,13 @@ class Options:
     rect_width = 175
     rect_height = 35
 
-    button1_image = self.button_arrow_red_click if self.get_button_rect((875, 450), rect_width, rect_height).collidepoint(self.mouse_pos) else self.button_arrow_red
+    button1_image = self.button_arrow_red_click if self.get_button_rect((875, 550), rect_width, rect_height).collidepoint(self.mouse_pos) else self.button_arrow_red
     button1 = pygame.transform.scale(button1_image, (rect_width, rect_height))
-    button1_rect = button1.get_rect(center=(875, 450))
+    button1_rect = button1.get_rect(center=(875, 550))
     self.screen.blit(button1, button1_rect)
 
     text1 = self.font.render("RESET GAME", True, (255, 255, 255))
-    text1_rect = text1.get_rect(center=(875, 450))
+    text1_rect = text1.get_rect(center=(875, 550))
     self.screen.blit(text1, text1_rect)
 
     current_time = time.time()
@@ -179,7 +190,7 @@ class Options:
       # Dessiner l'écran de confirmation
       self.screen.fill((0, 0, 0))  # Fond noir
 
-      message_text = self.font.render("Are you sure you want to reset your progress?", True, (255, 255, 255))
+      message_text = self.font.render("ARE YOU SURE YOU WANT TO RESET YOUR PROGRESS?", True, (255, 255, 255))
       message_rect = message_text.get_rect(center=(500, 250))
       self.screen.blit(message_text, message_rect)
 
@@ -201,21 +212,17 @@ class Options:
 
       if self.mouse_press:
         if yes_rect.collidepoint(self.mouse_pos):
-          # Supprimer les données
           reset_game_save(self.game_data)  # Reset les données
           time.sleep(0.5)
           self.update_data()
           print("-------- Your progress has been reinitialized ---------")
           confirmation_visible = False
         elif no_rect.collidepoint(self.mouse_pos):
-          # Annuler la confirmation
           print("Action cancelled.")
           confirmation_visible = False
 
       pygame.display.flip()
       pygame.time.Clock().tick(self.FPS)
-
-
 
   def get_button_rect(self, center, width, height):
     button_rect = pygame.Rect(0, 0, width, height)
@@ -224,6 +231,8 @@ class Options:
 
   def draw(self):
     self.button_return.draw(self.screen, self.mouse_pos)
+
+    self.slider.draw(self.screen)
 
     title_text = self.title_font.render("SETTINGS", True, (255, 255, 255))
     title_text_rect = title_text.get_rect()
@@ -279,19 +288,24 @@ class Options:
 
         elif element == "off":
           button_image = self.button_arrow_red_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow_red
+      
       else:
-        button_image = self.button_arrow_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow
-
+          button_image = self.button_arrow_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow
 
       button_arrow = pygame.transform.scale(button_image, (rect_width, rect_height))
-      self.screen.blit(button_arrow, button_rect)
-      self.screen.blit(text, text_rect)
       
-      current_time = time.time()
-      if current_time - self.last_click_times[0] > self.cooldown:
-        if button_rect.collidepoint(self.mouse_pos) and self.mouse_press:
-          self.option_waiting_for_input = name
-          self.last_click_times[0] = current_time
+      if name == "difficulty":
+        pass
+
+      else:
+        self.screen.blit(button_arrow, button_rect)
+        self.screen.blit(text, text_rect)
+      
+        current_time = time.time()
+        if current_time - self.last_click_times[0] > self.cooldown:
+          if button_rect.collidepoint(self.mouse_pos) and self.mouse_press:
+            self.option_waiting_for_input = name
+            self.last_click_times[0] = current_time
 
   def draw_arrow_command(self):
     rect_width = 130
@@ -341,6 +355,7 @@ class Options:
           if self.key_waiting_for_input:
             self.handle_key_event(event)
 
+        self.slider.update(event)
 
       self.update()
 
@@ -366,3 +381,5 @@ class Options:
     self.dict_options = dict(islice(self.data_options.items(), 7, None))
 
     self.FPS = int(self.game_data["options"]["fps"])
+
+    self.slider = Slider(680, 405, 150, 1, 100, int(self.game_data["options"]["difficulty"]))
