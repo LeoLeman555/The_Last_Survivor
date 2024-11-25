@@ -1,0 +1,13 @@
+TUTORIAL_PARAMS = {
+  "introduction": {
+    "text1": "In a world ravaged by a nuclear apocalypse, YOU are chosen to carry out a crucial mission for humanity :",
+    "text2": "- Locate and neutralize all the mutant creatures roaming the devastated lands of Mother Earth.",
+    "text3": "",
+    "text4": "But beware, this will be a dangerous mission, where every step may conceal a mortal danger. Mutations caused by radiation have transformed the remaining humans into nightmarish creatures endowed with unpredictable behavior.",
+    "text5": "",
+    "text6": "The Federation is counting on you to map mutant-infested areas, report threats and, if possible, eliminate the most dangerous creatures.",
+    "text7": "You'll have access to the highest technology and most devastating weapons to carry out your mission.",
+    "text8": "",
+    "text9": "Good luck, you are the Light that will guide humanity towards a better future."
+  },
+}

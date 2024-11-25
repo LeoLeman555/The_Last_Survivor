@@ -1,11 +1,16 @@
 print("------------------------- GO -------------------------")
 
 from menu import *
+from tutorial import *
 from run import Run
 from shop import Shop
 from options import Options
 
 running = True
+
+if __name__ == "__main__":
+  introduction = Introduction()
+  introduction.run()
 
 while running == True:
   menu = MenuPrincipal()
