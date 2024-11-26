@@ -381,5 +381,3 @@ class Options:
     self.dict_options = dict(islice(self.data_options.items(), 7, None))
 
     self.FPS = int(self.game_data["options"]["fps"])
-
-    self.slider = Slider(680, 405, 150, 1, 100, int(self.game_data["options"]["difficulty"]))

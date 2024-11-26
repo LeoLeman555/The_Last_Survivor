@@ -118,6 +118,7 @@ class Introduction:
             running = False  # Ferme la fenêtre
           elif event.key == pygame.K_SPACE and not self.finished_text:
             self.finished_text = True  # Si l'utilisateur appuie sur espace pendant que le texte est en train de s'écrire
+            running = False
 
       self.update()
       self.draw()
