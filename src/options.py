@@ -109,7 +109,7 @@ class Options:
 
   def change_options(self):
     if self.option_waiting_for_input:    
-      if self.option_waiting_for_input == "sound" or self.option_waiting_for_input == "music":
+      if self.option_waiting_for_input == "sound" or self.option_waiting_for_input == "music" or self.option_waiting_for_input == "tutorial":
         if self.dict_options[self.option_waiting_for_input] == "off":
           new_key = "on"
         else:
@@ -277,14 +277,15 @@ class Options:
       button_rect = pygame.Rect(name_text_rect.right + x_offset, name_text_rect.top - 2, rect_width, rect_height)
       text_rect.center = button_rect.center
 
-      if name == "music" or name == "sound":
+      if name == "music" or name == "sound" or name == "tutorial":
         if element == "on":
           button_image = self.button_arrow_green_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow_green
           
-          text_error = self.font.render("SOUND AND MUSIC NOT YET IMPLEMENTED", True, (0, 255, 0))
-          text_error_rect = text_error.get_rect()
-          text_error_rect.center = (500, 550)
-          self.screen.blit(text_error, text_error_rect)
+          if name != "tutorial":
+            text_error = self.font.render("SOUND AND MUSIC NOT YET IMPLEMENTED", True, (0, 255, 0))
+            text_error_rect = text_error.get_rect()
+            text_error_rect.center = (500, 550)
+            self.screen.blit(text_error, text_error_rect)
 
         elif element == "off":
           button_image = self.button_arrow_red_click if button_rect.collidepoint(self.mouse_pos) else self.button_arrow_red

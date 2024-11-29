@@ -2,14 +2,14 @@ import pygame
 from load import *
 
 class Introduction:
-  def __init__(self):
-    pygame.init()
+  def __init__(self, screen):
     pygame.font.init()
 
-    self.screen = pygame.display.set_mode((1000, 600))
+    self.screen = screen
     pygame.display.set_caption("The Last Survivor - Introduction")
+
     self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
-    self.bold_font = pygame.font.Font("res/texte/dialog_font.ttf", 18)  # Police en gras
+    self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)  # Police en gras
 
     self.read_data = ReadData()
     self.load = Load()
@@ -81,6 +81,14 @@ class Introduction:
   def draw(self):
     # Affichage du texte lettre par lettre
     self.screen.fill((0, 0, 0))
+
+    title = self.title_font.render("THE LAST SURVIVOR", True, (255, 255, 255))  # Texte rouge
+    title_rect = title.get_rect()
+    title_rect.center = (500, 50)
+    self.screen.blit(title, title_rect)
+
+    pygame.draw.line(self.screen, (255, 255, 255), (450, 65), (650, 65))
+
     y_offset = 100  # Départ vertical du texte
     line_height = self.font.size("A")[1] + 5  # Hauteur d'une ligne + espacement
 
