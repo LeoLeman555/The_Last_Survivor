@@ -2,15 +2,23 @@ import pygame
 import time
 from reset import *
 from load import *
+from tutorial import *
 
 class MenuPrincipal:
   def __init__(self):
     pygame.init()
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Main Menu")
+
+    self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
+    self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)
+
     self.direction = None
 
     self.read_data = ReadData()
+
+    self.tutorial = Tutorial()
+
     self.buttons = ["play", "shop", "options"]
     self.icon_names = ["energy", "metal", "data"]
     self.running = True
@@ -35,22 +43,29 @@ class MenuPrincipal:
       self.icon_rects[name].x = 15
       self.icon_rects[name].y = 20 + i * 30
 
-    # Initialiser la police pour les nombres
-    self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
-
   def load_button_image(self, name):
     image = pygame.image.load(f"res/menu/{name}.png")
     return pygame.transform.scale(image, (image.get_width() + 20, image.get_height()))
 
-  def afficher_menu(self):
+  def draw(self):
     # Afficher l'arrière-plan
     self.screen.blit(pygame.image.load("res/menu/background.jpg"), (0, 0))
 
     mouse_pos = pygame.mouse.get_pos()
+
+    title = self.title_font.render("THE LAST SURVIVOR", True, (255, 255, 255))
+    title_rect = title.get_rect()
+    title_rect.center = (500, 50)
+    self.screen.blit(title, title_rect)
+    pygame.draw.line(self.screen, (255, 255, 255), (450, 65), (650, 65))
     # Afficher les boutons
     for i, name in enumerate(self.buttons, start=0):
       if self.rects[name].collidepoint(mouse_pos):
         self.screen.blit(self.images[1][name], self.rects[name])
+
+        if self.game_data["options"]["tutorial"] == "on":
+          self.tutorial.draw_main_menu(self.screen, name)
+      
       else:  
         self.screen.blit(self.images[0][name], self.rects[name])
 
@@ -65,7 +80,7 @@ class MenuPrincipal:
   def run(self):
     # Boucle principale du menu
     while self.running:
-      self.afficher_menu()
+      self.draw()
 
       press = pygame.key.get_pressed()
       if press[pygame.K_BACKSPACE]:

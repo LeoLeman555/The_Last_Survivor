@@ -82,11 +82,10 @@ class Introduction:
     # Affichage du texte lettre par lettre
     self.screen.fill((0, 0, 0))
 
-    title = self.title_font.render("THE LAST SURVIVOR", True, (255, 255, 255))  # Texte rouge
+    title = self.title_font.render("THE LAST SURVIVOR", True, (255, 255, 255))
     title_rect = title.get_rect()
     title_rect.center = (500, 50)
     self.screen.blit(title, title_rect)
-
     pygame.draw.line(self.screen, (255, 255, 255), (450, 65), (650, 65))
 
     y_offset = 100  # Départ vertical du texte

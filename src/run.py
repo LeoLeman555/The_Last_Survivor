@@ -15,6 +15,7 @@ from run_manager import *
 from end_screen import *
 from countdown import *
 from rescue import *
+from tutorial import *
 
 class Run:
   def __init__(self):
@@ -146,6 +147,7 @@ class Run:
     self.keyboard_input = KeyboardInput(self)
     self.rescue_ship = RescueShip(self)
     self.arrow_indicator = ArrowIndicator(self, self.rescue_ship)
+    self.tutorial = Tutorial()
 
     self.filtered_weapons = {key: weapon for key, weapon in self.data_weapons.items() if weapon.get('level', 0) > 0}
 

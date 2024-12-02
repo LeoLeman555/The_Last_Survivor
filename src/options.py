@@ -6,6 +6,7 @@ from load import *
 from button import *
 from reset import *
 from slider import *
+from tutorial import *
 
 class Options:
   def __init__(self):
@@ -25,6 +26,8 @@ class Options:
     self.dict_options = dict(islice(self.data_options.items(), 7, None))
 
     self.FPS = int(self.game_data["options"]["fps"])
+
+    self.tutorial = Tutorial()
 
     #? maybe add new language
     self.possibilities_language = ["english"]
@@ -363,8 +366,10 @@ class Options:
       self.change_options()
       
       self.screen.fill((0, 0, 0))
-      self.draw()
       self.reset_button()
+      self.draw()
+      if self.game_data["options"]["tutorial"] == "on":
+        self.tutorial.draw_options(self.screen)
       pygame.display.flip()
 
       if self.option_step <= 0:

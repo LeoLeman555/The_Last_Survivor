@@ -55,6 +55,11 @@ class Update():
     self.run.countdown.draw()
     self.run.arrow_indicator.draw(self.run.screen)
 
+    if self.run.game_data["options"]["tutorial"] == "on":
+      self.run.tutorial.draw_play(self.run.screen)
+      if self.run.rescue_ship.rescue or self.run.rescue_ship.move:
+        self.run.tutorial.draw_arrow(self.run.screen)
+
   def update_cards(self):
     self.run.power_up.update(self.run.mouse["position"], self.run.mouse["press"])
     self.run.power_up.draw(self.run.screen)

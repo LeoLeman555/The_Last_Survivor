@@ -4,6 +4,7 @@ from load import *
 from change_game_data import ChangeGameData
 from button import ReturnButton
 from itertools import islice
+from tutorial import *
 
 class Shop:
   def __init__(self):
@@ -33,6 +34,8 @@ class Shop:
     self.update_with_levels(self.data_extras, self.data_extras_levels)
 
     self.FPS = int(self.game_data["options"]["fps"])
+
+    self.tutorial = Tutorial()
 
     # money icon
     self.icon_money = pygame.image.load("res/shop/icon_money.png")
@@ -112,12 +115,20 @@ class Shop:
     text_rect = number_text.get_rect()
     text_rect.topleft = (self.icon_money_rect.centerx + 25, self.icon_money_rect.topleft[1])
     self.screen.blit(number_text, text_rect)
-
+    
     if self.shop_step <= 1:
+      title_text = self.title_font.render("SHOP", True, (255, 255, 255))
+      title_text_rect = title_text.get_rect()
+      title_text_rect.center = (500, 30)
+      self.screen.blit(title_text, title_text_rect)
+      pygame.draw.line(self.screen, (255, 255, 255), (480, 45), (530, 45))
       self.screen.blit(self.steps["step_1"]["cards"][0]['current_image'], self.steps["step_1"]["cards"][0]['rect'])
       self.screen.blit(self.steps["step_1"]["cards"][1]['current_image'], self.steps["step_1"]["cards"][1]['rect'])
     else:
       self.draw_steps()
+      
+    if self.game_data["options"]["tutorial"] == "on":
+      self.tutorial.draw_shop(self.screen, self.shop_step)
   
   def draw_elements(self, data: dict, data_price: dict, stats: dict, images: dict, shop_table: list[int], position: list[int], fake_names: list[str], data_names: list, number_line: int, number_row: int, max_level: int):
     x_start, x_interval, y_start, y_interval = position
