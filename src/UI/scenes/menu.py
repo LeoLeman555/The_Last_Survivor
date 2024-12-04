@@ -4,6 +4,7 @@ from src.data_handling.load import *
 from src.data_handling.read_data import *
 from src.data_handling.reset import *
 from src.UI.scenes.tutorial import *
+from src.UI.widgets.button import *
 
 class MainMenu:
   def __init__(self):
@@ -18,6 +19,8 @@ class MainMenu:
     self.direction: str | None = None
     self.read_data = ReadData()
     self.tutorial = Tutorial()
+
+    self.button_return = ReturnButton((975, 25))
 
     self.buttons = ["play", "shop", "options"]
     self.icon_names = ["energy", "metal", "data"]
@@ -45,15 +48,37 @@ class MainMenu:
       self.icon_rects[name].x = 15
       self.icon_rects[name].y = 20 + i * 30
 
+    # Animation setup
+    self.menu_step = 1
+    self.mouse_pos = 0
+    self.mouse_press = False
+    self.last_click_times = [0] * 1
+    self.cooldown = 0.5
+
   def load_button_image(self, name: str) -> pygame.Surface:
     """Load and resize a button image."""
     image = pygame.image.load(f"res/menu/{name}.png")
     return pygame.transform.scale(image, (image.get_width() + 20, image.get_height()))
+  
+  def update(self) -> None:
+    """Update the screen and handle user inputs."""
+    self.press_buttons()
+
+  def press_buttons(self) -> None:
+    """Handle button presses with cooldown."""
+    current_time = time.time()
+    return_button_index = 0
+    if self.button_return.is_pressed(self.mouse_pos, self.mouse_press):
+      if current_time - self.last_click_times[return_button_index] > self.cooldown:
+        self.menu_step = 0
+        self.last_click_times[return_button_index] = current_time
 
   def draw(self):
     """Draw the main menu elements."""
     self.screen.blit(pygame.image.load("res/menu/background.jpg"), (0, 0))
     mouse_pos = pygame.mouse.get_pos()
+
+    self.button_return.draw(self.screen, self.mouse_pos)
 
     # Display title
     title = self.title_font.render("THE LAST SURVIVOR", True, (255, 255, 255))
@@ -81,22 +106,26 @@ class MainMenu:
   def run(self) -> str | None:
     """Run the main menu loop."""
     while self.running:
-      self.draw()
-
+      self.mouse_pos = pygame.mouse.get_pos()
       # Handle key press
       if pygame.key.get_pressed()[pygame.K_BACKSPACE]:
         self.delete_data()
 
       # Handle events
       for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or self.menu_step <= 0:
           self.running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
+          self.mouse_press = True
           for name in self.buttons:
             if self.rects[name].collidepoint(event.pos):
               self.direction = name
               self.running = False
               break
+        elif event.type == pygame.MOUSEBUTTONUP:
+          self.mouse_press = False
+      self.update()
+      self.draw()
 
     return self.direction
   
