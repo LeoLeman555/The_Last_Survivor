@@ -10,6 +10,7 @@
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Creating an Executable](#creating-an-executable)
 - [Usage](#usage)
 - [Features](#features)
 - [Contributing](#contributing)
@@ -38,8 +39,30 @@ To run the game locally, follow these steps (if you install this game, please gi
    ```
 4. Start the game:
    ```bash
-   python src/main.py
+   python ./main.py
    ```
+
+## Creating an Executable
+
+If you'd like to create a standalone `.exe` file for The Last Survivor, you can use cx_Freeze. Follow these steps:
+
+1) **Verify the setup.py file:** Make sure the provided `setup.py` file is in the root directory of the project. This file includes the necessary configuration for building the executable.
+
+2) **Run the build command**: Use the following command to generate the `.exe` file:
+   ```bash
+   python setup.py build
+   ```
+This command will create a build directory containing your `.exe` file and other necessary files.
+
+3) **Locate the executable:** After the build process is complete, navigate to the newly created build folder. Inside, you'll find the `.exe` file named `The Last Survivor.exe`.
+
+4) **Distribute the game:** To share the game, package the .exe along with the files in the `build` folder into a compressed archive (e.g., a .zip file) for easier distribution.
+
+*Note: Make sure all assets and required files (e.g., images, sounds, data files) are included in the build folder. The `setup.py` script is configured to include these files, so double-check that the paths are correct.*
+
+> ⚠️ **Warning**: Creating the executable with `cx_Freeze` only works on **Windows**. 
+> If you're using another operating system (Linux or macOS), the executable cannot be generated using this method.  
+> However, you can still run the game directly via Python as explained in the [Installation](#installation) section.
 
 ## Usage
 
