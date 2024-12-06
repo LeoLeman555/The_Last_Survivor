@@ -136,7 +136,7 @@ class Update:
 
   def _draw_particles(self) -> None:
     """Draws all particles."""
-    for particle in self.particles_list:
+    for particle in self.run.player.particles:
       particle.draw(self.run.screen)
 
   def _draw_collection(self, collection: list) -> None:
