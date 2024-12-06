@@ -21,6 +21,7 @@ if __name__ == "__main__":
   pygame.init()
   screen = pygame.display.set_mode((1000, 600))
   pygame.display.set_caption("The Last Survivor - Title")
+  pygame.display.set_icon(pygame.image.load("res/menu/logo.jpg"))
 
   # Display title screen and run
   title_screen = TitleScreen(screen)
