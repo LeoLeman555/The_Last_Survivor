@@ -57,7 +57,7 @@ GAME_SAVE_PARAMS = {
     "language": "english",
     "fps": "60",
     "screen size": "1000x600",
-    "difficulty": "1",
+    "difficulty": "100",
     "tutorial": "on",
   }
 }
