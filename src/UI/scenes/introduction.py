@@ -131,4 +131,3 @@ class Introduction:
       pygame.display.flip()
       clock.tick(self.FPS)
 
-    pygame.quit()

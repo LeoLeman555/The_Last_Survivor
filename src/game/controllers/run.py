@@ -194,7 +194,6 @@ class Run:
 
       clock.tick(self.FPS)
 
-    pygame.quit()
     self.manager.end_game()
 
   def update_class(self):

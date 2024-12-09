@@ -32,9 +32,6 @@ if __name__ == "__main__":
     introduction = Introduction(screen)
     introduction.run()
 
-  # Quit pygame after title and introduction screens
-  pygame.quit()
-
 # Main game loop
 while running:
   # Display main menu
@@ -56,5 +53,7 @@ while running:
   else:
     # Exit the game loop
     running = False
+
+pygame.quit()
 
 print("------------------------- END -------------------------")

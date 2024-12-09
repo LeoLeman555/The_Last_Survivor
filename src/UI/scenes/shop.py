@@ -9,7 +9,6 @@ from src.UI.widgets.button import *
 
 class Shop:
   def __init__(self):
-    pygame.init()
     self.screen = pygame.display.set_mode((1000, 600))
 
     pygame.display.set_caption("The Last Survivor - Shop")
@@ -392,7 +391,6 @@ class Shop:
       if self.shop_step <= 0:
         self.running = False
       clock.tick(self.FPS)
-    pygame.quit()
 
   def create_cards(self, dict_cards: dict):
     cards = dict_cards

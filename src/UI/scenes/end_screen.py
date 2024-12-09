@@ -8,7 +8,6 @@ from src.UI.widgets.button import *
 class GameOverScreen:
   def __init__(self, width: int, height: int, rewards: dict, victory: bool):
     """Initialize the game over screen with necessary data and assets."""
-    pygame.init()
     self.width = width
     self.height = height
     self.victory = victory
@@ -181,8 +180,6 @@ class GameOverScreen:
 
       pygame.display.flip()
       self.clock.tick(self.FPS)
-
-    pygame.quit()
 
   def save_awards(self) -> None:
     """Save the updated rewards to the game save data."""

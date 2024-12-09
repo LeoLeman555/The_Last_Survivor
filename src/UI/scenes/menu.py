@@ -9,7 +9,6 @@ from src.UI.widgets.button import *
 class MainMenu:
   def __init__(self):
     """Initialize the main menu."""
-    pygame.init()
     self.screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("The Last Survivor - Main Menu")
     pygame.display.set_icon(pygame.image.load("res/menu/logo.jpg"))

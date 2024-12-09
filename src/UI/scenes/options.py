@@ -11,7 +11,6 @@ from src.UI.widgets.slider import *
 
 class Options:
   def __init__(self):
-    pygame.init()
     self.screen = pygame.display.set_mode((1000, 600))
     
     pygame.display.set_caption("The Last Survivor - Options")
@@ -376,8 +375,6 @@ class Options:
         running = False
 
       clock.tick(self.FPS)
-
-    pygame.quit()
 
   def update_data(self):
     self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
