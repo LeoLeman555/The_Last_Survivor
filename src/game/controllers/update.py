@@ -29,43 +29,15 @@ class Update:
 
       self.update_rescue()
       self.update_messages()
-    
-    self.draw()
+
     self.update_countdown()
     self.update_icon()
     self.update_cards()
-
-  def draw(self) -> None:
-    """Handles rendering of all game elements."""
-    self.run.map_manager.draw()
-    self._draw_collection(self.run.player.objects)
-    self._draw_collection(self.run.player.missiles)
-    self._draw_collection(self.run.player.bullets)
-    self._draw_collection(self.run.player.enemies)
-    self._draw_particles()
-    self.run.weapon.draw(self.run.screen)
-    self.run.player.grenades.draw(self.run.screen)
-    self.run.player.explosions.draw(self.run.screen)
-    self._draw_collection(self.run.player.lasers)
-    
-    if self.run.data_extras["drone"].get("activate", False):
-      self.run.drone.draw(self.run.screen)
-    
-    self.run.rescue_ship.draw(self.run.screen)
-    self._draw_collection(self.run.player.messages)
-    self.run.countdown.draw()
-    self.run.arrow_indicator.draw(self.run.screen)
-
-    if self.run.game_data["options"]["tutorial"] == "on":
-      self.run.tutorial.draw_play(self.run.screen)
-      if self.run.rescue_ship.rescue or self.run.rescue_ship.move:
-        self.run.tutorial.draw_arrow(self.run.screen)
 
   def update_cards(self) -> None:
     """Updates and draws all card-related elements."""
     for card_type in [self.run.power_up, self.run.weapons_cards, self.run.extras_cards]:
       card_type.update(self.run.mouse["position"], self.run.mouse["press"])
-      card_type.draw(self.run.screen)
 
   def update_rescue(self) -> None:
     """Updates the rescue ship."""
@@ -115,7 +87,6 @@ class Update:
   def update_icon(self) -> None:
     """Updates and draws the game icon."""
     self.run.icon.update()
-    self.run.icon.draw(self.run.screen)
     self.run.arrow_indicator.update()
 
   def update_laser(self) -> None:
@@ -133,16 +104,6 @@ class Update:
   def update_drone(self) -> None:
     """Updates the drone."""
     self.run.drone.update()
-
-  def _draw_particles(self) -> None:
-    """Draws all particles."""
-    for particle in self.run.player.particles:
-      particle.draw(self.run.screen)
-
-  def _draw_collection(self, collection: list) -> None:
-    """Draws all elements in a given collection."""
-    for element in collection:
-      element.draw(self.run.screen)
 
   def _update_collection(self, collection: list, *args, **kwargs) -> None:
     """Updates all elements in a given collection."""

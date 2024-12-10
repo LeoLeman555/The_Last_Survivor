@@ -3,6 +3,7 @@ from src.data_handling.load import *
 from src.data_handling.read_data import *
 from src.game.controllers.keyboard_input import *
 from src.game.controllers.update import *
+from src.game.controllers.draw import *
 from src.game.controllers.manager import *
 from src.game.mechanics.items import *
 from src.game.mechanics.countdown import *
@@ -144,6 +145,7 @@ class Run:
     self.weapon = Weapon(self.zoom, self.player, self.current_weapon_dict)
     self.drone = Drone(self.zoom, self.screen, self.player.enemies, self.data_extras["drone"])
     self.update = Update(self)
+    self.draw = Draw(self)
     self.weapons_cards = WeaponCard(self)
     self.extras_cards = ExtrasCard(self)
     self.shooter = Shooter(self)
@@ -180,6 +182,7 @@ class Run:
         self.use_power_up.use_power_up()
 
       self.keyboard_input.get_pause()
+      self.draw.draw_all()
       self.update_class()
 
       for event in pygame.event.get():
