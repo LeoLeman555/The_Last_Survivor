@@ -2,4 +2,5 @@ env/
 *.pyc
 __pycache__/
 build/
+.vscode/
 feedback.txt
