@@ -42,7 +42,7 @@ class Options:
     self.slider = Slider(680, 405, 150, 1, 100, int(self.game_data["options"]["difficulty"]))
 
     # Boutons d'interface
-    self.button_return = ReturnButton((975, 25))
+    self.button_return = Button("button_return", (975, 25))
     self.button_arrow = pygame.image.load("res/options/button.png")
     self.button_arrow_click = pygame.image.load("res/options/button_click.png")
 

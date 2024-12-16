@@ -18,7 +18,7 @@ class Explosion(pygame.sprite.Sprite):
   def change_zoom(self, new_zoom: int):
     """Adjust zoom level."""
     self.zoom = new_zoom * 2
-    self.images = self.get_images()  # Recharger les images en fonction du nouveau zoom
+    self.images = self.get_images()  # Reload images according to the new zoom
     self.image = self.images[0]
     self.rect = self.image.get_rect(center=self.rect.center)
 

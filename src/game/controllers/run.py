@@ -7,6 +7,7 @@ from src.game.controllers.draw import *
 from src.game.controllers.manager import *
 from src.game.mechanics.items import *
 from src.game.mechanics.countdown import *
+from src.game.mechanics.pause_panel import *
 from src.game.players.player import *
 from src.game.maps.map import *
 from src.game.weapons.weapon import *
@@ -153,6 +154,7 @@ class Run:
     self.rescue_ship = RescueShip(self)
     self.arrow_indicator = ArrowIndicator(self, self.rescue_ship)
     self.tutorial = Tutorial()
+    self.pause_panel = PausePanel(self)
 
     self.filtered_weapons = {key: weapon for key, weapon in self.data_weapons.items() if weapon.get('level', 0) > 0}
 
@@ -183,6 +185,10 @@ class Run:
 
       self.keyboard_input.get_pause()
       self.draw.draw_all()
+      if self.pause:
+        self.pause_panel.draw()
+      else:
+        self.pause_panel.press_pause()
       self.update_class()
 
       for event in pygame.event.get():

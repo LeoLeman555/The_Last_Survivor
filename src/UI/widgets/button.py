@@ -1,10 +1,11 @@
 import pygame
 
-class ReturnButton:
-  def __init__(self, position: tuple[int, int]):
+class Button:
+  def __init__(self, name: str, position: tuple[int, int]):
     """Initialize the button with position and resources."""
-    self.image = pygame.image.load("res/shop/button_return.png").convert_alpha()
-    self.click_image = pygame.image.load("res/shop/button_return_click.png").convert_alpha()
+    self.name = name
+    self.image = pygame.image.load(f"res/widgets/{name}.png").convert_alpha()
+    self.click_image = pygame.image.load(f"res/widgets/{name}_click.png").convert_alpha()
     self.rect = self.image.get_rect()
     self.rect.center = position
     self.original_pos = self.rect.topleft

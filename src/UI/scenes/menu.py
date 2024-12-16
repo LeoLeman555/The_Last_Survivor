@@ -20,7 +20,7 @@ class MainMenu:
     self.read_data = ReadData()
     self.tutorial = Tutorial()
 
-    self.button_return = ReturnButton((975, 25))
+    self.button_return = Button("button_return", (975, 25))
 
     self.buttons = ["play", "shop", "options"]
     self.icon_names = ["energy", "metal", "data"]

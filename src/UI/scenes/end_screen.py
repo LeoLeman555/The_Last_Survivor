@@ -19,7 +19,7 @@ class GameOverScreen:
     self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
     self.FPS = int(self.game_data["options"]["fps"])
 
-    self.button_return = ReturnButton((975, 25))
+    self.button_return = Button("button_return", (975, 25))
 
     # Animation setup
     self.end_screen_step = 1

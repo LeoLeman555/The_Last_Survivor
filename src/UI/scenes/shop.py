@@ -46,7 +46,7 @@ class Shop:
     self.icon_money_rect.center = (80, 30)
 
     # return button
-    self.button_return = ReturnButton((975, 25))
+    self.button_return = Button("button_return", (975, 25))
 
     # buy button
     self.button_buy = pygame.image.load("res/shop/button_buy.png").convert_alpha()
