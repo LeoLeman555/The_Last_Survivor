@@ -64,6 +64,8 @@ class Run:
     self.win = False
     self.time_left = 180
     self.power_up_launch = False
+    self.active_panel = None # Can be "power_up", "extras" or "weapon"
+    self.cooldown = 0.5
 
   def initialize_data(self):
     self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
@@ -166,7 +168,9 @@ class Run:
       "press": False,
       "position": pygame.mouse.get_pos(),
       "current_time": pygame.time.get_ticks(),
-      "shoot_delay": self.current_weapon_dict["rate"]
+      "shoot_delay": self.current_weapon_dict["rate"],
+      "active_click": True,
+      "cooldown_active_click": 0
     }
 
   def run(self):
@@ -201,11 +205,17 @@ class Run:
         if event.type == pygame.QUIT:
           self.running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-          if event.button == self.mouse_mappings.get("shoot"):
+          if event.button == self.mouse_mappings.get("shoot") and self.mouse["active_click"]:
             self.mouse["press"] = True
         elif event.type == pygame.MOUSEBUTTONUP:
           if event.button == self.mouse_mappings.get("shoot"):
             self.mouse["press"] = False
+
+      if not self.mouse["active_click"]:
+        self.mouse["press"] = False
+        current_time = pygame.time.get_ticks() / 1000  # Temps actuel en secondes
+        if current_time - self.mouse["cooldown_active_click"] > self.cooldown:
+          self.mouse["active_click"] = True
 
       clock.tick(self.FPS)
 

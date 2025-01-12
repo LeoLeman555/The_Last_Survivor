@@ -52,6 +52,7 @@ class RunManager:
       self.run.pause = True
       self.run.power_up_launch = True
       self.run.electrodes_manager.start()
+      self.run.active_panel = "weapon"
       self.run.weapons_cards.launch_cards([self.run.current_weapon_dict["name"], name])
 
   def change_weapon(self, id):
@@ -70,9 +71,11 @@ class RunManager:
     if (len(self.unlocked_power_ups) < 3 or random.random() < 0.15) and len(self.unlocked_extras) >= 2:
         self.add_extras()
     else:
+      self.run.active_panel = "power_up"
       self.run.power_up.launch_cards(random.sample(self.unlocked_power_ups, 3))
 
   def add_extras(self):
+    self.run.active_panel = "extras"
     self.run.extras_cards.launch_cards(random.sample(self.unlocked_extras, 2))
 
   def new_extra(self, name):

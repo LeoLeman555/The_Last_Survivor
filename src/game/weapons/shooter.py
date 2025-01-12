@@ -19,6 +19,7 @@ class Shooter:
   def can_shoot(self):
     """Check if the player can shoot"""
     return (self.run.mouse["press"] and 
+            self.run.mouse["active_click"] and 
             self.run.current_shot < self.run.current_weapon_dict["charger_capacity"] and
             self.run.mouse["current_time"] - self.run.last_shot_time > self.run.mouse["shoot_delay"])
 

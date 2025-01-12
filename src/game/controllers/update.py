@@ -61,10 +61,8 @@ class Update:
 
   def update_bullets(self) -> None:
     """Updates bullets or specific particles based on the current weapon."""
-    if self.run.current_weapon_dict["id"] == 7:
-      self._update_collection(self.run.player.particles)
-    else:
-      self._update_collection(self.run.player.bullets)
+    self._update_collection(self.run.player.particles)
+    self._update_collection(self.run.player.bullets)
 
   def update_enemies(self) -> None:
     """Updates all enemies."""
