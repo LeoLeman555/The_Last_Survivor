@@ -51,6 +51,8 @@ class CardManager:
             self.on_card_click(card)
             self.cards = []
             self.run.pause = False
+            self.run.power_up_launch = False
+            self.run.electrodes_manager.stop()
       else:
         card['current_image'] = card['left_image']
 

@@ -50,3 +50,19 @@ class Load:
           item_info["locked"] = (level == 0)
           break
     return {key: value for key, value in data.items()}
+  
+  def load_frames_from_row(self, sheet, frame_width, frame_height, num_frames, row=0, scale_size=None):
+    """Load a sequence of frames from a specific row of a sprite sheet."""
+    frames = []
+    for i in range(num_frames):
+      # Define the rectangle area for the current frame in the sprite sheet
+      frame_rect = pygame.Rect(i * frame_width, row * frame_height, frame_width, frame_height)
+      # Extract the frame from the sprite sheet
+      frame = sheet.subsurface(frame_rect)
+      # Scale the frame if a target size is provided
+      if scale_size:
+        frame = pygame.transform.scale(frame, scale_size)
+      # Add the processed frame to the list
+      frames.append(frame)
+    return frames
+

@@ -30,6 +30,7 @@ class Update:
       self.update_rescue()
       self.update_messages()
 
+    self.update_electrodes()
     self.update_countdown()
     self.update_icon()
     self.update_cards()
@@ -38,6 +39,9 @@ class Update:
     """Updates and draws all card-related elements."""
     for card_type in [self.run.power_up, self.run.weapons_cards, self.run.extras_cards]:
       card_type.update(self.run.mouse["position"], self.run.mouse["press"])
+
+  def update_electrodes(self) -> None:
+    self.run.electrodes_manager.update()
 
   def update_rescue(self) -> None:
     """Updates the rescue ship."""

@@ -58,6 +58,10 @@ class KeyboardInput:
     if self.run.collision_caillou:
       self.run.mouvement = [0, 0]
 
+    # Launch 3 choice power up
+    if press[pygame.K_o]:
+      self.run.manager.launch_power_up()
+
     # Handle grenade launch
     if press[self.key_mappings["launch"]]:
       self._handle_grenade_launch()

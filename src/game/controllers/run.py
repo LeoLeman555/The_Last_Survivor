@@ -1,6 +1,7 @@
 import pygame
 from src.data_handling.load import *
 from src.data_handling.read_data import *
+from src.game.animations.electrodes import *
 from src.game.controllers.keyboard_input import *
 from src.game.controllers.update import *
 from src.game.controllers.draw import *
@@ -62,6 +63,7 @@ class Run:
     self.weapon_id = 1
     self.win = False
     self.time_left = 180
+    self.power_up_launch = False
 
   def initialize_data(self):
     self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
@@ -155,6 +157,7 @@ class Run:
     self.arrow_indicator = ArrowIndicator(self, self.rescue_ship)
     self.tutorial = Tutorial()
     self.pause_panel = PausePanel(self)
+    self.electrodes_manager = ElectrodesManager(self)
 
     self.filtered_weapons = {key: weapon for key, weapon in self.data_weapons.items() if weapon.get('level', 0) > 0}
 
@@ -185,10 +188,13 @@ class Run:
 
       self.keyboard_input.get_pause()
       self.draw.draw_all()
+
       if self.pause:
-        self.pause_panel.draw()
+        if not self.power_up_launch:
+          self.pause_panel.draw()
       else:
         self.pause_panel.press_pause()
+
       self.update_class()
 
       for event in pygame.event.get():

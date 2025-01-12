@@ -31,6 +31,9 @@ class Draw:
         self.run.tutorial.draw_arrow(self.run.screen)
 
     self.run.icon.draw(self.run.screen)
+
+    self.run.electrodes_manager.draw(self.run.screen)
+
     self._draw_collection([self.run.power_up, self.run.weapons_cards, self.run.extras_cards])
 
   def _draw_collection(self, collection: list) -> None:
