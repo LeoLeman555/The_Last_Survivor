@@ -2,6 +2,7 @@ import pygame
 import random
 from src.game.weapons.grenade import *
 from src.data_handling.load import *
+from src.game.animations.explosion import *
 
 class Cible:
   def __init__(self, zoom: int, enemies, x: int, y: int, damage: int = 10):

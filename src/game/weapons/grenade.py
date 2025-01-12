@@ -1,6 +1,6 @@
 import pygame
 from src.data_handling.load import *
-from src.game.weapons.explosion import *
+from src.game.animations.explosion import *
 from src.game.weapons.toxic_particle import *
 
 class Grenade(pygame.sprite.Sprite):

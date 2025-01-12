@@ -2,7 +2,7 @@ import pygame
 import random
 import math
 from src.data_handling.load import *
-from src.game.weapons.explosion import *
+from src.game.animations.explosion import *
 
 class Bullet(pygame.sprite.Sprite):
   def __init__(self, zoom: int, screen: 'pygame.surface.Surface', player, enemies, goal: tuple, weapon_dict: dict, delay, piercing):
