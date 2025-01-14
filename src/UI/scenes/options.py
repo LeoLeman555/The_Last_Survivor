@@ -17,10 +17,10 @@ class Options:
         pygame.display.set_caption("The Last Survivor - Options")
         pygame.display.set_icon(pygame.image.load("res/menu/logo.jpg"))
 
-        self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
-        self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)
+        self.font = pygame.font.Font("res/fonts/futurist_font.ttf", 18)
+        self.title_font = pygame.font.Font("res/fonts/futurist_font.ttf", 25)
 
-        # Initialisation des données du jeu et des commandes par défaut
+        # Initialise game data and default commands
         self.read_data = ReadData()
         self.load = Load()
         self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
@@ -44,7 +44,7 @@ class Options:
             680, 405, 150, 1, 100, int(self.game_data["options"]["difficulty"])
         )
 
-        # Boutons d'interface
+        # Interface buttons
         self.button_return = Button("button_return", (975, 25))
         self.button_arrow = pygame.image.load("res/options/button.png")
         self.button_arrow_click = pygame.image.load("res/options/button_click.png")
@@ -59,20 +59,20 @@ class Options:
             "res/options/button_green_click.png"
         )
 
-        # Variables de gestion des entrées
+        # Input management variables
         self.mouse_pos = (0, 0)
         self.mouse_press = False
         self.option_step = 1
         self.last_click_times = [0] * 1
         self.cooldown = 0.5
         self.key_waiting_for_input = (
-            None  # Pour détecter quand une commande doit être modifiée
+            None  # To detect when a command needs to be modified
         )
         self.option_waiting_for_input = None
 
         self.error_message = ""
         self.error_message_start_time = 0
-        self.error_display_duration = 3  # Durée d'affichage en secondes
+        self.error_display_duration = 3  # Display time in seconds
 
     def display_error_message(self, message):
         self.error_message = message
@@ -153,18 +153,14 @@ class Options:
             self.change_key(self.option_waiting_for_input, new_key)
             self.option_waiting_for_input = None
 
-        # Mise à jour de la difficulté en fonction du slider
-        new_difficulty = self.slider.get_value()  # Récupère la nouvelle valeur
+        # Difficulty updated according to the slider
+        new_difficulty = self.slider.get_value()  # Retrieve the new value
         if str(self.dict_options["difficulty"]) != str(new_difficulty):
-            self.dict_options["difficulty"] = str(
-                new_difficulty
-            )  # Met à jour localement
+            self.dict_options["difficulty"] = str(new_difficulty)  # Update locally
             self.rewards["options"]["difficulty"] = str(
                 new_difficulty
-            )  # Met à jour les données sauvegardées
-            self.change_key(
-                "difficulty", str(new_difficulty)
-            )  # Sauvegarde la modification
+            )  # Update saved data
+            self.change_key("difficulty", str(new_difficulty))  # Save the change
 
     def update(self):
         self.press_buttons()
@@ -206,21 +202,21 @@ class Options:
                 self.delete_data()
 
     def delete_data(self):
-        # Variables pour gérer l'état de confirmation
+        # Variables for managing the confirmation status
         confirmation_visible = True
 
         while confirmation_visible:
             self.mouse_pos = pygame.mouse.get_pos()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    confirmation_visible = False  # Fermer la fenêtre
+                    confirmation_visible = False  # Close window
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.mouse_press = True
                 elif event.type == pygame.MOUSEBUTTONUP:
                     self.mouse_press = False
 
-            # Dessiner l'écran de confirmation
-            self.screen.fill((0, 0, 0))  # Fond noir
+            # Draw confirmation screen
+            self.screen.fill((0, 0, 0))  # Black background
 
             message_text = self.font.render(
                 "ARE YOU SURE YOU WANT TO RESET YOUR PROGRESS?", True, (255, 255, 255)
@@ -254,7 +250,7 @@ class Options:
 
             if self.mouse_press:
                 if yes_rect.collidepoint(self.mouse_pos):
-                    reset_game_save(self.game_data)  # Reset les données
+                    reset_game_save(self.game_data)  # Reset data
                     time.sleep(0.5)
                     self.update_data()
                     print("-------- Your progress has been reinitialized ---------")
@@ -285,7 +281,7 @@ class Options:
         self.draw_arrow_command()
         self.draw_options()
 
-        # Affiche le message d'erreur si nécessaire
+        # Display the error message if necessary
         if self.error_message:
             elapsed_time = time.time() - self.error_message_start_time
             if elapsed_time < self.error_display_duration:
@@ -296,7 +292,7 @@ class Options:
                 self.screen.blit(error_text, error_text_rect)
             else:
                 self.error_message = (
-                    ""  # Réinitialise le message après la durée d'affichage
+                    ""  # Reset the message after the display time has elapsed
                 )
 
     def draw_options(self):
@@ -431,9 +427,7 @@ class Options:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.mouse_press = True
                     if self.key_waiting_for_input:
-                        self.handle_mouse_event(
-                            event
-                        )  # Appel pour changement de bouton de souris
+                        self.handle_mouse_event(event)  # Call to change mouse button
                 elif event.type == pygame.MOUSEBUTTONUP:
                     self.mouse_press = False
                 elif event.type == pygame.KEYDOWN:

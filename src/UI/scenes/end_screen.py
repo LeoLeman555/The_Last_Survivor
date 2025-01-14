@@ -45,7 +45,7 @@ class GameOverScreen:
             center=(self.width // 2, 125)
         )
 
-        self.rewards_font = pygame.font.Font("res/texte/dialog_font.ttf", 30)
+        self.rewards_font = pygame.font.Font("res/fonts/futurist_font.ttf", 30)
 
         # Initialize rewards
         self.rewards = rewards

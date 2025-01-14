@@ -14,8 +14,8 @@ class MainMenu:
         pygame.display.set_caption("The Last Survivor - Main Menu")
         pygame.display.set_icon(pygame.image.load("res/menu/logo.jpg"))
 
-        self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
-        self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)
+        self.font = pygame.font.Font("res/fonts/futurist_font.ttf", 18)
+        self.title_font = pygame.font.Font("res/fonts/futurist_font.ttf", 25)
 
         self.direction: str | None = None
         self.read_data = ReadData()

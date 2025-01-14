@@ -50,7 +50,7 @@ class Update:
 
     def update_rescue(self) -> None:
         """Updates the rescue ship."""
-        self.run.rescue_ship.update(*self.run.mouvement, self.run.player.rect_collision)
+        self.run.rescue_ship.update(*self.run.movement, self.run.player.rect_collision)
 
     def update_toxic(self) -> None:
         """Updates toxic particles."""
@@ -58,12 +58,12 @@ class Update:
             self.run.player.toxic_particles, key=lambda p: p.creation_time, reverse=True
         )
         for particle in self.particles_list:
-            particle.update(*self.run.mouvement)
+            particle.update(*self.run.movement)
 
     def update_weapon(self) -> None:
         """Updates weapon-related elements."""
         self.run.weapon.rotate_to_cursor(self.run.mouse["position"])
-        self.run.player.grenades.update(*self.run.mouvement)
+        self.run.player.grenades.update(*self.run.movement)
         self.run.player.explosions.update()
 
     def update_bullets(self) -> None:
@@ -75,12 +75,12 @@ class Update:
         """Updates all enemies."""
         for enemy in self.run.player.enemies:
             enemy.follow(475, 281)
-            enemy.update(0.05, *self.run.mouvement, self.run.player.rect_collision)
+            enemy.update(0.05, *self.run.movement, self.run.player.rect_collision)
 
     def update_objects(self) -> None:
         """Updates all objects."""
         self._update_collection(
-            self.run.player.objects, *self.run.mouvement, self.run.player.rect_collision
+            self.run.player.objects, *self.run.movement, self.run.player.rect_collision
         )
 
     def update_countdown(self) -> None:
@@ -110,7 +110,7 @@ class Update:
         """Handles missile-related updates."""
         if random.random() < self.run.data_extras["missile"]["rarity"]:
             self.run.player.add_missile()
-        self._update_collection(self.run.player.missiles, *self.run.mouvement)
+        self._update_collection(self.run.player.missiles, *self.run.movement)
 
     def update_drone(self) -> None:
         """Updates the drone."""

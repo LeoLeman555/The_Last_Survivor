@@ -46,9 +46,7 @@ class Grenade(pygame.sprite.Sprite):
         self.zoom = new_zoom
         self.image = Load.charge_image(self, self.zoom, "weapon", self.name, "png", 0.5)
         self.rect = self.image.get_rect(center=self.rect.center)
-        self.speed = (
-            self.speed / self.zoom
-        )  # Ajustement de la vitesse en fonction du zoom
+        self.speed = self.speed / self.zoom  # Adjusting speed to suit zoom
         self.velocity_y = -5 * self.zoom
         self.rebound_height = self.screen.get_height() // 2
         self.lifetime = self.data["lifetime"] * self.zoom

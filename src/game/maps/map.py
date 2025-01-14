@@ -20,8 +20,8 @@ class MapManager:
         self.screen = screen
         self.zoom = zoom
         self.player = player
-        self.current_map = "carte_desert"
-        self.register_map("carte_desert")
+        self.current_map = "map_desert"
+        self.register_map("map_desert")
         self.teleport("start_player")
 
     def check_collision(self):
@@ -29,9 +29,9 @@ class MapManager:
         for sprite in self.get_group().sprites():
             if sprite.feet.collidelist(self.get_walls()) > -1:
                 sprite.move_back()
-                self.run.manager.collision(True)
+                self.run.manager.rock_collision(True)
             else:
-                self.run.manager.collision(False)
+                self.run.manager.rock_collision(False)
 
     def check_sables(self):
         """Check if player is in quicksand and reduce speed."""

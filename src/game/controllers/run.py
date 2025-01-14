@@ -56,11 +56,11 @@ class Run:
         self.speed_init = 3
         self.speed = self.speed_init
         self.pause = False
-        self.mouvement = [0, 0]
-        self.collision_caillou = False
+        self.movement = [0, 0]
+        self.rock_collision = False
         self.current_shot = 0
         self.time = 0
-        self.index_palier_xp = 1
+        self.index_threshold_xp = 1
         self.weapon_id = 1
         self.win = False
         self.time_left = 180
@@ -69,9 +69,9 @@ class Run:
         self.cooldown = 0.5
 
     def initialize_data(self):
-        self.palier_xp = self.read_data.get_thresholds("data/paliers.txt")
-        self.barres = self.read_data.read_bars_data("data/barres.txt")
-        self.ressources = self.read_data.read_resources_data("data/ressources.txt")
+        self.threshold_xp = self.read_data.get_thresholds("data/thresholds.txt")
+        self.bars = self.read_data.read_bars_data("data/bars.txt")
+        self.resources = self.read_data.read_resources_data("data/resources.txt")
         self.data_enemies = self.read_data.read_params("data/enemies.txt", "enemies")
         self.data_weapons = self.read_data.read_params("data/weapons.txt", "weapons")
         self.data_weapons_levels = self.read_data.read_params(
@@ -155,7 +155,7 @@ class Run:
         self.manager = RunManager(self)
         self.power_up = PowerUpCard(self, self.data_power_up)
         self.use_power_up = UsePowerUp(self)
-        self.icon = Icon(self, self.ressources, self.barres)
+        self.icon = Icon(self, self.resources, self.bars)
         self.player = Player(self, "jim")
         self.map_manager = MapManager(self, self.screen, self.player, self.zoom)
         self.weapon = Weapon(self.zoom, self.player, self.current_weapon_dict)
@@ -233,9 +233,7 @@ class Run:
 
             if not self.mouse["active_click"]:
                 self.mouse["press"] = False
-                current_time = (
-                    pygame.time.get_ticks() / 1000
-                )  # Temps actuel en secondes
+                current_time = pygame.time.get_ticks() / 1000  # Current time in seconds
                 if current_time - self.mouse["cooldown_active_click"] > self.cooldown:
                     self.mouse["active_click"] = True
 

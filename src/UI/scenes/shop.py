@@ -15,8 +15,8 @@ class Shop:
         pygame.display.set_caption("The Last Survivor - Shop")
         pygame.display.set_icon(pygame.image.load("res/menu/logo.jpg"))
 
-        self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
-        self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)
+        self.font = pygame.font.Font("res/fonts/futurist_font.ttf", 18)
+        self.title_font = pygame.font.Font("res/fonts/futurist_font.ttf", 25)
 
         # load all the data
         self.read_data = ReadData()
@@ -463,7 +463,7 @@ class Shop:
 
     def press_buttons(self, mouse_pos):
         current_time = time.time()
-        # Vérifie si le bouton retour est pressé
+        # Checks whether the back button is pressed
         return_button_index = len(self.all_button_buy)
         if self.button_return.is_pressed(mouse_pos, self.press_mouse):
             if (
@@ -476,7 +476,7 @@ class Shop:
                     self.shop_step = 1
                 self.last_click_times[return_button_index] = current_time
 
-        # Fonction interne pour vérifier les flèches
+        # Internal function for checking arrows
         def check_arrow_button(button_rect, index, from_step, to_step):
             if button_rect.collidepoint(mouse_pos) and self.press_mouse:
                 if current_time - self.last_click_time_arrow[index] > self.cooldown:
@@ -484,7 +484,7 @@ class Shop:
                         self.shop_step = to_step
                         self.last_click_time_arrow[index] = current_time
 
-        # Vérifie les boutons flèches
+        # Checks the arrow buttons
         check_arrow_button(self.button_right_arrow_rect, 0, 2, 3)
         check_arrow_button(self.button_right_arrow_rect, 0, 4, 5)
         check_arrow_button(self.button_left_arrow_rect, 1, 3, 2)

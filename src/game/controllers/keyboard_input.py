@@ -27,49 +27,49 @@ class KeyboardInput:
         if press[self.key_mappings["up"]] and press[self.key_mappings["left"]]:
             self.run.player.move_up(1.5, self.run.speed)
             self.run.player.move_left(1.5, self.run.speed)
-            self.run.mouvement = [
+            self.run.movement = [
                 math.ceil(self.run.speed * 1.33),
                 math.ceil(self.run.speed * 1.33),
             ]
         elif press[self.key_mappings["up"]] and press[self.key_mappings["right"]]:
             self.run.player.move_up(1.5, self.run.speed)
             self.run.player.move_right(1.5, self.run.speed)
-            self.run.mouvement = [
+            self.run.movement = [
                 math.ceil(self.run.speed * 1.33) * -1,
                 math.ceil(self.run.speed * 1.33),
             ]
         elif press[self.key_mappings["down"]] and press[self.key_mappings["right"]]:
             self.run.player.move_down(1.5, self.run.speed)
             self.run.player.move_right(1.5, self.run.speed)
-            self.run.mouvement = [
+            self.run.movement = [
                 math.ceil(self.run.speed * 1.33) * -1,
                 math.ceil(self.run.speed * 1.33) * -1,
             ]
         elif press[self.key_mappings["down"]] and press[self.key_mappings["left"]]:
             self.run.player.move_down(1.5, self.run.speed)
             self.run.player.move_left(1.5, self.run.speed)
-            self.run.mouvement = [
+            self.run.movement = [
                 math.ceil(self.run.speed * 1.33),
                 math.ceil(self.run.speed * 1.33) * -1,
             ]
         elif press[self.key_mappings["up"]]:
             self.run.player.move_up(1, self.run.speed)
-            self.run.mouvement = [0, self.run.speed * 2]
+            self.run.movement = [0, self.run.speed * 2]
         elif press[self.key_mappings["down"]]:
             self.run.player.move_down(1, self.run.speed)
-            self.run.mouvement = [0, self.run.speed * -2]
+            self.run.movement = [0, self.run.speed * -2]
         elif press[self.key_mappings["left"]]:
             self.run.player.move_left(1, self.run.speed)
-            self.run.mouvement = [self.run.speed * 2, 0]
+            self.run.movement = [self.run.speed * 2, 0]
         elif press[self.key_mappings["right"]]:
             self.run.player.move_right(1, self.run.speed)
-            self.run.mouvement = [self.run.speed * -2, 0]
+            self.run.movement = [self.run.speed * -2, 0]
         else:
-            self.run.mouvement = [0, 0]
+            self.run.movement = [0, 0]
 
         # Handle collision effect
-        if self.run.collision_caillou:
-            self.run.mouvement = [0, 0]
+        if self.run.rock_collision:
+            self.run.movement = [0, 0]
 
         # Launch 3 choice power up
         if press[pygame.K_o]:

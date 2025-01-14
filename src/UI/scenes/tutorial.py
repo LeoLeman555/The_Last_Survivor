@@ -3,7 +3,7 @@ import pygame
 
 class Tutorial:
     def __init__(self):
-        self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
+        self.font = pygame.font.Font("res/fonts/futurist_font.ttf", 18)
 
     def draw_play(self, screen):
         text = self.font.render("Metal", True, (0, 0, 0))

@@ -21,7 +21,7 @@ class Icon:
         # Handle XP logic: reset if max is reached, trigger power-up
         if self.resource["xp"] >= self.bars["xp_max"]:
             self.resource["xp"] = 0
-            self.run.manager.change_max_xp(self.run.index_palier_xp + 1)
+            self.run.manager.change_max_xp(self.run.index_threshold_xp + 1)
             self.run.manager.launch_power_up()
 
     def draw(self, screen: pygame.Surface):
@@ -93,7 +93,7 @@ class Icon:
         image = pygame.image.load(f"res/sprite/{name}.png")
         image = pygame.transform.scale(image, (width, height))
         screen.blit(image, (x_pos, y_pos))
-        font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
+        font = pygame.font.Font("res/fonts/futurist_font.ttf", 18)
         self.draw_score(screen, font, value, x_pos + x_text, y_pos + y_text)
 
     def draw_score(

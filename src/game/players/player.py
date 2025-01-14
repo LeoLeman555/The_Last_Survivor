@@ -86,27 +86,27 @@ class Player(pygame.sprite.Sprite):
         """Save the current position for potential rollback."""
         self.old_position = self.position.copy()
 
-    def move_right(self, diagonale: int, speed: int):
+    def move_right(self, diagonal: int, speed: int):
         """Move the player to the right."""
         self.change_animation("right", speed)
-        self.position[0] += self.speed / diagonale
+        self.position[0] += self.speed / diagonal
 
-    def move_left(self, diagonale: int, speed: int):
+    def move_left(self, diagonal: int, speed: int):
         """Move the player to the left."""
         self.change_animation("left", speed)
-        self.position[0] -= self.speed / diagonale
+        self.position[0] -= self.speed / diagonal
 
-    def move_up(self, diagonale: int, speed: int):
+    def move_up(self, diagonal: int, speed: int):
         """Move the player upwards."""
-        if diagonale == 1:
+        if diagonal == 1:
             self.change_animation("right", speed)
-        self.position[1] -= self.speed / diagonale
+        self.position[1] -= self.speed / diagonal
 
-    def move_down(self, diagonale: int, speed: int):
+    def move_down(self, diagonal: int, speed: int):
         """Move the player downwards."""
-        if diagonale == 1:
+        if diagonal == 1:
             self.change_animation("left", speed)
-        self.position[1] += self.speed / diagonale
+        self.position[1] += self.speed / diagonal
 
     def update(self):
         """Update player state, including health and position."""

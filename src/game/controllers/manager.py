@@ -19,9 +19,9 @@ class RunManager:
         }
 
     def start_run(self):
-        self.run.ressources["ammo"] = 500
-        self.run.ressources["health"] = 100
-        self.run.ressources["food"] = 100
+        self.run.resources["ammo"] = 500
+        self.run.resources["health"] = 100
+        self.run.resources["food"] = 100
         # generate enemy events for the game
         generator = EnemyEvent(self.enemies)
         self.enemy_events = generator.generate_enemy_events(self.run.difficulty)
@@ -99,9 +99,9 @@ class RunManager:
         self.run.data_extras[name]["activate"] = True
 
     def change_max_xp(self, palier):
-        self.run.index_palier_xp = palier
+        self.run.index_threshold_xp = palier
         self.run.icon.change_threshold(
-            "xp", self.run.palier_xp[self.run.index_palier_xp]
+            "xp", self.run.threshold_xp[self.run.index_threshold_xp]
         )
 
     def change_zoom(self):
@@ -146,5 +146,5 @@ class RunManager:
     def collision_sables(self, bool: bool):
         self.run.speed = self.run.speed_init / 2 if bool else self.run.speed_init
 
-    def collision(self, bool: bool):
-        self.run.collision_caillou = bool
+    def rock_collision(self, bool: bool):
+        self.run.rock_collision = bool

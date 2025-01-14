@@ -52,7 +52,7 @@ class CountDown:
     def draw(self) -> None:
         """Draw the countdown timer on the screen."""
         time_display = self.get_time()
-        font = pygame.font.Font("res/texte/dialog_font.ttf", 20)
+        font = pygame.font.Font("res/fonts/futurist_font.ttf", 20)
         text = font.render(time_display, True, (0, 0, 0))
         text_rect = text.get_rect(center=(self.run.WIDTH_SCREEN // 2, 20))
         self.run.screen.blit(text, text_rect)

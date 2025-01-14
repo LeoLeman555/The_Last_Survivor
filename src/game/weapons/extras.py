@@ -5,12 +5,12 @@ from src.data_handling.load import *
 from src.game.animations.explosion import *
 
 
-class Cible:
+class Target:
     def __init__(self, zoom: int, enemies, x: int, y: int, damage: int = 10):
         self.zoom = zoom
         self.enemies = enemies
         self.image = Load.charge_image(
-            self, self.zoom, "weapon", "cible_drone", "png", 0.5
+            self, self.zoom, "weapon", "drone_target", "png", 0.5
         )
         self.rect = self.image.get_rect()
         self.rect.x = x / self.zoom
@@ -26,7 +26,7 @@ class Cible:
         """Change the zoom and adjust target properties."""
         self.zoom = new_zoom
         self.image = Load.charge_image(
-            self, self.zoom, "weapon", "cible_drone", "png", 0.5
+            self, self.zoom, "weapon", "drone_target", "png", 0.5
         )
         self.rect = self.image.get_rect()
         self.x = 300 / self.zoom
@@ -69,24 +69,24 @@ class Drone:
         self.enemies = enemies
         self.data = data
         self.image = Load.charge_image(self, self.zoom, "weapon", "drone", "png", 0.4)
-        self.x_cible = 0
-        self.cible = Cible(self.zoom, self.enemies, 300, 315, self.data["damage"])
+        self.target_x = 0
+        self.target = Target(self.zoom, self.enemies, 300, 315, self.data["damage"])
 
     def change_zoom(self, new_zoom: int):
         """Change the zoom and adjust drone properties."""
         self.zoom = new_zoom
         self.image = Load.charge_image(self, self.zoom, "weapon", "drone", "png", 0.4)
-        self.cible.change_zoom(self.zoom)
+        self.target.change_zoom(self.zoom)
 
     def update(self):
         """Update the drone's position and draw it on the screen."""
-        self.cible.update()
+        self.target.update()
 
     def draw(self, screen):
         screen.blit(
             self.image, ((478 - 21 * (self.zoom - 1)), (260 - 30 * (self.zoom - 1)))
         )
-        self.cible.draw(screen)
+        self.target.draw(screen)
 
 
 class Laser(pygame.sprite.Sprite):
@@ -162,28 +162,28 @@ class Missile(pygame.sprite.Sprite):
         self.enemies = enemies
         self.data = data
         self.damage = self.data["damage"]
-        self.cible_missile = Load.charge_image(
-            self, self.zoom, "weapon", "cible_missile", "png", 0.5
+        self.missile_target = Load.charge_image(
+            self, self.zoom, "weapon", "missile_target", "png", 0.5
         )
         self.x = random.randint(300, 700)
         self.y = random.randint(200, 400)
-        self.rect = self.cible_missile.get_rect()
+        self.rect = self.missile_target.get_rect()
         self.lifetime = 50
 
     def change_zoom(self, new_zoom: int):
         """Change the zoom and adjust missile properties."""
         self.zoom = new_zoom
-        self.cible_missile = Load.charge_image(
-            self, self.zoom, "weapon", "cible_missile", "png", 0.5
+        self.missile_target = Load.charge_image(
+            self, self.zoom, "weapon", "missile_target", "png", 0.5
         )
-        self.rect = self.cible_missile.get_rect()
+        self.rect = self.missile_target.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
     def draw(self, screen: pygame.Surface):
         """Draw the missile on the screen."""
         if self.lifetime % 2 == 0 or self.lifetime >= 40:
-            screen.blit(self.cible_missile, (self.x, self.y))
+            screen.blit(self.missile_target, (self.x, self.y))
 
     def update(self, x_var: int, y_var: int):
         """Update the missile's position and lifetime."""

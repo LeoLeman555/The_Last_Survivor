@@ -49,9 +49,9 @@ class Choice:
         outcomes = [-1, 0, 1, 2]
         probabilities = [0.10, 0.35, 0.50, 0.05]
         result = random.choices(outcomes, probabilities)[0]
-        futur_weapon = current_weapon + result
+        future_weapon = current_weapon + result
 
-        if futur_weapon not in unlocked_weapons:
-            futur_weapon = current_weapon
+        if future_weapon not in unlocked_weapons:
+            future_weapon = current_weapon
 
-        return futur_weapon
+        return future_weapon

@@ -12,8 +12,10 @@ class Introduction:
         pygame.display.set_caption("The Last Survivor - Introduction")
         pygame.display.set_icon(pygame.image.load("res/menu/logo.jpg"))
 
-        self.font = pygame.font.Font("res/texte/dialog_font.ttf", 18)
-        self.title_font = pygame.font.Font("res/texte/dialog_font.ttf", 25)  # Bold font
+        self.font = pygame.font.Font("res/fonts/futurist_font.ttf", 18)
+        self.title_font = pygame.font.Font(
+            "res/fonts/futurist_font.ttf", 25
+        )  # Bold font
 
         self.read_data = ReadData()
         self.load = Load()
