@@ -120,6 +120,11 @@ class RescueShip:
             self.float_counter += 0.3
             floating_offset = math.sin(self.float_counter) * 2
             self.position[1] += floating_offset
+            self.image = (
+                self.original_image
+                if self.facing_right
+                else pygame.transform.flip(self.original_image, True, False)
+            )
         else:
             self.move_center()
 

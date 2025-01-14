@@ -8,16 +8,22 @@ class CountDown:
         self.duration = duration
         self.remaining_time = duration
         self.start_time = pygame.time.get_ticks()
+        self.launch = False
 
     def update(self, pause: bool) -> None:
-        """Update the countdown timer, pause if necessary, and launch rescue when finished."""
-        if not self.is_finished():
-            if not pause:
-                self._update_time()
-            else:
-                self._reset_start_time()
+        """Update the countdown timer, handle pause state, and launch rescue when finished."""
+        if self.is_finished():
+            self._handle_rescue()
+        elif pause:
+            self._reset_start_time()
         else:
+            self._update_time()
+
+    def _handle_rescue(self) -> None:
+        """Launch the rescue ship if not already launched."""
+        if not self.launch:
             self.run.rescue_ship.launch_rescue()
+            self.launch = True
 
     def _update_time(self) -> None:
         """Update remaining time based on elapsed seconds."""
