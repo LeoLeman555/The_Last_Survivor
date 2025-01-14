@@ -33,11 +33,24 @@ To run the game locally, follow these steps (if you install this game, please gi
    ```bash
    cd The_Last_Survivor
    ```
-3. Install the required dependencies:
+3. Create a virtual environment (recommended):
+   ```bash
+   python -m venv venv
+   ```
+4. Activate the virtual environment:
+   - **On Windows**:
+   ```bash
+   venv\Scripts\activate
+   ```
+   - **On macOS/Linux**:
+   ```bash
+   source venv/bin/activate
+   ```
+5. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-4. Start the game:
+6. Start the game:
    ```bash
    python ./main.py
    ```
