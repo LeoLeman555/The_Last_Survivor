@@ -15,7 +15,7 @@ class Weapon(pygame.sprite.Sprite):
         self.image = Load.charge_image(
             self,
             self.zoom / 2,
-            f"weapon/{self.current_weapon_dict["name"]}",
+            f"weapon/{self.current_weapon_dict['name']}",
             f"level_{self.level}",
             "png",
             0.85,
@@ -32,7 +32,7 @@ class Weapon(pygame.sprite.Sprite):
         self.image = Load.charge_image(
             self,
             self.zoom / 2,
-            f"weapon/{self.current_weapon_dict["name"]}",
+            f"weapon/{self.current_weapon_dict['name']}",
             f"level_{self.level}",
             "png",
             0.85,
@@ -66,7 +66,7 @@ class Weapon(pygame.sprite.Sprite):
         self.image = Load.charge_image(
             self,
             self.zoom / 2,
-            f"weapon/{self.current_weapon_dict["name"]}",
+            f"weapon/{self.current_weapon_dict['name']}",
             f"level_{self.level}",
             "png",
             0.85,

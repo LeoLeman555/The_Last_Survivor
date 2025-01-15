@@ -167,7 +167,7 @@ class Shop:
         self.button_return.draw(self.screen, mouse_pos)
         self.screen.blit(self.icon_money, self.icon_money_rect)
         number_text = self.font.render(
-            f"{self.game_data["money"]}", True, (255, 255, 255)
+            f"{self.game_data['money']}", True, (255, 255, 255)
         )
         text_rect = number_text.get_rect()
         text_rect.topleft = (
@@ -266,8 +266,8 @@ class Shop:
                     if dict_element["level"] < max_level:
                         price = (
                             str(
-                                data_price[f"{dict_element["name"]}"][
-                                    f"level_{dict_element["level"]+1}"
+                                data_price[f"{dict_element['name']}"][
+                                    f"level_{dict_element['level']+1}"
                                 ]
                             )
                             + "$"
