@@ -14,7 +14,7 @@ class GameOverScreen:
         self.victory = victory
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("The Last Survivor - Game Over")
-        pygame.display.set_icon(pygame.image.load("res/menu/logo.jpg"))
+        pygame.display.set_icon(pygame.image.load("res/icons/official_logo.png"))
 
         self.read_data = ReadData()
         self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
