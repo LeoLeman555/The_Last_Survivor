@@ -147,6 +147,9 @@ class MainMenu:
                             break
                 elif event.type == pygame.MOUSEBUTTONUP:
                     self.mouse_press = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.running = False
             self.update()
             self.draw()
 

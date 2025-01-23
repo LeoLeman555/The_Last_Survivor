@@ -221,6 +221,9 @@ class Run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if (
                         event.button == self.mouse_mappings.get("shoot")

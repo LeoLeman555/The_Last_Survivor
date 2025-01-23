@@ -184,6 +184,9 @@ class GameOverScreen:
                     self.mouse_press = True
                 elif event.type == pygame.MOUSEBUTTONUP:
                     self.mouse_press = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
             self.update()
             self.screen.fill(self.black)
             if self.background_image:

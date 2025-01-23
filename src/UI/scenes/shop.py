@@ -600,6 +600,9 @@ class Shop:
                     self.press_mouse = True
                 elif event.type == pygame.MOUSEBUTTONUP:
                     self.press_mouse = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.running = False
             self.update(mouse_pos)
             self.screen.fill((0, 0, 0))
             self.draw(mouse_pos)

@@ -431,6 +431,8 @@ class Options:
                 elif event.type == pygame.MOUSEBUTTONUP:
                     self.mouse_press = False
                 elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
                     if self.key_waiting_for_input:
                         self.handle_key_event(event)
 
