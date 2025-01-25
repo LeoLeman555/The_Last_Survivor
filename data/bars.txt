@@ -1,6 +1,0 @@
-xp_bar,0
-health_bar,0
-food_bar,0
-xp_max,100
-health_max,100
-food_max,100

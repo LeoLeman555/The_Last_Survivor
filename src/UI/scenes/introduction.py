@@ -20,11 +20,11 @@ class Introduction:
         self.read_data = ReadData()
         self.load = Load()
         self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
-        self.tutorial = self.read_data.read_params("data/tutorial.txt", "tutorial")
+        self.texts = self.read_data.read_yaml("data/texts.yaml")
 
         self.FPS = int(self.game_data["options"]["fps"])
         self.text_lines = self.split_text_to_lines(
-            list(self.tutorial["introduction"].values()), 900
+            list(self.texts["introduction"].values()), 900
         )  # Split text to fit the width
         self.current_line = 0
         self.displayed_text = ""

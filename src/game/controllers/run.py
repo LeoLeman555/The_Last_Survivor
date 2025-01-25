@@ -69,20 +69,26 @@ class Run:
         self.cooldown = 0.5
 
     def initialize_data(self):
-        self.threshold_xp = self.read_data.get_thresholds("data/thresholds.txt")
-        self.bars = self.read_data.read_bars_data("data/bars.txt")
-        self.resources = self.read_data.read_resources_data("data/resources.txt")
-        self.data_enemies = self.read_data.read_params("data/enemies.txt", "enemies")
-        self.data_weapons = self.read_data.read_params("data/weapons.txt", "weapons")
-        self.data_weapons_levels = self.read_data.read_params(
-            "data/weapons_level.txt", "weapons_level"
+        self.thresholds = self.read_data.read_json(
+            "data/configurations/thresholds.json"
         )
-        self.data_extras_levels = self.read_data.read_params(
-            "data/extras_level.txt", "extras_level"
+        self.threshold_xp = self.thresholds["xp_thresholds"]
+        self.player_stats = self.read_data.read_yaml("data/player_stats.yaml")
+        self.bars = self.player_stats["bars"]
+        self.resources = self.player_stats["resources"]
+        self.data_enemies = self.read_data.read_json("data/configurations/enemies.json")
+        self.data_weapons = self.read_data.read_json("data/configurations/weapons.json")
+        self.data_weapons_levels = self.read_data.read_json(
+            "data/configurations/weapons_levels.json"
+        )
+        self.data_extras_levels = self.read_data.read_json(
+            "data/configurations/extras_levels.json"
         )
         self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
-        self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
-        self.data_extras = self.read_data.read_params("data/extras.txt", "extras")
+        self.data_power_up = self.read_data.read_json(
+            "data/configurations/power_up.json"
+        )
+        self.data_extras = self.read_data.read_json("data/configurations/extras.json")
         self.commands = self.game_data["options"]
         self.FPS = int(self.game_data["options"]["fps"])
         self.difficulty = int(self.game_data["options"]["difficulty"])

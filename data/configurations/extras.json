@@ -1,0 +1,55 @@
+{
+    "grenade": {
+        "name": "grenade",
+        "id": 1,
+        "activate": false,
+        "type": "classical",
+        "last_shot_time": 0,
+        "rate": 2000,
+        "damage": 100,
+        "speed": 1,
+        "lifetime": 20,
+        "level": 0,
+        "locked": true
+    },
+    "toxic_grenade": {
+        "name": "toxic_grenade",
+        "id": 2,
+        "activate": false,
+        "type": "toxic",
+        "last_shot_time": 0,
+        "rate": 5000,
+        "damage": 100,
+        "speed": 1,
+        "lifetime": 20,
+        "level": 0,
+        "locked": true
+    },
+    "drone": {
+        "name": "drone",
+        "id": 3,
+        "activate": false,
+        "damage": 10,
+        "level": 0,
+        "locked": true
+    },
+    "missile": {
+        "name": "missile",
+        "id": 4,
+        "activate": false,
+        "rarity": 0.015,
+        "damage": 100,
+        "level": 0,
+        "locked": true
+    },
+    "laser_probe": {
+        "name": "laser_probe",
+        "id": 5,
+        "activate": false,
+        "rarity": 0.005,
+        "damage": 150,
+        "lifetime": 100,
+        "level": 0,
+        "locked": true
+    }
+}

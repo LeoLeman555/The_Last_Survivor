@@ -1,24 +1,9 @@
 import ast
+import json
+import yaml
 
 
 class ReadData:
-    def get_thresholds(self, path: str) -> tuple:
-        """Read and return thresholds from a file."""
-        with open(path, "r") as file:
-            thresholds = tuple(int(num) for line in file for num in line.split(","))
-        return thresholds
-
-    def read_resources_data(self, path: str) -> dict:
-        """Read resources data from a file and return as a dictionary."""
-        resources = {}
-        with open(path, "r") as file:
-            for line in file:
-                parts = line.strip().split(",")
-                key = parts[0]
-                value = int(parts[1])
-                resources[key] = value
-        return resources
-
     def read_bars_data(self, path: str) -> dict:
         """Read bars data from a file and return as a dictionary."""
         bars = {}
@@ -47,3 +32,31 @@ class ReadData:
         content = content.replace(f"{real_prefix}_PARAMS = ", "", 1)
         params_dict = ast.literal_eval(content)
         return params_dict
+
+    def read_json(self, filepath: str) -> dict:
+        """Read a .json file and return its content as a dictionary."""
+        try:
+            with open(filepath, "r", encoding="utf-8") as file:
+                content = json.load(file)  # Parse JSON content into a dictionary
+            return content
+        except FileNotFoundError:
+            print(f"Error: File not found at '{filepath}'.")
+        except json.JSONDecodeError:
+            print(f"Error: Failed to decode JSON content in file '{filepath}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+        return {}
+
+    def read_yaml(self, filepath: str) -> dict:
+        """Read a .yaml file and return its content as a dictionary."""
+        try:
+            with open(filepath, "r", encoding="utf-8") as file:
+                content = yaml.safe_load(file)  # Safely load the YAML content
+            return content
+        except FileNotFoundError:
+            print(f"Error: File not found at '{filepath}'.")
+        except json.JSONDecodeError:
+            print(f"Error: Failed to decode YAML content in file '{filepath}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+        return {}

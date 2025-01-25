@@ -22,23 +22,25 @@ class Shop:
         self.read_data = ReadData()
         self.load = Load()
         self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
-        self.data_extras = self.read_data.read_params("data/extras.txt", "extras")
-        self.data_extras_levels = self.read_data.read_params(
-            "data/extras_level.txt", "extras_level"
+        self.data_extras = self.read_data.read_json("data/configurations/extras.json")
+        self.data_extras_levels = self.read_data.read_json(
+            "data/configurations/extras_levels.json"
         )
-        self.data_extras_price = self.read_data.read_params(
-            "data/extras_price.txt", "price"
+        self.data_extras_price = self.read_data.read_json(
+            "data/configurations/extras_prices.json"
         )
-        self.data_weapons = self.read_data.read_params("data/weapons.txt", "weapons")
-        self.data_weapons_levels = self.read_data.read_params(
-            "data/weapons_level.txt", "weapons_level"
+        self.data_weapons = self.read_data.read_json("data/configurations/weapons.json")
+        self.data_weapons_levels = self.read_data.read_json(
+            "data/configurations/weapons_levels.json"
         )
-        self.data_weapons_price = self.read_data.read_params(
-            "data/weapons_price.txt", "price"
+        self.data_weapons_price = self.read_data.read_json(
+            "data/configurations/weapons_prices.json"
         )
-        self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
-        self.data_power_up_price = self.read_data.read_params(
-            "data/power_up_price.txt", "price"
+        self.data_power_up = self.read_data.read_json(
+            "data/configurations/power_up.json"
+        )
+        self.data_power_up_price = self.read_data.read_json(
+            "data/configurations/power_up_prices.json"
         )
 
         self.data_weapons = self.load.process_data(
@@ -698,9 +700,11 @@ class Shop:
 
     def update_data(self):
         self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
-        self.data_weapons = self.read_data.read_params("data/weapons.txt", "weapons")
-        self.data_extras = self.read_data.read_params("data/extras.txt", "extras")
-        self.data_power_up = self.read_data.read_params("data/power_up.txt", "power_up")
+        self.data_weapons = self.read_data.read_json("data/configurations/weapons.json")
+        self.data_extras = self.read_data.read_json("data/configurations/extras.json")
+        self.data_power_up = self.read_data.read_json(
+            "data/configurations/power_up.json"
+        )
         self.data_weapons = self.load.process_data(
             self.game_data, "weapon_level", self.data_weapons
         )

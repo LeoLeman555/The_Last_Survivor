@@ -1,0 +1,122 @@
+{
+    "care_kit": {
+        "id": 1,
+        "name": "care_kit",
+        "effect": "+50 HP",
+        "value": 50,
+        "activate": false,
+        "locked": false
+    },
+    "survival_ration": {
+        "id": 2,
+        "name": "survival_ration",
+        "effect": "+50 FOOD",
+        "value": 50,
+        "activate": false,
+        "locked": false
+    },
+    "2nd_life": {
+        "id": 3,
+        "name": "2nd_life",
+        "effect": "+1 LIFE",
+        "value": 1,
+        "activate": false,
+        "locked": false
+    },
+    "critical_hit": {
+        "id": 4,
+        "name": "critical_hit",
+        "effect": "+10% DPS",
+        "value": 1.10,
+        "activate": false,
+        "locked": false
+    },
+    "expert": {
+        "id": 5,
+        "name": "expert",
+        "effect": "+20% XP",
+        "value": 1.20,
+        "activate": false,
+        "locked": false
+    },
+    "boost": {
+        "id": 6,
+        "name": "boost",
+        "effect": "+10% SPEED",
+        "value": 1.10,
+        "activate": false,
+        "locked": false
+    },
+    "agile_fingers": {
+        "id": 7,
+        "name": "agile_fingers",
+        "effect": "-25% RELOAD",
+        "value": 0.75,
+        "activate": false,
+        "locked": false
+    },
+    "extra_ammo": {
+        "id": 8,
+        "name": "extra_ammo",
+        "effect": "+2 AMMO",
+        "value": 2,
+        "activate": false,
+        "locked": false
+    },
+    "large_range": {
+        "id": 9,
+        "name": "large_range",
+        "effect": "+20% RANGE",
+        "value": 1.20,
+        "activate": false,
+        "locked": false
+    },
+    "magnetic": {
+        "id": 10,
+        "name": "magnetic",
+        "effect": "x2 RECOVERY",
+        "value": 2,
+        "activate": false,
+        "locked": false
+    },
+    "piercing": {
+        "id": 11,
+        "name": "piercing",
+        "effect": "+1 PIERCED",
+        "value": 1,
+        "activate": false,
+        "locked": false
+    },
+    "rapid_fire": {
+        "id": 12,
+        "name": "rapid_fire",
+        "effect": "-25% TIME",
+        "value": 0.75,
+        "activate": false,
+        "locked": false
+    },
+    "regeneration": {
+        "id": 13,
+        "name": "regeneration",
+        "effect": "+2 HP/sec",
+        "value": 2,
+        "activate": false,
+        "locked": false
+    },
+    "zoom": {
+        "id": 14,
+        "name": "zoom",
+        "effect": "+1 ZOOM",
+        "value": 1,
+        "activate": false,
+        "locked": false
+    },
+    "strong_stomach": {
+        "id": 15,
+        "name": "strong_stomach",
+        "effect": "x2 RESISTANCE",
+        "value": 2,
+        "activate": false,
+        "locked": false
+    }
+}
