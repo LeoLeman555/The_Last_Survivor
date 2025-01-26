@@ -20,6 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         data: dict,
     ):
         super().__init__()
+        self.read_data = ReadData()
         self.data = data
         self.params = self.data[name.lower()]
         self.zoom = zoom
@@ -28,7 +29,7 @@ class Enemy(pygame.sprite.Sprite):
         self.player = player
         self.animations = self.load_animations(
             self.params["sprite_sheet"],
-            ReadData.read_animation_specs(self, self.params["animation_specs"]),
+            self.read_data.read_json(self.params["animation_specs"]),
         )
         self.size = self.params["size"]
         self.x = x
