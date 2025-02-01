@@ -1,8 +1,8 @@
 import pygame
 import time
+from src.data_handling.game_data_manager import *
 from src.data_handling.load import *
 from src.data_handling.read_data import *
-from src.data_handling.reset import *
 from src.UI.scenes.tutorial import *
 from src.UI.widgets.button import *
 
@@ -19,6 +19,7 @@ class MainMenu:
 
         self.direction: str | None = None
         self.read_data = ReadData()
+        self.game_data_manager = GameDataManager()
         self.tutorial = Tutorial()
 
         self.button_return = Button("button_return", (975, 25))
@@ -43,7 +44,7 @@ class MainMenu:
             )
 
         # Load game data and icons
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data = self.game_data_manager.game_data
         self.icon_numbers = [
             self.game_data["resource"]["energy"],
             self.game_data["resource"]["metal"],
@@ -165,8 +166,11 @@ class MainMenu:
             .upper()
         )
         if question == "YES":
-            reset_game_save(self.game_data)
-            time.sleep(0.5)
+            self.game_data_manager.reset_game_save()
             print("-------- Your progress has been reinitialized ---------")
+            time.sleep(0.5)
+        else:
+            print("Action cancelled.")
+        pygame.init()
         self.__init__()
         self.run()

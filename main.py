@@ -1,6 +1,7 @@
 print("------------------------- GO -------------------------")
 
 import pygame
+from src.data_handling.game_data_manager import *
 from src.data_handling.load import *
 from src.data_handling.read_data import *
 from src.game.controllers.run import *
@@ -22,8 +23,9 @@ def initialize_pygame():
 
 def load_game_data():
     """Load and return game data."""
-    read_data = ReadData()
-    return read_data.read_params("data/game_save.txt", "game_save")
+    game_data_manager = GameDataManager()
+    current_data = game_data_manager.game_data
+    return current_data
 
 
 def run_title_and_intro(screen, game_data):

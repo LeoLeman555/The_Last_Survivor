@@ -1,4 +1,5 @@
 import pygame
+from src.data_handling.game_data_manager import *
 from src.data_handling.load import *
 from src.data_handling.read_data import *
 
@@ -19,7 +20,8 @@ class Introduction:
 
         self.read_data = ReadData()
         self.load = Load()
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data_manager = GameDataManager()
+        self.game_data = self.game_data_manager.game_data
         self.texts = self.read_data.read_yaml("data/texts.yaml")
 
         self.FPS = int(self.game_data["options"]["fps"])

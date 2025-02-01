@@ -4,15 +4,6 @@ import yaml
 
 
 class ReadData:
-    def read_params(self, filepath: str, prefix: str) -> dict:
-        """Generic method to read any parameter file by removing the specific prefix."""
-        with open(filepath, "r") as file:
-            content = file.read()
-        real_prefix = prefix.upper()
-        content = content.replace(f"{real_prefix}_PARAMS = ", "", 1)
-        params_dict = ast.literal_eval(content)
-        return params_dict
-
     def read_json(self, filepath: str) -> dict:
         """Read a .json file and return its content as a dictionary."""
         try:

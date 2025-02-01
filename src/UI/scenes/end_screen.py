@@ -1,8 +1,9 @@
+import copy
 import pygame
 import time
+from src.data_handling.game_data_manager import *
 from src.data_handling.load import *
 from src.data_handling.read_data import *
-from src.data_handling.change_game_data import *
 from src.UI.widgets.button import *
 
 
@@ -17,7 +18,8 @@ class GameOverScreen:
         pygame.display.set_icon(pygame.image.load("res/icons/official_logo.png"))
 
         self.read_data = ReadData()
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data_manager = GameDataManager()
+        self.game_data = self.game_data_manager.game_data
         self.FPS = int(self.game_data["options"]["fps"])
 
         self.button_return = Button("button_return", (975, 25))
@@ -48,8 +50,8 @@ class GameOverScreen:
         self.rewards_font = pygame.font.Font("res/fonts/futurist_font.ttf", 30)
 
         # Initialize rewards
+        self.initial_rewards = copy.deepcopy(rewards)
         self.rewards = rewards
-        self.change_game_data = ChangeGameData(self.rewards)
         self.rewards = self.rewards["resource"]
         self.rewards["money"] = rewards["money"]
 
@@ -186,6 +188,7 @@ class GameOverScreen:
                     self.mouse_press = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.save_awards()
                         running = False
             self.update()
             self.screen.fill(self.black)
@@ -204,6 +207,4 @@ class GameOverScreen:
 
     def save_awards(self) -> None:
         """Save the updated rewards to the game save data."""
-        self.change_game_data.change_params(
-            self.change_game_data.reward, self.change_game_data.game_save_data
-        )
+        self.game_data_manager.change_params(self.initial_rewards)

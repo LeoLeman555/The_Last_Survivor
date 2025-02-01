@@ -1,9 +1,9 @@
 import pygame
 import time
 from itertools import islice
+from src.data_handling.game_data_manager import *
 from src.data_handling.load import *
 from src.data_handling.read_data import *
-from src.data_handling.change_game_data import *
 from src.UI.scenes.tutorial import *
 from src.UI.widgets.button import *
 
@@ -21,7 +21,8 @@ class Shop:
         # load all the data
         self.read_data = ReadData()
         self.load = Load()
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data_manager = GameDataManager()
+        self.game_data = self.game_data_manager.game_data
         self.data_extras = self.read_data.read_json("data/configurations/extras.json")
         self.data_extras_levels = self.read_data.read_json(
             "data/configurations/extras_levels.json"
@@ -542,10 +543,7 @@ class Shop:
                         f"{name}": 1,
                     },
                 }
-                change_game_data = ChangeGameData(rewards)
-                change_game_data.change_params(
-                    change_game_data.reward, change_game_data.game_save_data
-                )
+                self.game_data_manager.change_params(rewards)
                 self.update_data()
 
     def change_level_data_extras(self, id):
@@ -563,10 +561,7 @@ class Shop:
                         name: 1,
                     },
                 }
-                change_game_data = ChangeGameData(rewards)
-                change_game_data.change_params(
-                    change_game_data.reward, change_game_data.game_save_data
-                )
+                self.game_data_manager.change_params(rewards)
                 self.update_data()
 
     def change_level_data_power_up(self, id):
@@ -584,10 +579,7 @@ class Shop:
                         name: 1,
                     },
                 }
-                change_game_data = ChangeGameData(rewards)
-                change_game_data.change_params(
-                    change_game_data.reward, change_game_data.game_save_data
-                )
+                self.game_data_manager.change_params(rewards)
                 self.update_data()
 
     def run(self):
@@ -699,7 +691,7 @@ class Shop:
         return zoomed_image, new_rect
 
     def update_data(self):
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data = self.game_data_manager.game_data
         self.data_weapons = self.read_data.read_json("data/configurations/weapons.json")
         self.data_extras = self.read_data.read_json("data/configurations/extras.json")
         self.data_power_up = self.read_data.read_json(

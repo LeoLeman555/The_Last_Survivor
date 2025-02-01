@@ -1,10 +1,9 @@
 import pygame
 import time
 from itertools import islice
+from src.data_handling.game_data_manager import *
 from src.data_handling.load import *
 from src.data_handling.read_data import *
-from src.data_handling.change_game_data import *
-from src.data_handling.reset import *
 from src.UI.scenes.tutorial import *
 from src.UI.widgets.button import *
 from src.UI.widgets.slider import *
@@ -23,7 +22,8 @@ class Options:
         # Initialise game data and default commands
         self.read_data = ReadData()
         self.load = Load()
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data_manager = GameDataManager()
+        self.game_data = self.game_data_manager.game_data
         self.rewards = {"options": self.game_data["options"].copy()}
         self.data_options = self.rewards["options"].copy()
         self.dict_arrows = dict(islice(self.data_options.items(), 7))
@@ -80,13 +80,11 @@ class Options:
 
     def change_key(self, command_name, new_key):
         self.rewards["options"][command_name] = new_key
-        change_game_data = ChangeGameData(self.rewards, True)
-        change_game_data.change_params(self.rewards, change_game_data.game_save_data)
+        self.game_data_manager.change_params(self.rewards)
         self.update_data()
 
     def change_option(self):
-        change_game_data = ChangeGameData(self.rewards, True)
-        change_game_data.change_params(self.rewards, change_game_data.game_save_data)
+        self.game_data_manager.change_params(self.rewards)
         self.update_data()
 
     def handle_key_event(self, event):
@@ -250,7 +248,7 @@ class Options:
 
             if self.mouse_press:
                 if yes_rect.collidepoint(self.mouse_pos):
-                    reset_game_save(self.game_data)  # Reset data
+                    self.game_data_manager.reset_game_save()
                     time.sleep(0.5)
                     self.update_data()
                     print("-------- Your progress has been reinitialized ---------")
@@ -455,7 +453,7 @@ class Options:
             clock.tick(self.FPS)
 
     def update_data(self):
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data = self.game_data_manager.game_data
         self.rewards = {"options": self.game_data["options"].copy()}
         self.data_options = self.rewards["options"].copy()
         self.dict_arrows = dict(islice(self.data_options.items(), 7))

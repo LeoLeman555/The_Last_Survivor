@@ -1,4 +1,5 @@
 import pygame
+from src.data_handling.game_data_manager import *
 from src.data_handling.load import *
 from src.data_handling.read_data import *
 from src.game.animations.electrodes import *
@@ -34,6 +35,7 @@ class Run:
         pygame.display.set_caption("The Last Survivor - Game")
         self.load = Load()
         self.read_data = ReadData()
+        self.game_data_manager = GameDataManager()
 
         self.initialize_data()
         self.initialize_game_variables()
@@ -84,7 +86,7 @@ class Run:
         self.data_extras_levels = self.read_data.read_json(
             "data/configurations/extras_levels.json"
         )
-        self.game_data = self.read_data.read_params("data/game_save.txt", "game_save")
+        self.game_data = self.game_data_manager.game_data
         self.data_power_up = self.read_data.read_json(
             "data/configurations/power_up.json"
         )
